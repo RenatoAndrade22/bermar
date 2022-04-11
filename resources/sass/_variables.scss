@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+$bg-primary: #2e3344;
+$bg-primary-hover: #252936;
+
+*{
+    font-family: 'Montserrat', sans-serif;
+}
+html, body {
+    height: 100%;
+}
+#main{
+    width: 100%;
+}
+p{
+    font-size: 13px !important;
+}
+.nav{
+    width: 20%;
+    min-height:100vh;
+    float: left;
+    background: #ffffff;
+    box-shadow: 0 1px 15px 1px rgb(69 65 78 / 8%);
+}
+.content{
+    float: left;
+    width: 80%;
+    padding: 15px;
+}
+.logo{
+    width: 100%;
+    float: left;
+    color: #ffffff;
+}
+
+.card_column{
+    width: 100%;
+    min-height: 100%;
+    background: #ffffff;
+    border-radius: 0;
+    padding: 15px;
+    box-shadow: 0 1px 15px 1px rgb(69 65 78 / 8%);
+}
+
+h1{
+    font-weight: 700!important;
+    font-size: 1.375rem !important;
+    line-height: 1.2;
+    color: #464d69;
+}
+
+p{
+    color: #727891!important;
+    font-weight: 500!important;
+    font-size: .75rem;
+    line-height: 1.375rem;
+}
+
+.mb-1{
+    margin-bottom: 10px;
+}
+
+.v-toast__text{
+    color: #ffffff !important;
+    font-weight: 800 !important;
+}
+.v-toast__item--success{
+    background: #157347 !important;
+}
+
+.mt-1{
+    margin-top: 10px;
+}
+
+.m1{
+    margin: 10px;
+}

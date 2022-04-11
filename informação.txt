@@ -1,0 +1,5 @@
+erro do pdf
+src/Smalot/PdfParser/Object.php
+line 275
+comente esta linha
+//$text .= ' ';
