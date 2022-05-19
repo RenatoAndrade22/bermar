@@ -11,8 +11,23 @@ import Vuesax from 'vuesax'
 import 'vuesax/dist/vuesax.css' //Vuesax styles
 
 import axios from "axios"
+
+window.axios = require('axios');
+
+if (localStorage.token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+    let user = JSON.parse(localStorage.user)
+    Vue.prototype.$user = user
+} else {
+    axios.defaults.headers.common['Authorization'] = null;
+}
+
 import LayoutFrontend from "./pages/LayoutFrontend"
 import { BootstrapVue } from 'bootstrap-vue'
+import vmodal from 'vue-js-modal'
+import VModal from 'vue-js-modal/dist/index.nocss.js'
+import 'vue-js-modal/dist/styles.css'
+Vue.use(vmodal)
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'
@@ -40,10 +55,18 @@ import routes from "./routes";
 // Vue.component('layout-frontend', require('./layout/Layout').default);
 
 Vue.use(VueRouter)
-
-const app = new Vue({
+import store from './store/index'
+app = new Vue({
     el: '#app',
+    store,
+    mounted(){
+        this.$store.dispatch('get_users')
+    },
+    computed: {
+        users(){
+            return this.$store.getters.user
+        }
+    },
     router: new VueRouter(routes),
     render: h => h(LayoutFrontend),
-
 }).$mount('#app');

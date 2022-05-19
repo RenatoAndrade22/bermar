@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\EnterpriseProduct;
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -89,7 +92,15 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+
+        $images = ProductImage::query()->where('product_id', $id)->delete();
+
         $product->delete();
         return true;
     }
+
+    public function getProductsBermar(){
+        return Product::all();
+    }
+
 }

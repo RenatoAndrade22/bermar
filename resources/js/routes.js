@@ -12,9 +12,15 @@ import Products from "./pages/products/Products";
 import ProductView from "./pages/products/View";
 import ProductRecord from "./pages/products/Record";
 
-import Providers from "./pages/providers/Providers";
-import ProviderView from "./pages/providers/View";
-import ProviderRecord from "./pages/providers/Record";
+import Resellers from "./pages/resellers/Resellers";
+import ResellerView from "./pages/resellers/View";
+import Sales from "./pages/sales/Sales";
+
+import Warranty from "./pages/warranty/Warranty"
+
+import Shopping from "./pages/shopping/Shopping";
+
+import Chat from './pages/warranty/Chat'
 
 export default {
     mode: 'history',
@@ -31,12 +37,14 @@ export default {
             children: [
                 {
                     path: 'login',
+                    name: 'login',
                     component: Login,
                 },
                 {
-                    path:'/register',
+                    path:'/cadastro/revendedor',
                     component: Register
                 },
+
             ],
         },
         {
@@ -66,37 +74,47 @@ export default {
                     component: ProductRecord
                 },
                 {
+                    path:'/painel/produtos/editar/status/:id',
+                    name: 'product_edit_status',
+                    component: ProductRecord
+                },
+                {
                     path:'/painel/produto/:id',
                     name: 'product_view',
                     component: ProductView
                 },
 
                 {
-                    path:'/painel/fornecedores',
-                    name: 'provides',
-                    component: Providers
+                    path:'/painel/revendas',
+                    name: 'resellers',
+                    component: Resellers
                 },
                 {
-                    path:'/painel/fornecedores/novo',
-                    name: 'provider_new',
-                    component: ProviderRecord
+                    path:'/painel/revenda/:id',
+                    name: 'reseller_view',
+                    component: ResellerView
                 },
                 {
-                    path:'/painel/fornecedores/editar/:id',
-                    name: 'provider_edit',
-                    component: ProviderRecord
+                    path:'/painel/vendas',
+                    name: 'sales',
+                    component: Sales
                 },
                 {
-                    path:'/painel/fornecedores/:id',
-                    name: 'provider_view',
-                    component: ProviderView
+                    path:'/painel/minhas-compras',
+                    name: 'shopping',
+                    component: Shopping
+                },
+                {
+                    path:'/painel/garantias',
+                    name: 'warranty',
+                    component: Warranty
                 },
 
-
                 {
-                    path:'/about',
-                    component: About
-                },
+                    path:'/painel/garantia/produto',
+                    name: 'warranty_chat',
+                    component: Chat
+                },                
                 {
                     path:'/dashboard',
                     component: Dashboard,
@@ -107,7 +125,7 @@ export default {
                             console.log('userr', user)
                             next()
                         }).catch((error)=>{
-                            return next({ name: 'home'} )
+                            return next({ name: 'login'})
                         })
                     }
                 },

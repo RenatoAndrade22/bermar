@@ -4,37 +4,62 @@
             <img src="/images/logo.png" alt="">
         </div>
         <div class="menu">
-
-            <router-link to="/painel">
+            <router-link to="/painel" v-if="$user.enterprise.enterprise_type_id == 1" >
                 <UilAngleRight color="#626262" size="12px" class="icon_angle" />
                 <UilEstate size="20px" class="icon_route" />
                 Painel
             </router-link>
-
-            <router-link to="/painel/produtos">
+            <router-link to="/painel/produtos" v-if="$user.enterprise.enterprise_type_id == 2 || $user.enterprise.enterprise_type_id == 1">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilCube size="20px" class="icon_route" />
                 Produtos
             </router-link>
-
-            <router-link to="/painel/fornecedores">
+            
+            <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 2">
                 <UilAngleRight size="12px" class="icon_angle" />
-                <UilCube size="20px" class="icon_route" />
-                Fornecedores
+                <UilTagAlt size="20px" class="icon_route" />
+                Minhas Vendas
             </router-link>
 
+            <router-link to="/painel/revendas" v-if="$user.enterprise.enterprise_type_id == 1">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShop size="20px" class="icon_route" />
+                Revendas
+            </router-link>
+
+            <router-link to="/painel/minhas-compras" v-if="$user.enterprise.enterprise_type_id == 1">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Minhas compras
+            </router-link>
+
+            <router-link to="/painel/garantias" v-if="$user.enterprise.enterprise_type_id == 1 || $user.enterprise.enterprise_type_id == 2">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Pedidos de garantia
+            </router-link>
+            
         </div>
     </div>
-
 </template>
 
 <script>
 
-import { UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube } from '@iconscout/vue-unicons'
+import { UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag } from '@iconscout/vue-unicons'
 
 export default {
     name: "Nav",
-    components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube },
+    components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag },
+    return:{
+        data(){
+            user: null
+        }
+    },
+    created() {
+        if (localStorage.user) {
+        this.user = JSON.parse(localStorage.user);
+        }
+  },
 }
 </script>
 

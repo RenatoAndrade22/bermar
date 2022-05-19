@@ -5,7 +5,7 @@
                 <img src="/images/logo.png" alt="">
             </div>
             <div class="form">
-                <h3>LB3</h3>
+                <h3>Bermar {{ users }}</h3>
                 <p>Seja bem vindo, entre com sua conta.</p>
                 <b-form @submit="onSubmit" v-if="show">
                     <b-form-group
@@ -28,6 +28,7 @@
                             class="input input2"
                         ></b-form-input>
                     </b-form-group>
+                    <!--
                     <b-form-checkbox
                         id="checkbox-1"
                         name="checkbox-1"
@@ -36,6 +37,8 @@
                     >
                         <p style="margin-left: 7px; top: -5px">Lembrar de mim</p>
                     </b-form-checkbox>
+                    -->
+                    <p class="error" v-if="error">Usuário e/ou senha inválido(s).</p>
                     <b-button type="submit" class="button" variant="primary">Acessar</b-button>
                 </b-form>
             </div>
@@ -46,6 +49,7 @@
 
 <script>
 import {BRow, BCol, BForm, BFormGroup, BFormInput, BFormSelect, BFormCheckboxGroup, BFormCheckbox, BButton, BCard,} from 'bootstrap-vue'
+window.axios = require('axios');
 
 export default {
     components:{
@@ -53,6 +57,7 @@ export default {
     },
     data() {
         return {
+            error: false,
             form: {
                 email: '',
                 password: '',
@@ -61,20 +66,31 @@ export default {
             show: true
         }
     },
+
     methods: {
         onSubmit(event) {
             event.preventDefault()
             axios.post('/api/login', this.form).then((item) =>{
+                let token = JSON.stringify(item.data.token)
+                token = token.replaceAll('"', '')
+                console.log('item', item)
+                localStorage.setItem('user', JSON.stringify(item.data.user))
+                this.$user = item.data.user
+                localStorage.setItem('token', token)
                 this.$router.push({name: "dashboard"})
+            }).catch((error) => {
+                this.error = true
             })
         },
     }
 }
 </script>
 <style scoped>
-
+    .error{
+        color: #f7656a !important;
+    }
     .page-login{
-        background: #69ABDE;
+        background: #f7656a;
         position:absolute;
         top:0;
         bottom:0;

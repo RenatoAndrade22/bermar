@@ -3,13 +3,11 @@
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
-                    <span style="color:#EE1B21">({{ list_providers.length }})</span> Fornecedores
+                    <span style="color:#EE1B21">({{ list_providers.length }})</span> Revendedores
                 </vs-navbar-title>
             </div>
 
-            <vs-input icon="search" class="search" placeholder="Buscar fornecedor" v-model="search"/>
-
-<!--            <vs-button type="relief" @click="$router.push({ name: 'provider_new' })">Cadastrar novo</vs-button>-->
+            <vs-input icon="search" class="search" placeholder="Buscar revendedor" v-model="search"/>
 
         </vs-navbar>
 
@@ -107,7 +105,7 @@ export default {
     methods:{
 
         getProviders(){
-            axios.get('http://bermar.pgv/api/providers').then((data)=>{
+            axios.get('http://bermar.pgv/api/resellers').then((data)=>{
                 this.providers = data.data
             })
         },

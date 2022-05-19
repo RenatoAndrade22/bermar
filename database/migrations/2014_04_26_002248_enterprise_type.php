@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateUsersAddInfos extends Migration
+class EnterpriseType extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class UpdateUsersAddInfos extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('cpf')->unique()->nullable()->default(null);
-            $table->string('phone')->unique()->nullable()->default(null);
+        Schema::create('enterprise_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
         });
     }
 

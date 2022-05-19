@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Provider;
+use App\Models\Reseller;
 use Illuminate\Http\Request;
 
-class ProviderController extends Controller
+class ResellerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Provider[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
+     * @return Reseller[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
      */
     public function index()
     {
-        return Provider::query()
+        return Reseller::query()
             ->with('user')
             ->get();
     }
@@ -38,10 +38,10 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        $provider = new Provider();
-        $provider->fill($request->all());
-        $provider->saveOrFail();
-        return $provider;
+        $reseller = new Reseller();
+        $reseller->fill($request->all());
+        $reseller->saveOrFail();
+        return $reseller;
     }
 
     /**
@@ -52,7 +52,7 @@ class ProviderController extends Controller
      */
     public function show($id)
     {
-        return Provider::find($id);
+        return Reseller::find($id);
     }
 
     /**
@@ -75,10 +75,10 @@ class ProviderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $provider = Provider::find($id);
-        $provider->fill($request->all());
-        $provider->saveOrFail();
-        return $provider;
+        $reseller = Reseller::find($id);
+        $reseller->fill($request->all());
+        $reseller->saveOrFail();
+        return $reseller;
     }
 
     /**
@@ -89,8 +89,8 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-        $provider = Provider::find($id);
-        $provider->delete();
+        $reseller = Reseller::find($id);
+        $reseller->delete();
         return true;
     }
 }

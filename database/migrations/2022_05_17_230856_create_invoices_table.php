@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Providers extends Migration
+class CreateInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,15 @@ class Providers extends Migration
      */
     public function up()
     {
-        Schema::create('providers', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('cnpj');
-            $table->string('email');
-            $table->string('phone');
-            $table->softDeletes();
+            $table->unsignedBigInteger('sale_order_id');
+
+            $table->timestamps();
+
+            $table->foreign('sale_order_id')
+                ->references('id')->on('sale_orders');
         });
     }
 
@@ -30,6 +32,6 @@ class Providers extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('invoices');
     }
 }
