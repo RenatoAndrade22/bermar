@@ -36,6 +36,17 @@
                             <vs-select-item :key="index" :value="item.value" :text="item.text" v-for="item,index in optionsStatus" />
                         </vs-select>
                     </vs-col>
+                    <vs-col vs-w="3">
+                        <vs-select
+                            class="selectExample"
+                            label="Categoria"
+                            :danger="form.category_validation"
+                            danger-text="Esse campo é obrigatório"
+                            v-model="form.category_id"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
+                        </vs-select>
+                    </vs-col>
                 </vs-row>
 
                 <vs-textarea
@@ -93,10 +104,13 @@ export default {
             edit: false,
             money_active: false,
             image: false,
+            categories: [],
             form:{
                 id: null,
                 name: null,
                 status: 2,
+                category_id: null,
+                category_validation: false,
                 price: "",
                 name_validation: false,
                 price_validation: false,
@@ -165,6 +179,13 @@ export default {
                 this.form.price_validation = false
             }
 
+            if (!this.form.category_id){
+                validate = false
+                this.form.category_validation = true
+            }else{
+                this.form.category_validation = false
+            }
+
             return validate;
 
         },
@@ -205,12 +226,20 @@ export default {
                 this.form.id = data.data.id
                 this.form.status = data.data.status
                 this.form.images = data.data.image 
+                this.form.category_id = data.data.category_id
                 this.money_active = true
+            })
+        },
+
+        getCategories(){
+            axios.get('http://bermar.pgv/api/category').then((resp)=>{
+                this.categories = resp.data
             })
         }
     },
 
     created() {
+        this.getCategories()
         if (this.$route.params.id !== undefined) {
             this.edit = true
             this.getProduct()

@@ -533,7 +533,7 @@ export default {
     float: left;
     min-height: 100%;
     height: 100%;
-    background: #f7656a;
+    background: #ec1c24;
     padding-bottom: 50px;
 }
 h3{

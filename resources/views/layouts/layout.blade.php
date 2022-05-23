@@ -57,9 +57,7 @@
                 <div class="top-w3pvt d-flex">
                     <div id="logo">
                         <a href="index.html"><img src="{{ asset('site/images/logo.png') }}" alt="Bermar" width="173" heigth="81">
-
                     </div>
-
 
                     <div class="forms ml-auto">
                         <a href="/login" class="btn"><span class="fa fa-user-circle-o"></span> ENTRAR </a>
@@ -80,40 +78,11 @@
                                 <a href="#">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span></a>
                                 <input type="checkbox" id="drop-2" />
                                 <ul style="left: 0;">
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Amaciador de Carnes</a></li>
+                                @foreach ($categories as $category)
+                                    <li><a href="{{ url('categoria/'.$category['slug']) }}" class="drop-text">{{ $category['name'] }}</a></li>
                                     <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Despolpadores</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Amassadeiras Basculantes</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Batedores de Milk Shake</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Ensacadeiras</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Cilindros para Massas</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Cortadores de Frios</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Liquidificadores Trituradores</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Despolpadeiras</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Extratores de Sucos</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Processador de Alimentos</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Masseira para Churros</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Misturadeira de Carnes</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Moedores</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Raladores</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Picadores de Carnes</a></li>
-                                    <hr>
-                                    <li><a href="categoria-catalogo.html" class="drop-text">Serras fita</a></li>
-                                       
+                                @endforeach
+                                    
                                 </ul>
                             </li>
 
@@ -136,6 +105,8 @@
             </div>
         </header>
         <!-- //header -->
+
+        @if(Request::is('/'))
         <!--/banner-->
         <div>
            <div class="banner">
@@ -158,6 +129,10 @@
                </div>
            </div>
         </div>
+        <style>
+            
+        </style>
+        @endif
     </div>
 
 
@@ -269,17 +244,17 @@
             </p>
     
         </div>
-        
-    
-    
+
     <!-- //footer -->
     <!-- copyright -->
    
     <!-- //copyright -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="./script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
     <script src="{{ asset('site/script.js') }}" defer></script> 
     <script src="{{ asset('site/js/banner.js') }}" defer></script> 
+
 
 </body>
 

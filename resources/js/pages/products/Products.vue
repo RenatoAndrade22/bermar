@@ -240,10 +240,19 @@ export default {
 
     getProductsBermar() {
       axios.get("http://bermar.pgv/api/products-bermar").then((data) => {
-          this.products_bermar = this.$c(data.data).map((data)=>{
-            data.stock = null
-            return data
-          })
+
+          if (this.$user.enterprise.enterprise_type_id == 1) {
+            this.products = this.$c(data.data).map((data)=>{
+              data.stock = null
+              return data
+            })
+          }else{
+            this.products_bermar = this.$c(data.data).map((data)=>{
+              data.stock = null
+              return data
+            })
+          }
+          
       });
     },
 
@@ -298,7 +307,10 @@ export default {
     },
   },
   created() {
-    this.getProducts();
+    if (this.$user.enterprise.enterprise_type_id != 1) {
+      this.getProducts();
+    }
+    
     this.getProductsBermar();
   },
   computed: {

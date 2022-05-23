@@ -14,7 +14,11 @@
                 <UilCube size="20px" class="icon_route" />
                 Produtos
             </router-link>
-            
+            <router-link to="/painel/categorias" v-if="$user.enterprise.enterprise_type_id == 1">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilCube size="20px" class="icon_route" />
+                Categorias
+            </router-link>
             <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 2">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilTagAlt size="20px" class="icon_route" />

@@ -5,7 +5,7 @@
                 <img src="/images/logo.png" alt="">
             </div>
             <div class="form">
-                <h3>Bermar {{ users }}</h3>
+                <h3>Bermar</h3>
                 <p>Seja bem vindo, entre com sua conta.</p>
                 <b-form @submit="onSubmit" v-if="show">
                     <b-form-group
@@ -42,7 +42,6 @@
                     <b-button type="submit" class="button" variant="primary">Acessar</b-button>
                 </b-form>
             </div>
-
         </div>
     </div>
 </template>
@@ -66,9 +65,11 @@ export default {
             show: true
         }
     },
-
+    created:{
+    },
     methods: {
         onSubmit(event) {
+          
             event.preventDefault()
             axios.post('/api/login', this.form).then((item) =>{
                 let token = JSON.stringify(item.data.token)
@@ -77,20 +78,21 @@ export default {
                 localStorage.setItem('user', JSON.stringify(item.data.user))
                 this.$user = item.data.user
                 localStorage.setItem('token', token)
-                this.$router.push({name: "dashboard"})
+                window.location.href = '/painel'
             }).catch((error) => {
                 this.error = true
             })
+            
         },
     }
 }
 </script>
 <style scoped>
     .error{
-        color: #f7656a !important;
+        color: rgb(209, 46, 51) !important;
     }
     .page-login{
-        background: #f7656a;
+        background: #ec1c24;
         position:absolute;
         top:0;
         bottom:0;

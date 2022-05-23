@@ -55,18 +55,9 @@ import routes from "./routes";
 // Vue.component('layout-frontend', require('./layout/Layout').default);
 
 Vue.use(VueRouter)
-import store from './store/index'
+
 app = new Vue({
     el: '#app',
-    store,
-    mounted(){
-        this.$store.dispatch('get_users')
-    },
-    computed: {
-        users(){
-            return this.$store.getters.user
-        }
-    },
     router: new VueRouter(routes),
     render: h => h(LayoutFrontend),
 }).$mount('#app');

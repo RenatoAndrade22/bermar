@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\API\ProductController;
@@ -48,6 +49,7 @@ Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resources([
+        'category' => CategoryController::class,
         'products' => ProductController::class,
         'enterprise-products' => EnterpriseProductController::class,
     ]);

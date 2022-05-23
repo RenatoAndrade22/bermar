@@ -21,6 +21,7 @@ import Warranty from "./pages/warranty/Warranty"
 import Shopping from "./pages/shopping/Shopping";
 
 import Chat from './pages/warranty/Chat'
+import Categories from './pages/category/Categories'
 
 export default {
     mode: 'history',
@@ -83,7 +84,11 @@ export default {
                     name: 'product_view',
                     component: ProductView
                 },
-
+                {
+                    path:'/painel/categorias',
+                    name: 'categories',
+                    component: Categories
+                },
                 {
                     path:'/painel/revendas',
                     name: 'resellers',

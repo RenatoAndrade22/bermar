@@ -16,13 +16,14 @@ class Product extends Model
         'description',
         'price',
         'status',
+        'category_id'
     ];
     
     protected $with = [
-        'image'
+        'productImages'
     ];
 
-    public function image() : HasMany
+    public function productImages() : HasMany
     {
         return $this->hasMany(ProductImage::class);
     }

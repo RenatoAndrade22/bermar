@@ -3,22 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\EnterpriseProduct;
-use App\Models\Product;
-use App\Models\ProductImage;
+use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
-class ProductController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Product[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return Product::all();
+        return Category::query()->with('products')->get();
     }
 
     /**
@@ -34,17 +31,16 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return Product
-     * @throws \Throwable
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $product = new Product();
-        $product->fill($request->all());
-        $product->slug = $this->sanitizeString($request->get('name'));
-        $product->saveOrFail();
-        return $product;
+        $category = new Category();
+        $category->fill($request->all());
+        $category->slug = $this->sanitizeString($request->get('name'));
+        $category->saveOrFail();
+        return $category;
     }
 
     /**
@@ -55,7 +51,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return Product::find($id);
+        //
     }
 
     /**
@@ -78,33 +74,22 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::find($id);
-        $product->fill($request->all());
-        if($request->get('name')){
-            $product->slug = $this->sanitizeString($request->get('name'));
-        }
-        $product->saveOrFail();
-        return $product;
+        $category = Category::find($id);
+        $category->fill($request->all());
+        $category->slug = $this->sanitizeString($request->get('name'));
+        $category->saveOrFail();
+        return $category;
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return bool
+     * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
-
-        $images = ProductImage::query()->where('product_id', $id)->delete();
-
-        $product->delete();
-        return true;
-    }
-
-    public function getProductsBermar(){
-        return Product::all();
+        return Category::query()->where('id', $id)->delete();
     }
 
     public function sanitizeString($str) {
@@ -118,5 +103,4 @@ class ProductController extends Controller
         $str = preg_replace('/_+/', '_', $str);
         return strtolower($str);
     }
-
 }

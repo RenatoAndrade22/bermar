@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategorySiteController;
+use App\Http\Controllers\ProductSiteController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,9 +14,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('bermar', function () {
-    return view('site.index');
-});
+Route::get('/', [CategorySiteController::class, 'index']);
+
+Route::get('/categoria/{slug}', [ProductSiteController::class, 'index']);
+
+Route::get('/produto/{slug}', [ProductSiteController::class, 'show']);
 
 Route::get('/{any}', function () {
     return view('app');
