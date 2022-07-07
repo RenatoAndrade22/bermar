@@ -29,7 +29,6 @@ class RecordUser extends FormRequest
             'phone' => 'required|unique:users',
             'cpf' => 'required|unique:users',
             'password' => 'required',
-            'confirme_pass' => 'required',
         ];
     }
 
@@ -40,7 +39,7 @@ class RecordUser extends FormRequest
             'email.required' => 'O campo email é obrigatório.',
             'cpf.required' => 'O campo cpf é obrigatório.',
             'password.required' => 'O campo senha é obrigatório.',
-            'confirme_pass.required' => 'O campo repetir senha é obrigatório.',
+
             'phone.required' => 'O campo telefone é obrigatório.',
 
             'email.unique' => 'Email já cadastrado.',

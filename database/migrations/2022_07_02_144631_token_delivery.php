@@ -14,7 +14,9 @@ class TokenDelivery extends Migration
     public function up()
     {
         Schema::create('token_delivery', function (Blueprint $table) {
+            $table->id();
             $table->text('token');
+            $table->timestamps();
         });
     }
 

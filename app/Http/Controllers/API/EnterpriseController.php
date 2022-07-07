@@ -20,4 +20,11 @@ class EnterpriseController extends Controller
         $enterprise->saveOrFail();
         return $enterprise;
     }
+
+    public function update(Request $request, $id){
+        $enterprise = Enterprise::find($id);
+        $enterprise->fill($request->all());
+        $enterprise->saveOrFail();
+        return $enterprise;
+    }
 }

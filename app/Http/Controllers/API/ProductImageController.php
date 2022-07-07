@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 class ProductImageController extends Controller
 {
     public function store(Request $request, $id){
-        $path = public_path('uploads');
+
+        $path = public_path('products-images');
       
         if (!file_exists($path)) {
           mkdir($path, 0777, true);

@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\API\ProductController;
 use \App\Http\Controllers\API\EnterpriseProductController;
 use \App\Http\Controllers\API\ResellerController;
+use \App\Http\Controllers\API\EnterpriseController;
+use \App\Http\Controllers\API\AddressController;
+use \App\Http\Controllers\API\UserController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,7 +32,7 @@ Route::resources([
     'resellers' => ResellerController::class,
 ]);
 
-Route::post('/upload/{id}', [\App\Http\Controllers\API\ProductImageController::class, 'store'])->name('upload');
+Route::post('/upload/{id}', [\App\Http\Controllers\API\ProductImageController::class, 'store']);
 Route::post('/delete-image-product/{id?}', [\App\Http\Controllers\API\ProductImageController::class, 'delete']);
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
@@ -47,10 +50,18 @@ Route::get('products-bermar', [\App\Http\Controllers\API\ProductController::clas
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);
 
+
+// PAINEL
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resources([
         'category' => CategoryController::class,
-        'products' => ProductController::class,
+        'product' => ProductController::class,
         'enterprise-products' => EnterpriseProductController::class,
+        'enterprise' => EnterpriseController::class,
+        'address' => AddressController::class,
+        'user' => UserController::class,
     ]);
 });
+
+// DELIVERY
+Route::get('get-city/{zipcode}', [\App\Http\Controllers\API\DeliveryController::class, 'getCity']);

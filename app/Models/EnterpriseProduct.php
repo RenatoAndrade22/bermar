@@ -14,13 +14,15 @@ class EnterpriseProduct extends Model
         'status',
         'stock',
     ];
+    
     protected $with = [
-        'products'
+        'products',
+        'address'
     ];
 
     public function products(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
-   
+
 }

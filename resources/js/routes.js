@@ -5,15 +5,15 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Investments from "./pages/Investments";
-import LayoutFrontend from "./pages/LayoutFrontend";
+import LayoutFrontend from "./pages/LayoutFrontend.vue";
 import Layout from "./layout/Layout";
 
 import Products from "./pages/products/Products";
 import ProductView from "./pages/products/View";
 import ProductRecord from "./pages/products/Record";
 
-import Resellers from "./pages/resellers/Resellers";
-import ResellerView from "./pages/resellers/View";
+import Company from "./pages/company/Company";
+
 import Sales from "./pages/sales/Sales";
 
 import Warranty from "./pages/warranty/Warranty"
@@ -22,6 +22,9 @@ import Shopping from "./pages/shopping/Shopping";
 
 import Chat from './pages/warranty/Chat'
 import Categories from './pages/category/Categories'
+
+import User from "./pages/users/User";
+
 
 export default {
     mode: 'history',
@@ -90,14 +93,14 @@ export default {
                     component: Categories
                 },
                 {
-                    path:'/painel/revendas',
-                    name: 'resellers',
-                    component: Resellers
+                    path:'/painel/empresas',
+                    name: 'companies',
+                    component: Company
                 },
                 {
-                    path:'/painel/revenda/:id',
-                    name: 'reseller_view',
-                    component: ResellerView
+                    path:'/painel/usuarios',
+                    name: 'users',
+                    component: User
                 },
                 {
                     path:'/painel/vendas',

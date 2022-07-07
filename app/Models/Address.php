@@ -19,5 +19,7 @@ class Address extends Model
         'state',
         'complement',
         'enterprise_id',
+        'city_id',
     ];
+
 }

@@ -14,6 +14,13 @@ import axios from "axios"
 
 window.axios = require('axios');
 
+import LayoutFrontend from "./pages/LayoutFrontend.vue"
+import { BootstrapVue } from 'bootstrap-vue'
+import vmodal from 'vue-js-modal'
+import VModal from 'vue-js-modal/dist/index.nocss.js'
+import 'vue-js-modal/dist/styles.css'
+Vue.use(vmodal)
+
 if (localStorage.token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
     let user = JSON.parse(localStorage.user)
@@ -21,13 +28,6 @@ if (localStorage.token) {
 } else {
     axios.defaults.headers.common['Authorization'] = null;
 }
-
-import LayoutFrontend from "./pages/LayoutFrontend"
-import { BootstrapVue } from 'bootstrap-vue'
-import vmodal from 'vue-js-modal'
-import VModal from 'vue-js-modal/dist/index.nocss.js'
-import 'vue-js-modal/dist/styles.css'
-Vue.use(vmodal)
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'

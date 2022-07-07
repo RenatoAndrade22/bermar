@@ -140,7 +140,7 @@ export default {
         acceptDelete(){
             axios
         .delete(
-          "http://bermar.pgv/api/category/" + this.delete_categ.id
+          "/api/category/" + this.delete_categ.id
         )
         .then((data) => {
           this.list_categories = this.$c(this.list_categories).filter((item) => {
@@ -161,7 +161,7 @@ export default {
             if (this.validation()) {
 
                 if (this.categ_edit) {
-                    axios.put('http://bermar.pgv/api/category/'+this.categ_edit.id, this.form).then((resp)=>{
+                    axios.put('/api/category/'+this.categ_edit.id, this.form).then((resp)=>{
                         
                     this.list_categories = this.$c(this.list_categories).map((item)=>{
                         if (item.id == this.categ_edit.id) {
@@ -180,7 +180,7 @@ export default {
                         })
                     })
                 }else{
-                    axios.post('http://bermar.pgv/api/category', this.form).then((item)=>{
+                    axios.post('/api/category', this.form).then((item)=>{
                     this.list_categories.push({id: item.data.id ,name: item.data.name, products: []})
                     this.popup_new = false
                     this.form.name = null
@@ -210,7 +210,7 @@ export default {
         },
 
         getCategories(){
-            axios.get('http://bermar.pgv/api/category').then((item)=>{
+            axios.get('/api/category').then((item)=>{
                 this.list_categories = item.data
             })
         }

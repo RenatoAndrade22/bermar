@@ -56,33 +56,44 @@
                     </vs-td>
 
                     <vs-td :data="data[indextr].id" style="width: 195px">
-
-                        <div @click="viewItem(data[indextr].id)" class="icons">
-                            <vs-tooltip text="Ver">
-                                <UilEye size="19px" class="icon_view" @click="viewItem(data[indextr].id)" />
-                            </vs-tooltip>
-                        </div>
-
                         <div @click="editItem(data[indextr].id)" class="icons" style="float:left; margin: 0 5px;">
                             <vs-tooltip text="Editar">
                                 <UilEdit size="19px" class="icon_view" />
                             </vs-tooltip>
                         </div>
-
-                        <div @click="deleteItem(data[indextr].id)" class="icons">
-                            <vs-tooltip text="Desativar">
-                                <UilTrashAlt size="19px" class="icon_view" @click="deleteItem(data[indextr].id)" />
-                            </vs-tooltip>
-                        </div>
-
                     </vs-td>
+                    
                 </vs-tr>
             </template>
         </vs-table>
         <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
             <vs-row vs-w="12" style="width: 100% !important; display: block;">
 
-                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Categoria</p>
+                        <vs-select
+                            v-model="form.enterprise_type_id"
+                            :danger="form.enterprise_type_id_validate"
+                            danger-text="Campo obrigatório"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Status</p>
+                        <vs-select
+                            v-model="form.status"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in status" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
                         <p class="text-label">Razão Social</p>
                         <vs-input
@@ -91,19 +102,6 @@
                             placeholder="Razão Social"
                             v-model="form.name"
                         />
-                    </div>
-                </vs-col>
-
-                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
-                    <div class="form_item">
-                        <p class="text-label">Categoria</p>
-                        <vs-select
-                            v-model="form.category"
-                            :danger="form.category_validate"
-                            danger-text="Campo obrigatório"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
-                        </vs-select>
                     </div>
                 </vs-col>
 
@@ -153,6 +151,7 @@
                     <div class="form_item">
                         <p class="text-label">CEP</p>
                         <vs-input
+                            v-mask="'#####-###'"
                             :danger="address.zipcode_validate"
                             danger-text="Campo obrigatório"
                             placeholder="CEP"
@@ -168,6 +167,93 @@
                         </vs-button>
                     </div>
                 </vs-col>
+
+                <template v-if="this.address.city_id">
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Rua</p>
+                            <vs-input
+                                :danger="address.street_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Rua"
+                                v-model="address.street"
+                            />
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Bairro</p>
+                            <vs-input
+                                :danger="address.district_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Bairro"
+                                v-model="address.district"
+                            />
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Complemento</p>
+                            <vs-input
+                                :danger="address.complement_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Complemento"
+                                v-model="address.complement"
+                            />
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Número</p>
+                            <vs-input
+                                :danger="address.number_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Número"
+                                v-model="address.number"
+                            />
+                        </div>
+                    </vs-col>
+                    
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Cidade</p>
+                            <vs-input
+                                disabled
+                                :danger="address.city_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Cidade"
+                                v-model="address.city"
+                            />
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <p class="text-label">Estado</p>
+                            <vs-input
+                                disabled
+                                :danger="address.state_validate"
+                                danger-text="Campo obrigatório"
+                                placeholder="Bairro"
+                                v-model="address.state"
+                            />
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <vs-button type="relief" @click="record" class="mt-4">
+                            Cadastrar
+                        </vs-button>
+                    </div>
+                </vs-col>
+
+                </template>
 
             </vs-row>
         </vs-popup>
@@ -193,11 +279,14 @@ export default {
         return{
             search: null,
             delete_provider: null,
+            edit_company: false,
             providers:[],
             popupActivo:false,
             form: {
-                category: null,
-                category_validate: false,
+                id: null,
+
+                enterprise_type_id: null,
+                enterprise_type_id_validate: false,
 
                 name: null,
                 name_validate: false,
@@ -210,8 +299,13 @@ export default {
 
                 phone: null,
                 phone_validate: false,
+
+                status: true,
             },
             address:{
+
+                id: null,
+
                 zipcode: null,
                 zipcode_validate: false,
 
@@ -236,7 +330,19 @@ export default {
                 complement_validate: false,
 
                 enterprise_id: null,
+
+                status: true,
             },
+            status:[
+                {
+                    id: 1,
+                    name: 'Ativo'
+                },
+                {
+                    id: 0,
+                    name: 'Inativo'
+                },
+            ],
             categories:[
                 {
                     id: 2,
@@ -258,25 +364,111 @@ export default {
         searchCity(){
             if(this.address.zipcode){
                 this.address.zipcode_validate = false
+
+                axios.get('/api/get-city/'+this.address.zipcode.replace('-', '')).then((data)=>{
+                    this.address.city_id = data.data.CityId
+                    this.address.city    = data.data.CityDescription
+                    this.address.state   = data.data.UnitFederation.Description
+                    this.address.street  = data.data.Street
+                    this.address.district   = data.data.District
+                })
+
             }else{
                 this.address.zipcode_validate = true
             }
         },
 
         record(){
-            if(this.validate){
+            if(this.validate()){
+
+                if(!this.edit_company){
+                    axios.post('/api/enterprise', this.form).then((data)=>{
+                        this.address.enterprise_id = data.data.id
+                        this.recordAddress()
+                    })
+                }else{
+                    axios.put('/api/enterprise/'+this.form.id, this.form).then((data)=>{
+                        this.recordAddress()
+                    })
+                }
                 
             }
         },
 
+        recordAddress(){ 
+
+            if(!this.edit_company){
+                axios.post('/api/address', this.address).then((data)=>{
+                    this.popupActivo = false
+
+                    this.getCompanies()
+
+                    this.$toast.open({
+                        message: 'Empresa cadastrada!',
+                        type: 'success',
+                    });
+                })
+            }else{
+
+                axios.put('/api/address/'+this.address.id, this.address).then((data)=>{
+                    this.popupActivo = false
+
+                    this.getCompanies()
+
+                    this.$toast.open({
+                        message: 'Empresa atualizada!',
+                        type: 'success',
+                    });
+                })
+
+            }
+            
+        },
+
         validate(){
+
             let i = true
 
             this.form.name_validate = !this.form.name ? true : false
             if(!this.form.name)                
                 i = false
-                
-            
+                   
+            this.form.enterprise_type_id_validate = !this.form.enterprise_type_id ? true : false
+            if(!this.form.enterprise_type_id)                
+                i = false
+
+            this.form.email_validate = !this.form.email ? true : false
+            if(!this.form.email)                
+                i = false
+
+            this.form.cnpj_validate = !this.form.cnpj ? true : false
+            if(!this.form.cnpj)                
+                i = false
+
+            this.form.phone_validate = !this.form.phone ? true : false
+            if(!this.form.phone)                
+                i = false
+
+            this.address.zipcode_validate = !this.address.zipcode ? true : false
+            if(!this.address.zipcode)                
+                i = false
+
+            this.address.city_validate = !this.address.city ? true : false
+            if(!this.address.city)                
+                i = false
+
+            this.address.state_validate = !this.address.state ? true : false
+            if(!this.address.state)                
+                i = false
+
+            this.address.street_validate = !this.address.street ? true : false
+            if(!this.address.street)                
+                i = false
+
+            this.address.number_validate = !this.address.number ? true : false
+            if(!this.address.number)                
+                i = false
+
             return i
         },
 
@@ -286,12 +478,22 @@ export default {
             })
         },
 
-        viewItem(id){
-            this.$router.push({ name: 'provider_view', params: { id: id } })
-        },
-
         editItem(id){
-            this.$router.push({ name: 'provider_edit', params: { id: id } })
+            this.edit_company = true
+
+            let company = this.$c(this.providers).where('id',id).first()
+
+            this.form.id = company.id
+            this.form.cnpj = company.cnpj
+            this.form.email = company.email
+            this.form.enterprise_type_id = company.enterprise_type_id
+            this.form.name = company.name
+            this.form.phone = company.phone
+            this.form.status = company.status
+
+            this.address = company.address
+
+            this.popupActivo = true
         },
 
         deleteItem(id){

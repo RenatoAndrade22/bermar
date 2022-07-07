@@ -16,7 +16,13 @@ class Product extends Model
         'description',
         'price',
         'status',
-        'category_id'
+        'category_id',
+        'slug',
+        'width',
+        'weight',
+        'length',
+        'height',
+        'video'
     ];
     
     protected $with = [

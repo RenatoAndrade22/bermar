@@ -25,10 +25,16 @@
                 Minhas Vendas
             </router-link>
 
-            <router-link to="/painel/revendas" v-if="$user.enterprise.enterprise_type_id == 1">
+            <router-link to="/painel/empresas" v-if="$user.enterprise.enterprise_type_id == 1">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShop size="20px" class="icon_route" />
-                Revendas
+                Empresas
+            </router-link>
+
+            <router-link to="/painel/usuarios" v-if="$user.enterprise.enterprise_type_id == 1">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShop size="20px" class="icon_route" />
+                Usuários
             </router-link>
 
             <router-link to="/painel/minhas-compras" v-if="$user.enterprise.enterprise_type_id == 1">

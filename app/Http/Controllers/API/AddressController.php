@@ -14,4 +14,11 @@ class AddressController extends Controller
         $address->saveOrFail();
         return $address;
     }
+
+    public function update(Request $request, $id){
+        $address = Address::find($id);
+        $address->fill($request->all());
+        $address->saveOrFail();
+        return $address;
+    }
 }

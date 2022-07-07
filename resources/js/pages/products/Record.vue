@@ -1,91 +1,177 @@
 <template>
     <div>
         <h1>Cadastrar novo produto</h1>
-        <form>
-            <div v-if="!image">
-                <vs-row>
-                    <vs-col vs-w="3">
+        
+        <vs-row vs-w="12" style="width: 100% !important; display: block;">
+
+            <template v-if="!image">
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Nome</p>
                         <vs-input
-                            label="Nome"
-                            class="mb-3 mt-2"
-                            placeholder="Nome do produto"
-                            v-model="form.name"
                             :danger="form.name_validation"
-                            danger-text="Esse campo é obrigatório"
+                            danger-text="Campo obrigatório"
+                            placeholder="Nome"
+                            v-model="form.name"
                         />
-                    </vs-col>
-                    <vs-col vs-w="3">
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Preço</p>
                         <vs-input
                             v-if="money_active"
-                            label="Preço"
-                            class="mb-3 mt-2"
-                            placeholder="Preço do produto"
-                            v-model.lazy="form.price"
-                            v-money="money"
                             :danger="form.price_validation"
-                            danger-text="Esse campo é obrigatório"
+                            danger-text="Campo obrigatório"
+                            placeholder="Preço"
+                            v-model="form.price"
+                            v-money="money"
                             masked
                         />
-                    </vs-col>
-                    <vs-col vs-w="3" v-if="edit">
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Status</p>
                         <vs-select
-                            class="selectExample"
-                            label="Status"
                             v-model="form.status"
                         >
-                            <vs-select-item :key="index" :value="item.value" :text="item.text" v-for="item,index in optionsStatus" />
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in status" />
                         </vs-select>
-                    </vs-col>
-                    <vs-col vs-w="3">
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Categoria</p>
                         <vs-select
-                            class="selectExample"
-                            label="Categoria"
-                            :danger="form.category_validation"
-                            danger-text="Esse campo é obrigatório"
                             v-model="form.category_id"
+                            :danger="form.category_validation"
+                            danger-text="Campo obrigatório"
                         >
                             <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
                         </vs-select>
-                    </vs-col>
-                </vs-row>
-
-                <vs-textarea
-                    label="Descrição"
-                    v-model="form.description"
-                />
-            </div>
-            
-            <div class="centerx" v-if="edit">
-       
-                <vs-upload text="Upload Fotos" fileName="image" automatic :action="'/api/upload/'+form.id" @on-success="successUpload" />
-                
-                <div class="images">
-                    <div class="image" v-for="(img, i) in form.images" :key="i">
-                        <span @click="deleteImg(img.id)"><UilTimes size="16px" class="icon_delete" /></span>
-                        <img :src="'/uploads/'+img.name" alt="">
                     </div>
-                </div>
-                
-                <vs-button type="relief" @click="record">
-                    <span>Editar</span>
-                </vs-button>
-            </div>
-            <div class="centerx" v-if="!edit">
-                
-                <vs-upload @on-delete="deleteImage" text="Upload Fotos" v-if="image" fileName="image" automatic :action="'/api/upload/'+form.id" @on-success="successUpload" />
-                
-                <vs-button type="relief" v-if="!image" @click="record">
-                    <span>Continuar</span>
-                </vs-button>
-                
-                <vs-button @click="finish" type="relief" v-if="image">
-                    <span>Finalizar</span>
-                </vs-button>
+                </vs-col>
 
-            </div>
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <hr class="divisor" />
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Largura</p>
+                        <vs-input
+                            v-if="money_active"
+                            :danger="form.width_validation"
+                            danger-text="Campo obrigatório"
+                            placeholder="Largura"
+                            v-model="form.width"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Peso</p>
+                        <vs-input
+                            v-if="money_active"
+                            :danger="form.weight_validation"
+                            danger-text="Campo obrigatório"
+                            placeholder="Peso"
+                            v-model="form.weight"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Comprimento</p>
+                        <vs-input
+                            v-if="money_active"
+                            :danger="form.length_validation"
+                            danger-text="Campo obrigatório"
+                            placeholder="Comprimento"
+                            v-model="form.length"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Altura</p>
+                        <vs-input
+                            v-if="money_active"
+                            :danger="form.height_validation"
+                            danger-text="Campo obrigatório"
+                            placeholder="Altura"
+                            v-model="form.height"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <hr class="divisor" />
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <div class="form_item">
+                        <p class="text-label">Vídeo</p>
+                        <vs-input
+                            :danger="form.video_validation"
+                            danger-text="Campo obrigatório"
+                            placeholder="Vídeo"
+                            v-model="form.video"
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <hr class="divisor" />
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <div class="editor">
+                        <p class="text-label">Descrição</p>
+                        <vue-editor v-model="form.description"></vue-editor>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <div class="editor mt-3">
+                        <p class="text-label">Ficha técnica</p>
+                        <vue-editor v-model="form.datasheet"></vue-editor>
+                    </div>
+                </vs-col>
+                
+            </template>
+
+            <template v-if="image">
+                <h3>Imagens</h3>
+                <div class="centerx">
+                    <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
+                </div>
+            </template>
+            
+            <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image">Adicionar imagens</vs-button>
+                <vs-button type="relief" class="mt-3" @click="finish" v-if="image">Finalizar</vs-button>
+            </vs-col>
             
 
-        </form>
+        </vs-row>
+
     </div>
 </template>
 
@@ -93,30 +179,68 @@
 import {VMoney} from 'v-money'
 import { UploadMedia, UpdateMedia } from 'vue-media-upload';
 import { UilTimes } from '@iconscout/vue-unicons'
+import { VueEditor } from "vue2-editor";
 
 export default {
     name: "Record",
     components:{
-        UploadMedia, UpdateMedia, UilTimes
+        UploadMedia, UpdateMedia, UilTimes, VueEditor
     },
     data(){
         return{
             edit: false,
             money_active: false,
             image: false,
+            
             categories: [],
+            status:[
+                {
+                    id: 1,
+                    name: 'Ativo'
+                },
+                {
+                    id: 0,
+                    name: 'Inativo'
+                },
+            ],
             form:{
                 id: null,
+
                 name: null,
-                status: 2,
+                name_validation: false,
+
+                status: 1,
+
                 category_id: null,
                 category_validation: false,
+
                 price: "",
-                name_validation: false,
                 price_validation: false,
+
                 description: null,
+                description_validation: false,
+
+                datasheet: null,
+                datasheet_validation: false,
+
+                width: null,
+                width_validation: false,
+
+                weight: null,
+                weight_validation: false,
+
+                length: null,
+                length_validation: false,
+
+                height: null,
+                height_validation: false,
+
+                video: null,
+                video_validation: false,
+                
                 images: []
             },
+
             optionsStatus:[
                 {
                     text:'Ativo',
@@ -139,11 +263,11 @@ export default {
     methods:{
 
         successUpload(){
-            // this.$vs.notify({color:'success',title:'Upload Success',text:'Lorem ipsum dolor sit amet, consectetur'})
+            this.$vs.notify({color:'success',title:'Upload Success',text:'Lorem ipsum dolor sit amet, consectetur'})
         },
 
         deleteImg(id){
-            axios.post('http://bermar.pgv/api/delete-image-product/'+id).then((item)=>{
+            axios.post('/api/delete-image-product/'+id).then((item)=>{
                 this.form.images = this.$c(this.form.images).filter((item)=>{
                     return id !== item.id
                 })
@@ -151,7 +275,7 @@ export default {
         },
 
         finish(){
-            axios.put('http://bermar.pgv/api/products/'+this.form.id, {status: 1}).then((item)=>{
+            axios.put('/api/product/'+this.form.id, {status: 1}).then((item)=>{
                 this.$vs.notify({
                     color:'success',
                     title:'Produto cadastrado!',
@@ -163,44 +287,84 @@ export default {
 
         validate(){
 
-            let validate = true
-
-            if (!this.form.name){
-                validate = false
-                this.form.name_validation = !this.form.name
-            }else{
-                this.form.name_validation = false
-            }
-
-            if (this.form.price == '0,00'){
-                validate = false
-                this.form.price_validation = true
-            }else{
-                this.form.price_validation = false
-            }
-
-            if (!this.form.category_id){
-                validate = false
-                this.form.category_validation = true
-            }else{
-                this.form.category_validation = false
-            }
-
-            return validate;
-
-        },
-        deleteImage(image){
-            axios.post('http://bermar.pgv/api/delete-image-product', {image: image.name, product: this.form.id}).then((item)=>{
-            })
-        },
-        record(){
             this.form.price = this.form.price.replace(".", "")
             this.form.price = parseFloat(this.form.price.toString().replace(",", "."))
 
+            this.form.width = this.form.width.replace(".", "")
+            this.form.width = parseFloat(this.form.width.toString().replace(",", "."))
+
+            this.form.weight = this.form.weight.replace(".", "")
+            this.form.weight = parseFloat(this.form.weight.toString().replace(",", "."))
+
+            this.form.length = this.form.length.replace(".", "")
+            this.form.length = parseFloat(this.form.length.toString().replace(",", "."))
+
+            this.form.height = this.form.height.replace(".", "")
+            this.form.height = parseFloat(this.form.height.toString().replace(",", "."))
+
+            let i = true
+
+            this.form.name_validation = !this.form.name ? true : false
+            if(!this.form.name)                
+                i = false
+
+            this.form.price_validation = !this.form.price ? true : false
+            if(!this.form.price)                
+                i = false
+
+            this.form.width_validation = !this.form.width ? true : false
+            if(!this.form.width)                
+                i = false
+
+            this.form.weight_validation = !this.form.weight ? true : false
+            if(!this.form.weight)                
+                i = false
+
+            this.form.length_validation = !this.form.length ? true : false
+            if(!this.form.length)                
+                i = false
+
+            this.form.height_validation = !this.form.height ? true : false
+            if(!this.form.height)                
+                i = false
+
+            this.form.category_validation = !this.form.category_id ? true : false
+            if(!this.form.category_id)                
+                i = false
+
+            this.form.width_validation = !this.form.width ? true : false
+            if(!this.form.width)                
+                i = false
+            
+            this.form.weight_validation = !this.form.weight ? true : false
+            if(!this.form.weight)                
+                i = false
+
+            this.form.length_validation = !this.form.length ? true : false
+            if(!this.form.length)                
+                i = false
+
+            this.form.height_validation = !this.form.height ? true : false
+            if(!this.form.height)                
+                i = false
+
+            this.form.video_validation = !this.form.video ? true : false
+            if(!this.form.video)                
+                i = false
+
+            return i
+        },
+
+        deleteImage(image){
+            axios.post('/api/delete-image-product', {image: image.name, product: this.form.id}).then((item)=>{})
+        },
+
+        recordProduct(){
+            
             if (this.validate()){
 
                 if (this.edit){
-                    axios.put('http://bermar.pgv/api/products/'+this.form.id, this.form).then((item)=>{
+                    axios.put('/api/product/'+this.form.id, this.form).then((item)=>{
                         this.$vs.notify({
                             color:'success',
                             title:'Produto atualizado!',
@@ -209,7 +373,7 @@ export default {
                         this.$router.push({ name: 'products' })
                     })
                 }else{
-                    axios.post('http://bermar.pgv/api/products', this.form).then((item)=>{
+                    axios.post('/api/product', this.form).then((item)=>{
                         this.form = item.data
                         this.image = true
                     })
@@ -218,21 +382,29 @@ export default {
         },
 
         getProduct(){
-            axios.get('http://bermar.pgv/api/products/'+this.$route.params.id).then((data)=>{
+            axios.get('/api/product/'+this.$route.params.id).then((data)=>{
 
                 this.form.name = data.data.name
-                this.form.description = data.data.description
-                this.form.price = data.data.price
-                this.form.id = data.data.id
+
                 this.form.status = data.data.status
-                this.form.images = data.data.image 
                 this.form.category_id = data.data.category_id
+                this.form.price = data.data.price
+                this.form.description = data.data.description
+                this.form.datasheet = data.data.datasheet
+                this.form.width = data.data.width
+                this.form.weight = data.data.weight
+                this.form.length = data.data.length
+                this.form.height = data.data.height
+                this.form.video = data.data.video
+                this.form.images = data.data.images
+
                 this.money_active = true
+
             })
         },
 
         getCategories(){
-            axios.get('http://bermar.pgv/api/category').then((resp)=>{
+            axios.get('/api/category').then((resp)=>{
                 this.categories = resp.data
             })
         }
@@ -251,6 +423,15 @@ export default {
 </script>
 
 <style scoped>
+
+    .editor{
+        width: 95%;
+    }
+    .divisor{
+        height: 1px;
+        background: black;
+        width: 94%;
+    }
     .images{
         width: 100%;
         float: left;

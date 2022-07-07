@@ -206,7 +206,7 @@ export default {
   },
   methods: {
     updateProduct(){
-      axios.put('http://bermar.pgv/api/enterprise-products/'+this.product_selected.id, {product_id: this.product_selected.id, status: this.product_selected.status}).then((item)=>{
+      axios.put('/api/enterprise-products/'+this.product_selected.id, {product_id: this.product_selected.id, status: this.product_selected.status}).then((item)=>{
         this.$vs.notify({
           color:'success',
           title:'Produto atualizado!',
@@ -217,7 +217,7 @@ export default {
     },
     addProduct(id, stock){
       if (stock) {
-        axios.post("http://bermar.pgv/api/enterprise-products", {product_id: id, stock: stock}).then((data) => {
+        axios.post("/api/enterprise-products", {product_id: id, stock: stock}).then((data) => {
           this.products_bermar = this.$c(this.products_bermar).map((item)=>{
             if (item.id == id) {
               item.stock = null
@@ -233,13 +233,13 @@ export default {
       }
     },
     getProducts() {
-      axios.get("http://bermar.pgv/api/enterprise-products").then((data) => {
+      axios.get("/api/enterprise-products").then((data) => {
           this.products = data.data
       });
     },
 
     getProductsBermar() {
-      axios.get("http://bermar.pgv/api/products-bermar").then((data) => {
+      axios.get("/api/products-bermar").then((data) => {
 
           if (this.$user.enterprise.enterprise_type_id == 1) {
             this.products = this.$c(data.data).map((data)=>{
@@ -289,7 +289,7 @@ export default {
     acceptAlert() {
       axios
         .delete(
-          "http://bermar.pgv/api/products/" + this.delete_product.items[0].id
+          "/api/products/" + this.delete_product.items[0].id
         )
         .then((data) => {
           this.products = this.$c(this.products).filter((item) => {
