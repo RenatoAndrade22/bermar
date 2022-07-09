@@ -23,12 +23,11 @@
                     <div class="row">
                         
                         @foreach ($products as $product)
-
                             <div class="col-lg-3 shop-info-grid text-center mt-4">
                                 <div class="product-shoe-info shoe">
                                     <div class="men-thumb-item">
                                         <a href="{{ url('produto/'.$product['slug']) }}">
-                                            <img src="{{ asset('uploads/'.$product['productImages'][0]['name']) }}" class="img-fluid" alt="">
+                                            <img src="{{ asset('products-images/'.$product['productImages'][0]['name']) }}" class="img-fluid" alt="">
                                         </a>
                                     </div>
                                     <div class="item-info-product">

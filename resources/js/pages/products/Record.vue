@@ -164,8 +164,29 @@
                 </div>
             </template>
             
+            <template v-if="edit">
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
+                    <hr class="divisor" />
+                </vs-col>
+                <h4>Imagens</h4>
+
+                <vs-row vs-w="12" style="width: 100% !important; display: block;">
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="3" v-for="(img, i) in form.images" :key="i">
+                        <div class="single_image">
+                            <span @click="deleteImageById(img.id)">X</span>
+                            <img :src="'http://bermar.test/products-images/'+img.name" alt="">
+                        </div>
+                    </vs-col>
+                </vs-row>
+
+                <div class="centerx">
+                    <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
+                </div>
+            </template>
+            
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image">Adicionar imagens</vs-button>
+                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image && !edit">Adicionar imagens</vs-button>
+                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="edit">Atualizar</vs-button>
                 <vs-button type="relief" class="mt-3" @click="finish" v-if="image">Finalizar</vs-button>
             </vs-col>
             
@@ -359,6 +380,14 @@ export default {
             axios.post('/api/delete-image-product', {image: image.name, product: this.form.id}).then((item)=>{})
         },
 
+        deleteImageById(id){
+            axios.delete('/api/product-image/'+id).then((item)=>{
+                this.form.images = this.$c(this.form.images).filter((item) => {
+                    return item.id != id
+                })
+            })
+        },
+
         recordProduct(){
             
             if (this.validate()){
@@ -384,6 +413,7 @@ export default {
         getProduct(){
             axios.get('/api/product/'+this.$route.params.id).then((data)=>{
 
+                this.form.id = data.data.id
                 this.form.name = data.data.name
 
                 this.form.status = data.data.status
@@ -396,9 +426,11 @@ export default {
                 this.form.length = data.data.length
                 this.form.height = data.data.height
                 this.form.video = data.data.video
-                this.form.images = data.data.images
+                this.form.images = data.data.product_images
 
                 this.money_active = true
+
+                console.log('this.form', this.form)
 
             })
         },
@@ -423,7 +455,32 @@ export default {
 </script>
 
 <style scoped>
+    .centerx{
+        width: 100%;
+        float: left;
+    }
+    .single_image{
+        position: relative;
+        padding: 2px;
+        width: 100%;
+    }
+    .single_image img{
+        width: 100%;
+    }
+    .single_image span{
+        position: absolute;
+        right: 0;
+        background: #ffffff;
+        font-size: 12px;
+        padding: 5px 7px;
+        color: red;
+        cursor: pointer;
+    }
 
+    .single_image span:hover{
+        background: red;
+        color: #ffffff;
+    }
     .editor{
         width: 95%;
     }

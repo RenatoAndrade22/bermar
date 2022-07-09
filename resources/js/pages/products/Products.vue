@@ -29,7 +29,6 @@
         <vs-th> Nome </vs-th>
         <vs-th> Preço </vs-th>
         <vs-th> Status </vs-th>
-        <vs-th> Estoque </vs-th>
         <vs-th> Ações </vs-th>
       </template>
 
@@ -58,10 +57,6 @@
               type="flat"
               >Inativo</vs-button
             >
-          </vs-td>
-
-          <vs-td :data="data[indextr].stock">
-            {{ data[indextr].stock }}
           </vs-td>
 
           <vs-td :data="data[indextr].id" style="width: 195px">
@@ -321,10 +316,9 @@ export default {
         products = this.$c(products).filter((product) => {
           return product.name.toLowerCase().search(this.search) >= 0;
         });
-        products = products.items;
       }
 
-      return products;
+      return products.items;
     },
   },
 };

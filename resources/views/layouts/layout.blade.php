@@ -39,6 +39,17 @@
 </head>
 
 <body>
+    @if(!Request::is('/'))
+        <style>
+            @media (max-width: 1366px){
+                .main-sec {
+                    min-height: 13em;
+                    position: relative;
+                }
+            }
+        </style>
+    @endif
+    
     <div class="social-ficons">
         <ul>
             <li><a href="https://pt-br.facebook.com/BM.BERMAR/"><span class="fa fa-facebook"></span> Facebook</a></li>

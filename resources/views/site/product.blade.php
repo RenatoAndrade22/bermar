@@ -1,37 +1,57 @@
 @extends('layouts.layout')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('site/slide-product/style.css') }}">
 
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script  src="{{ asset('site/slide-product/script.js') }}"></script>
+  
+  
     <!--/banner-bottom -->
     <section class="banner-bottom py-5">
-        <div class="container py-md-5">
+        <div class="container">
             <!-- product right -->
             <div class="left-ads-display wthree">
                 <div class="row">
                     <div class="desc1-left col-md-6">
-                        <img src="images/BM-115-CINZA.jpg" class="img-fluid" alt="">
-                
+                        <div class="wrapper">
+                            <div class="container">
+                              <div class="row">
+                                <div class="col-md-12 product">
+                                  <div class="row">
+                                    <div class="col-md-7">
+                                      <div class="product-image">
+                          <!--               <img class="img-fluid" src="https://images-na.ssl-images-amazon.com/images/I/61sYyfNwPSL._SL1024_.jpg" alt="" /> -->
+                                        <div class="image"></div>
+                                      </div>
+                                      <div class="row product-thumbnails">
+                                        <img src="https://images-na.ssl-images-amazon.com/images/I/61sYyfNwPSL._SL1024_.jpg" alt="" class="img-thumbnail col-md-3" />
+                                         <img src="https://cdn.macrumors.com/article-new/2013/09/27inchimacdisplay.jpg" alt="" class="img-thumbnail col-md-3" />
+                                         <img src="https://cdn2.macworld.co.uk/cmsdata/reviews/3415611/iMacs_back_to_back_thumb800.jpg" alt="" class="img-thumbnail col-md-3" />
+                                         <img src="https://images-na.ssl-images-amazon.com/images/I/81mEFbytAML._SL1500_.jpg" alt="" class="img-thumbnail col-md-3" />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                     </div>
                     <div class="desc1-right col-md-6 pl-lg-3">
                         <h2>{{ $product['name'] }}</h2>
-                        <h3>{{ $product['description'] }}</h3>
+                        {!! nl2br($product['description'])!!}
                         <!-- <p><a href="220v.html"><span class="fa fa-bolt" aria-hidden="true"></span> TENSÃO 220 V</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="220v.html"><span class="fa fa-cogs" aria-hidden="true"></span> 1/2 HP 760 w</a></p> -->
                         <br>
 
                         <h5>R$ {{ $product['price'] }} <span></span> <a href="#"></a></h5>
                         <div class="available mt-3">
-                            <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
-                               
-                                <button class="btn submit">COMPRAR</button>&nbsp;&nbsp;<button class="btn submit">LOJA FÍSICA</button>
-
-                            </form>
-                            <span><a href="#">Adicionar a Lista de Dejesos</a></span>
-                            <p>Com um motor de 1/2 Hp 760w com 60Hz tem um consumo de 0,76 kw/h. Sendo alimentado na voltagem: 127 / 220 V Monofásico com chave seletora possui capacidade de produção de até 400 kg/h.<br>
-                            </p><br><br>
                             <p>Informe o CEP para calcular o frete:</p>
                             <div class="content-input-field">
                                 <input name="text1" id="text1" type="email" value="" placeholder="CEP" required="">
                             </div>
+                            <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
+                                <button class="btn submit">Calcular Frete</button>&nbsp;&nbsp;<button class="btn submit">Comprar</button>
+                            </form>
                         </div>
                         <div class="share-desc mt-5">
                             <div class="share text-left">
@@ -60,39 +80,10 @@
                 <div class="container py-md-5">
                     <!-- product right -->
                     <div class="left-ads-display wthree">
-                        <iframe width="1120" height="630" src="https://www.youtube.com/embed/JKOCZlCfiuk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe width="1120" height="630" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         <div class="row">
                             <div class="desc1-left col-md-6">
-                                <br>
-                                <p>
-                                <h4>Característifcas Técnicas:</h4>
-                                - motor de 1/2 HP 760 w - 60 Hz *consumo: 0,76 kw/h
-                                <br>
-                                - voltagem: 127/220V * monofásico
-                                <br>
-                                - com chave seletora
-                                <br>
-                                - com dispositivos de segurança Nr12
-                                <br>
-                                - estrutura totalmente em aço inox
-                                <br>
-                                - engrenagens em carter de óleo 
-                                <br>
-                                <h5>Dimensões da Máquina:</h5>
-                                - comprimento: 480mm * largura: 230mm
-                                <br>
-                                - altura: 500mm * peso líq: 25,5 Kg
-                                <br> 
-                                <h5>Dimensões da embalgem:</h5>
-                                - profundidade: 600mm * altura: 420mm
-                                <br>
-                                - largura: 340mm * peso bruto: 31 Kg
-                                <br> 
-                                - cubagem: 0,07 m3 
-                                <br>
-                                <h5>Utilidade:</h5>
-                                - amaciar carnes                                    
-                            </p>
+                                {!! nl2br($product['description']) !!}
                             </div>
                             <div class="desc1-right col-md-6 pl-lg-3">
                                 

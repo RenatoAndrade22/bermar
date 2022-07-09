@@ -9,6 +9,7 @@ use \App\Http\Controllers\API\ResellerController;
 use \App\Http\Controllers\API\EnterpriseController;
 use \App\Http\Controllers\API\AddressController;
 use \App\Http\Controllers\API\UserController;
+use \App\Http\Controllers\API\ProductImageController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,8 +33,8 @@ Route::resources([
     'resellers' => ResellerController::class,
 ]);
 
-Route::post('/upload/{id}', [\App\Http\Controllers\API\ProductImageController::class, 'store']);
-Route::post('/delete-image-product/{id?}', [\App\Http\Controllers\API\ProductImageController::class, 'delete']);
+Route::post('/upload/{id}', [ProductImageController::class, 'store']);
+Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
 
@@ -60,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'enterprise' => EnterpriseController::class,
         'address' => AddressController::class,
         'user' => UserController::class,
+        'product-image' => ProductImageController::class,
     ]);
 });
 

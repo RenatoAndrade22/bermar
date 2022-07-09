@@ -34,7 +34,7 @@ export default {
     },
     methods:{
         logout(){
-            axios.post('http://bermar.pgv/api/logout').then((item)=>{
+            axios.post('/api/logout').then((item)=>{
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
                 this.$user.name = null

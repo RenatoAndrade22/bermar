@@ -434,7 +434,7 @@ export default {
         },
 
         acceptAlert(){
-            axios.delete('http://bermar.pgv/api/providers/'+this.delete_providers.items[0].id).then((data)=>{
+            axios.delete('/api/providers/'+this.delete_providers.items[0].id).then((data)=>{
                 this.providers = this.$c(this.providers).filter((item)=>{
                     return item.id !== this.delete_providers.items[0].id
                 })

@@ -30,7 +30,7 @@ class ProductImageController extends Controller
         return $product;
     }
 
-    public function delete(Request $request, $id = null){
+    public function destroy(Request $request, $id = null){
 
       if($id){
         $image = ProductImage::query()->where('id', $id)->delete();
@@ -38,12 +38,14 @@ class ProductImageController extends Controller
         $image_name = $request->get('image');
         $product_id = $request->get('product');
   
-        $images = ProductImage::query()
+        $image = ProductImage::query()
                     ->where('product_id', $product_id)
                     ->where('name', 'like', '%_&&_'.$image_name.'%')
                     ->first()
                     ->delete();
       }
+
+      return $image;
 
     }
 }

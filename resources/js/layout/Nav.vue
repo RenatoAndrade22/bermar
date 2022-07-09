@@ -19,7 +19,7 @@
                 <UilCube size="20px" class="icon_route" />
                 Categorias
             </router-link>
-            <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 2">
+            <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 1">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilTagAlt size="20px" class="icon_route" />
                 Minhas Vendas
@@ -33,7 +33,7 @@
 
             <router-link to="/painel/usuarios" v-if="$user.enterprise.enterprise_type_id == 1">
                 <UilAngleRight size="12px" class="icon_angle" />
-                <UilShop size="20px" class="icon_route" />
+                <UilUsersAlt size="20px" class="icon_route" />
                 Usuários
             </router-link>
 
@@ -53,13 +53,13 @@
     </div>
 </template>
 
-<script>
+<script> 
 
 import { UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag } from '@iconscout/vue-unicons'
 
 export default {
     name: "Nav",
-    components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag },
+    components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag  },
     return:{
         data(){
             user: null

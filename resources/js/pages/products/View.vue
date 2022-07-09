@@ -30,7 +30,7 @@ export default {
             this.$router.push({ name: 'products' })
         },
         getProduct(){
-            axios.get('http://bermar.pgv/api/products/'+this.$route.params.id).then((data)=>{
+            axios.get('/api/products/'+this.$route.params.id).then((data)=>{
                 this.product = data.data
             })
         },

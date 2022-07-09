@@ -40,9 +40,17 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $video = $request->get('video');
+
+        if(strpos($video,"watch?v=")){
+            $video = explode("watch?v=",$video);
+            $video = 'https://www.youtube.com/embed/'.$video[1];
+        }
+
         $product = new Product();
         $product->fill($request->all());
         $product->slug = $this->sanitizeString($request->get('name'));
+        $product->video = $video;
         $product->saveOrFail();
         return $product;
     }
@@ -78,11 +86,19 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $video = $request->get('video');
+
+        if(strpos($video,"watch?v=")){
+            $video = explode("watch?v=",$video);
+            $video = 'https://www.youtube.com/embed/'.$video[1];
+        }
+
         $product = Product::find($id);
         $product->fill($request->all());
         if($request->get('name')){
             $product->slug = $this->sanitizeString($request->get('name'));
         }
+        $product->video = $video;
         $product->saveOrFail();
         return $product;
     }
