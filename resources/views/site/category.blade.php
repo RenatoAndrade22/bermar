@@ -13,9 +13,9 @@
                     <br>
                     <h3>Categorias</h3>
                     <br>
-                    <div style="text-align:left">
+                    <div class='menu'>
                         @foreach ($categories as $category)
-                            <a href="{{ url('categoria/'.$category['slug']) }}"><h6>{{ $category['name'] }}</h6></a>
+                            <a href="{{ url('categoria/'.$category['slug']) }}"><p>{{ $category['name'] }}</p></a>
                         @endforeach
                     </div>             
                 </div>

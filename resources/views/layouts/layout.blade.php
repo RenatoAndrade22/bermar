@@ -67,7 +67,7 @@
                 <!-- nav -->
                 <div class="top-w3pvt d-flex">
                     <div id="logo">
-                        <a href="index.html"><img src="{{ asset('site/images/logo.png') }}" alt="Bermar" width="173" heigth="81">
+                        <a href="{{ asset('/') }}"><img src="{{ asset('site/images/logo.png') }}" alt="Bermar" width="173" heigth="81">
                     </div>
 
                     <div class="forms ml-auto">
@@ -262,6 +262,11 @@
     <!-- //copyright -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+
+    <script src='https://s3-us-west-2.amazonaws.com/s.cdpn.io/3/jquery.inputmask.bundle.js'></script>
+    <script>
+        $("#cep").inputmask({"mask": "99999-999"});
+    </script>
 
     <script src="{{ asset('site/script.js') }}" defer></script> 
     <script src="{{ asset('site/js/banner.js') }}" defer></script> 

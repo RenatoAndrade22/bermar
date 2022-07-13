@@ -26,7 +26,9 @@ class ProductSiteController extends Controller
 
         $product = Product::query()->where('slug', $slug)->first();
 
-        return view('site.product', ['product' => $product, 'categories' => $categories->index()]);
+        $products_related = Product::query()->where('category_id', $product->category_id)->get();
+
+        return view('site.product', ['product' => $product, 'categories' => $categories->index(), 'products_related' => $products_related ]);
 
     }
 }

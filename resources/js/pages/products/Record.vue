@@ -296,7 +296,7 @@ export default {
         },
 
         finish(){
-            axios.put('/api/product/'+this.form.id, {status: 1}).then((item)=>{
+            axios.put('/api/product/'+this.form.id, {status: 1, video: this.form.video}).then((item)=>{
                 this.$vs.notify({
                     color:'success',
                     title:'Produto cadastrado!',
