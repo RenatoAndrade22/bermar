@@ -13,21 +13,21 @@
             <vs-tabs :color="colorx" alignment="fixed">
 
                 <vs-tab @click="colorx = 'success'" label="Em Processo">
-                    <div class="card_warranty">
+                    <div class="card_warranty" v-for="(w, i) in warranties" v-if="w.status == 1">
                         <vs-row>
                             <vs-col vs-w="6">
-                                <p><b>Status:</b> Aguardando resposta</p>
-                                <p><b>N° do pedido:</b> 528</p>
-                                <p><b>Produto:</b> Aqui é o nome do produto.</p>
-                                <p><b>Vendedor:</b> Nome da empresa vendedora</p>
-                                <p><b>Data da solicitação:</b> 15/03/2022</p>
+                                <p><b>Status:</b> {{ w.status }}</p>
+                                <p><b>N° do pedido:</b> {{ w.sale_order_id }}</p>
+                                <p><b>Produto:</b> {{ w.sale_order.sale_order_items[0].product.name }}</p>
+                                <p><b>Vendedor:</b> {{ w.sale_order.enterprise.name }}</p>
+                                <p><b>Data da solicitação:</b> {{ formatDate(w.sale_order.created_at) }}</p>
                             </vs-col>
                             <vs-col vs-w="6" vs-type="flex" vs-justify="center" vs-align="center">
                                 <vs-button type="relief" size="small" @click="$router.push({ name: 'warranty_chat' })">Mensagens</vs-button>
                             </vs-col>
                         </vs-row>
-                        
                     </div>
+                    
                 </vs-tab>
 
                 <vs-tab @click="colorx = 'danger'" label="Concluídos">
@@ -48,12 +48,23 @@ export default {
     data(){
         return{
             colorx:'success',
+            warranties: []
         }
     },
     methods:{
+        getWarranties(){
+            axios.get('/api/warranty').then((data)=>{
+                this.warranties = data.data
+            })
+        },
+        formatDate(date){
+            let day = new Date(date)
+            return day.toLocaleDateString("pt-BR")
+        }
     },
     created() {
-    }
+        this.getWarranties()
+    },
 }
 </script>
 

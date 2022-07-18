@@ -119,7 +119,7 @@ export default {
                 },
 
                 {
-                    path:'/painel/garantia/produto',
+                    path:'/painel/garantia/:id',
                     name: 'warranty_chat',
                     component: Chat
                 },                

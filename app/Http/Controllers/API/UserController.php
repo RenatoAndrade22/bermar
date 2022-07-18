@@ -21,7 +21,6 @@ class UserController extends Controller
         $user->fill($request->all());
         $user->password = Hash::make($request->password);
         $user->saveOrFail();
-
         return $user;
     }
 

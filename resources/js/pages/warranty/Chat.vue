@@ -79,6 +79,9 @@ export default {
         }
     },
     methods:{
+        getMessages(){
+            this.$route.params.id
+        }
     },
     created() {
     }

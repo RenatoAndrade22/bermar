@@ -10,6 +10,8 @@ use \App\Http\Controllers\API\EnterpriseController;
 use \App\Http\Controllers\API\AddressController;
 use \App\Http\Controllers\API\UserController;
 use \App\Http\Controllers\API\ProductImageController;
+use \App\Http\Controllers\API\SaleOrderController;
+use \App\Http\Controllers\API\WarrantyController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -62,8 +64,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'address' => AddressController::class,
         'user' => UserController::class,
         'product-image' => ProductImageController::class,
+        'warranty' => WarrantyController::class,
     ]);
 });
+
+// SITE
+Route::resources([
+    'sale' => SaleOrderController::class,
+]);
 
 // DELIVERY
 Route::get('get-city/{zipcode}', [\App\Http\Controllers\API\DeliveryController::class, 'getCity']);
