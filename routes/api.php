@@ -12,6 +12,10 @@ use \App\Http\Controllers\API\UserController;
 use \App\Http\Controllers\API\ProductImageController;
 use \App\Http\Controllers\API\SaleOrderController;
 use \App\Http\Controllers\API\WarrantyController;
+use \App\Http\Controllers\API\ChatController;
+use \App\Http\Controllers\API\ChatMessageController;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -65,6 +69,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'user' => UserController::class,
         'product-image' => ProductImageController::class,
         'warranty' => WarrantyController::class,
+        'chat' => ChatController::class,
+        'chat-message' => ChatMessageController::class,
     ]);
 });
 

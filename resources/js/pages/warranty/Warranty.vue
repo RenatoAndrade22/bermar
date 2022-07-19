@@ -20,10 +20,11 @@
                                 <p><b>N° do pedido:</b> {{ w.sale_order_id }}</p>
                                 <p><b>Produto:</b> {{ w.sale_order.sale_order_items[0].product.name }}</p>
                                 <p><b>Vendedor:</b> {{ w.sale_order.enterprise.name }}</p>
+                                <p><b>Comprador:</b> {{ w.sale_order.user.name }}</p>
                                 <p><b>Data da solicitação:</b> {{ formatDate(w.sale_order.created_at) }}</p>
                             </vs-col>
                             <vs-col vs-w="6" vs-type="flex" vs-justify="center" vs-align="center">
-                                <vs-button type="relief" size="small" @click="$router.push({ name: 'warranty_chat' })">Mensagens</vs-button>
+                                <vs-button type="relief" size="small" @click="$router.push({ name: 'warranty_chat', params: { id: w.id } })">Mensagens</vs-button>
                             </vs-col>
                         </vs-row>
                     </div>

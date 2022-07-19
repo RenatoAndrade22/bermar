@@ -13,7 +13,21 @@ class Chat extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('chat', function (Blueprint $table) {
+            $table->id();
+            $table->integer('status');
+
+            $table->unsignedBigInteger('warranty_id');
+            $table->foreign('warranty_id')->references('id')->on('warranties');
+
+            $table->unsignedBigInteger('enterprise_id');
+            $table->foreign('enterprise_id')->references('id')->on('enterprises');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+
+            $table->timestamps();
+        });
     }
 
     /**

@@ -43,7 +43,7 @@
                 Minhas compras
             </router-link>
 
-            <router-link to="/painel/garantias" v-if="$user.enterprise.enterprise_type_id == 1 || $user.enterprise.enterprise_type_id == 2">
+            <router-link to="/painel/garantias">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Pedidos de garantia

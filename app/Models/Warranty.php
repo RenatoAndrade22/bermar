@@ -9,9 +9,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Warranty extends Model
 {
     use HasFactory;
+
+    protected $with = [
+        'saleOrder'
+    ];
     
     public function saleOrder(): BelongsTo
     {
         return $this->belongsTo(saleOrder::class);
     }
+    
 }
