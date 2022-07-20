@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Auth;
+use App\Events\PusherEvent;
 
 class ChatMessageController extends Controller
 {
@@ -17,6 +18,8 @@ class ChatMessageController extends Controller
         $chatMessage->user_id = Auth::user()->id;
         $chatMessage->saveOrFail();
         
+        event(new PusherEvent($chatMessage));
+
         return $chatMessage;
     }
 }

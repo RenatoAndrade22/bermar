@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.4",
         "mikehaertl/php-pdftk": "^0.11.0",
+        "pusher/pusher-php-server": "^7.0",
         "smalot/pdfparser": "^2.0"
     },
     "require-dev": {

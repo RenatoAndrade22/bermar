@@ -72,6 +72,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'chat' => ChatController::class,
         'chat-message' => ChatMessageController::class,
     ]);
+
+    Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
+
 });
 
 // SITE

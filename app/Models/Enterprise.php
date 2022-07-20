@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Enterprise extends Model
 {
@@ -13,7 +14,8 @@ class Enterprise extends Model
     protected $table = 'enterprises';
 
     protected $with = [
-        'address'
+        'address',
+        'enterpriseType'
     ];
 
     protected $fillable = [
@@ -28,6 +30,11 @@ class Enterprise extends Model
     public function address(): HasOne
     {
         return $this->hasOne(address::class);
+    }
+
+    public function enterpriseType(): BelongsTo
+    {
+        return $this->belongsTo(EnterpriseType::class);
     }
 
 }

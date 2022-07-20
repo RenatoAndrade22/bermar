@@ -29,6 +29,7 @@
         "chart.js": "^2.7.1",
         "collect.js": "^4.31.3",
         "material-icons": "^1.10.8",
+        "pusher-js": "^7.2.0",
         "v-money": "^0.8.1",
         "vue-chartjs": "^3.4.0",
         "vue-js-modal": "^2.0.1",

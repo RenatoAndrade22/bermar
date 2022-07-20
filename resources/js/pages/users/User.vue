@@ -393,7 +393,7 @@ export default {
         },
 
         getCompanies(){
-            axios.get('/api/user').then((data)=>{
+            axios.get('/api/enterprise').then((data)=>{
                 this.companies = data.data
             })
         },

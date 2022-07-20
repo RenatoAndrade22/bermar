@@ -27,4 +27,8 @@ class EnterpriseController extends Controller
         $enterprise->saveOrFail();
         return $enterprise;
     }
+
+    public function enterpriseAssistance(){
+        return Enterprise::query()->where('enterprise_type_id', 4)->get();
+    }
 }
