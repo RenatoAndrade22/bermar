@@ -14,7 +14,8 @@ use \App\Http\Controllers\API\SaleOrderController;
 use \App\Http\Controllers\API\WarrantyController;
 use \App\Http\Controllers\API\ChatController;
 use \App\Http\Controllers\API\ChatMessageController;
-
+use \App\Http\Controllers\API\WarrantyProductController;
+use \App\Http\Controllers\API\BudgetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,9 +72,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'warranty' => WarrantyController::class,
         'chat' => ChatController::class,
         'chat-message' => ChatMessageController::class,
+        'warranty-product' => WarrantyProductController::class,
+        'budget' => BudgetController::class,
     ]);
-
+    
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
+    Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
 
 });
 

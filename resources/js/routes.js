@@ -25,6 +25,7 @@ import Categories from './pages/category/Categories'
 
 import User from "./pages/users/User";
 
+import WarrantyProduct from "./pages/warranty-products/WarrantyProduct"
 
 export default {
     mode: 'history',
@@ -117,12 +118,16 @@ export default {
                     name: 'warranty',
                     component: Warranty
                 },
-
                 {
                     path:'/painel/garantia/:id',
                     name: 'warranty_chat',
                     component: Chat
-                },                
+                },     
+                {
+                    path:'/painel/produtos/garantias',
+                    name: 'Warranty_product',
+                    component: WarrantyProduct
+                },           
                 {
                     path:'/dashboard',
                     component: Dashboard,

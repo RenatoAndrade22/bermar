@@ -15,7 +15,7 @@ class ChatMessages extends Migration
     {
         Schema::create('chat_messages', function (Blueprint $table) {
             $table->id();
-            $table->text('message');
+            $table->text('message')->nullable()->default(null);
             $table->string('file')->nullable()->default(null);
             $table->unsignedBigInteger('chat_id');
             $table->foreign('chat_id')->references('id')->on('chat');
