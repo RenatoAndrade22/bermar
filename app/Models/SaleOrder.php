@@ -20,7 +20,8 @@ class SaleOrder extends Model
     protected $with = [
         'user',
         'enterprise',
-        'saleOrderItems'
+        'saleOrderItems',
+        'invoices'
     ];
 
     public function user(): BelongsTo
@@ -33,10 +34,14 @@ class SaleOrder extends Model
         return $this->belongsTo(User::class);
     }
 
-
     public function saleOrderItems(): HasMany
     {
         return $this->hasMany(saleOrderItems::class);
+    }
+
+    public function invoices(): hasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
 }

@@ -48,12 +48,12 @@
                 <UilShoppingBag size="20px" class="icon_route" />
                 Pedidos de garantia
             </router-link>
-            
+
         </div>
     </div>
 </template>
 
-<script> 
+<script>
 
 import { UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag } from '@iconscout/vue-unicons'
 
