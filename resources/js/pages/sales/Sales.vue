@@ -34,7 +34,7 @@
                     <UilTimes size="19px" color="#666" />
                 </span>
             </vs-col>
-            
+
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="3">
                 <vs-select
                     class=""
@@ -60,12 +60,12 @@
                     <UilTimes size="19px" color="#666" />
                 </span>
             </vs-col>
-            
+
         </vs-row>
 
-        <vs-table 
-            stripe 
-            :data="list_products" 
+        <vs-table
+            stripe
+            :data="list_products"
             class="header mt-5"
             v-model="order_selected"
             @selected="handleSelected"
@@ -101,12 +101,12 @@
                         {{data[indextr].id}}
                     </vs-td>
 
-                    <vs-td :data="data[indextr].value">
-                        {{data[indextr].value}}
+                    <vs-td :data="data[indextr].sale_order_items[0].price">
+                        {{formatCurrency(data[indextr].sale_order_items[0].price * data[indextr].sale_order_items[0].quantity)}}
                     </vs-td>
 
-                    <vs-td :data="data[indextr].buyer">
-                        {{data[indextr].buyer}}
+                    <vs-td :data="data[indextr].user.name">
+                        {{data[indextr].user.name}}
                     </vs-td>
 
                     <vs-td :data="data[indextr].status_sale">
@@ -121,16 +121,18 @@
                         {{ getText(data[indextr].status_delivery, status_delivery) }}
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoice">
-                        <div v-if="data[indextr].invoice == ''">
+                    <vs-td :data="data[indextr].invoices">
+                        <div v-if="data[indextr].invoices.length === 0">
                             <div @click="[upload_file = true, sale_order_id = data[indextr].id]">
                                 <UilCloudUpload size="19px" color="#e85d04" />
                                 <span>Enviar</span>
                             </div>
                         </div>
-                        <div v-if="data[indextr].invoice != ''">
-                            <UilCloudDownload size="19px" color="#76c893" />
-                            <span>Baixar</span>
+                        <div v-if="data[indextr].invoices.length !== 0">
+                            <div @click="downloadInvoice(data[indextr].id)">
+                                <UilCloudDownload size="19px" color="#76c893" />
+                                <span>Baixar</span>
+                            </div>
                         </div>
                     </vs-td>
 
@@ -139,7 +141,7 @@
         </vs-table>
         <vs-popup title="Enviar nota fiscal" :active.sync="upload_file">
             <h1>{{sale_order_id}}</h1>
-            <vs-upload text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'" />
+            <vs-upload automatic text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'+sale_order_id" />
         </vs-popup>
     </div>
 </template>
@@ -147,11 +149,13 @@
 <script>
 
 import { UilCloudUpload, UilCloudDownload, UilTimes } from '@iconscout/vue-unicons'
+import { UploadMedia, UpdateMedia } from 'vue-media-upload';
+import axios from "axios";
 
 export default {
     name: "Sales",
     components:{
-        UilCloudUpload, UilCloudDownload, UilTimes
+        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia
     },
     data(){
         return{
@@ -167,45 +171,45 @@ export default {
                 invoice: null
             },
             sales:[
-                {
-                    id: 265,
-                    value: '1.550,00',
-                    buyer: 'Fernando',
-                    status_sale: 1,
-                    status_payment: 1,
-                    status_delivery: 1,
-                    invoice: ''
-                },
-                
-                {
-                    id: 295,
-                    value: '3.550,00',
-                    buyer: 'Fernando',
-                    status_sale: 1,
-                    status_payment: 1,
-                    status_delivery: 1,
-                    invoice: ''
-                },
-                
-                {
-                    id: 665,
-                    value: '550,00',
-                    buyer: 'Fernando',
-                    status_sale: 1,
-                    status_payment: 2,
-                    status_delivery: 3,
-                    invoice: 'link_do_arquivo'
-                },
-                
-                {
-                    id: 765,
-                    value: '1.550,00',
-                    buyer: 'Fernando',
-                    status_sale: 2,
-                    status_payment: 1,
-                    status_delivery: 2,
-                    invoice: ''
-                },
+                // {
+                //     id: 265,
+                //     value: '1.550,00',
+                //     buyer: 'Fernando',
+                //     status_sale: 1,
+                //     status_payment: 1,
+                //     status_delivery: 1,
+                //     invoice: ''
+                // },
+                //
+                // {
+                //     id: 295,
+                //     value: '3.550,00',
+                //     buyer: 'Fernando',
+                //     status_sale: 1,
+                //     status_payment: 1,
+                //     status_delivery: 1,
+                //     invoice: ''
+                // },
+                //
+                // {
+                //     id: 665,
+                //     value: '550,00',
+                //     buyer: 'Fernando',
+                //     status_sale: 1,
+                //     status_payment: 2,
+                //     status_delivery: 3,
+                //     invoice: 'link_do_arquivo'
+                // },
+                //
+                // {
+                //     id: 765,
+                //     value: '1.550,00',
+                //     buyer: 'Fernando',
+                //     status_sale: 2,
+                //     status_payment: 1,
+                //     status_delivery: 2,
+                //     invoice: ''
+                // },
             ],
             status_delivery:[
                 {text:'Preparando entrega',value:1},
@@ -216,7 +220,7 @@ export default {
                 {text:'Pendente',value:1},
                 {text:'Pago',value:2},
             ],
-            
+
             status_sales:[
                 {text:'Ativa',value:1},
                 {text:'Cancelada',value:2},
@@ -247,16 +251,35 @@ export default {
 
         acceptAlert(){
         },
-       
+
         handleSelected(tr) {
             console.log('handle', tr)
         },
 
         doubleSelection(tr) {
             console.log('double', tr)
+        },
+
+        getSaleOrders(){
+            axios.get('/api/sale-order').then((resp)=>{
+                this.sales = resp.data
+            })
+        },
+
+        downloadInvoice(sale_order_id){
+            axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
+                this.$vs.notify({color: "success", title: "Arquivo baixado!", text: ""})
+                console.log('oii', resp.data)
+                window.open('/invoices/'+resp.data.name, '_blank')
+            })
+        },
+
+        formatCurrency(value){
+            return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
         }
     },
     created() {
+        this.getSaleOrders()
     },
     computed:{
 
@@ -272,17 +295,13 @@ export default {
             if (this.filters.status_delivery)
                 sales = sales.where('status_delivery', this.filters.status_delivery)
 
-            console.log('iteeemmm', this.filters.invoice)
-
             if (this.filters.invoice){
-                if(this.filters.invoice == 1)
-                    sales = sales.where('invoice', '!==', '')
+                if(this.filters.invoice === 1)
+                    sales = sales.where('invoices', '!==', null)
 
-                
-                if(this.filters.invoice == 2)
-                    sales = sales.where('invoice', '')
+                if(this.filters.invoice === 2)
+                    sales = sales.where('invoices', null)
             }
-            
             return sales.all()
         }
     }

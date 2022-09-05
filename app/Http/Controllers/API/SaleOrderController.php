@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SaleOrder;
 use App\Models\Product;
 use App\Models\SaleOrderItems;
+use Illuminate\Support\Facades\Auth;
 
 class SaleOrderController extends Controller
 {
@@ -33,4 +34,17 @@ class SaleOrderController extends Controller
         }
         return $sale;
     }
+
+    public function index()
+    {
+        return SaleOrder::with(['user', 'saleOrderItems'])
+            ->where('enterprise_id', Auth::user()->enterprise_id)->get();
+    }
+
+    public function getSaleOrderByUser()
+    {
+        return SaleOrder::with(['user', 'saleOrderItems'])
+            ->where('enterprise_id', Auth::user()->id)->get();
+    }
+
 }

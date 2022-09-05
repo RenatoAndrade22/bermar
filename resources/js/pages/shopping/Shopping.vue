@@ -15,36 +15,36 @@
                 <vs-tab @click="colorx = 'success'" label="Pedidos">
                     <div class="sale_info" v-for="(shop, index) in shopping" :key="index">
                         <div class="date">
-                            <span>Data da compra: {{ shop.date }}</span>
-                            <span class="float-end">N° do pedido: 159</span>
+                            <span>Data da compra: {{ formatDate(shop.created_at) }}</span>
+                            <span class="float-end">N° do pedido: {{shop.id}}</span>
                         </div>
                         <h5 class="delivered" v-if="shop.delivered"><span class="status">{{ shop.status }}</span> | Seu produto chegou no dia {{ shop.delivery_day }}</h5>
                         <h5 class="pending" v-if="!shop.delivered"><span class="status">{{ shop.status }}</span> | Seu produto deve chegar no dia {{ shop.delivery_day }}</h5>
                         <div class="view_products">
-                            <span @click="shop.show = !shop.show" v-if="!shop.show">Ver produtos</span>
-                            <span @click="shop.show = !shop.show" v-if="shop.show">fechar produtos</span>
+                            <span @click="show = !show" v-if="!show">Ver produtos</span>
+                            <span @click="show = !show" v-if="show">fechar produtos</span>
                         </div>
-                        <template v-if="shop.show">
-                            <vs-row class="product" v-for="(product, i) in shop.items" :key="i">
-                            <vs-col vs-w="2">
-                                <div class="image">
-                                    <img :src="product.image">
-                                </div>
-                            </vs-col>
-                            <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
-                                <div class="info_delivery">
-                                    <p class="name_product">{{ product.name }}</p>
-                                    <p>Quantidade: {{ product.quantity }}</p>
-                                    <p>Valor: {{ product.value }}</p>
-                                </div>
-                            </vs-col>
-                            <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
-                                <div class="actions">
-                                    <vs-button type="relief" size="small">Nota fiscal</vs-button>
-                                    <vs-button type="relief" size="small">Manual</vs-button>
-                                    <vs-button type="relief" size="small" @click="warranty = !warranty">Solicitar garantia</vs-button>
-                                </div>
-                            </vs-col>
+                        <template v-if="show">
+                            <vs-row class="product" v-for="(product, i) in shop.sale_order_items" :key="i">
+                                <vs-col vs-w="2">
+                                    <div class="image">
+                                        <img v-if="product.product.product_images[0]" :src="'/products-images/'+product.product.product_images[0].name">
+                                    </div>
+                                </vs-col>
+                                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
+                                    <div class="info_delivery">
+                                        <p class="name_product">{{ product.product.name }}</p>
+                                        <p>Quantidade: {{ product.quantity }}</p>
+                                        <p>Valor: {{ formatCurrency(product.product.price) }}</p>
+                                    </div>
+                                </vs-col>
+                                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
+                                    <div class="actions">
+                                        <vs-button @click="downloadInvoice(product.product.id)" type="relief" size="small">Nota fiscal</vs-button>
+                                        <vs-button type="relief" size="small">Manual</vs-button>
+                                        <vs-button type="relief" size="small" @click="warranty = !warranty">Solicitar garantia</vs-button>
+                                    </div>
+                                </vs-col>
                         </vs-row>
                         </template>
                     </div>
@@ -59,9 +59,9 @@
                         Nenhuma compra encontrada
                     </div>
                 </vs-tab>
-        
+
             </vs-tabs>
-        
+
         </div>
         <vs-popup title="Solicitar garantia" :active.sync="warranty">
             <h4>Deseja solicitar a garantia do produto?</h4>
@@ -78,6 +78,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import moment from 'moment';
+
 export default {
     name: "Shopping",
     data(){
@@ -87,13 +90,13 @@ export default {
                 description: null,
             },
             colorx:'success',
+            show: false,
             shopping:[
                 {
-                    status: "Entregue",
+                    status: "Enviado",
                     delivered: true,
                     delivery_day: "18/04/2022",
                     date: '15/04/2022',
-                    show: false,
                     items:[
                         {
                             image: 'https://bermar.ind.br/home/wp-content/uploads/2021/05/BM-73-CINZA-02.jpg',
@@ -113,8 +116,30 @@ export default {
         }
     },
     methods:{
+        getSaleOrderByUser(){
+            axios.get('/api/sale-orders-by-user').then((resp)=>{
+                this.shopping = resp.data
+            })
+        },
+
+        downloadInvoice(sale_order_id){
+            axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
+                this.$vs.notify({color: "success", title: "Arquivo baixado!", text: ""})
+                console.log('oii', resp.data)
+                window.open('/invoices/'+resp.data.name, '_blank')
+            })
+        },
+
+        formatDate(date){
+            return moment(String(date)).format('MM/DD/YYYY hh:mm')
+        },
+
+        formatCurrency(value){
+            return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
+        }
     },
     created() {
+        this.getSaleOrderByUser()
     }
 }
 </script>

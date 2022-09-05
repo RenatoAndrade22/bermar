@@ -31,7 +31,7 @@ class Product extends Model
         'packing_length',
         'packing_height',
     ];
-    
+
     protected $with = [
         'productImages'
     ];
@@ -40,5 +40,5 @@ class Product extends Model
     {
         return $this->hasMany(ProductImage::class);
     }
-  
+
 }

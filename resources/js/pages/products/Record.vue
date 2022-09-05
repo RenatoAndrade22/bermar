@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Cadastrar novo produto</h1>
-        
+
         <vs-row vs-w="12" style="width: 100% !important; display: block;">
 
             <template v-if="!image">
@@ -238,7 +238,7 @@
                         <vue-editor v-model="form.datasheet"></vue-editor>
                     </div>
                 </vs-col>
-                
+
             </template>
 
             <template v-if="image">
@@ -247,7 +247,7 @@
                     <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
                 </div>
             </template>
-            
+
             <template v-if="edit">
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
                     <hr class="divisor" />
@@ -267,13 +267,13 @@
                     <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
                 </div>
             </template>
-            
+
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
                 <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image && !edit">Adicionar imagens</vs-button>
                 <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="edit">Atualizar</vs-button>
                 <vs-button type="relief" class="mt-3" @click="finish" v-if="image">Finalizar</vs-button>
             </vs-col>
-            
+
 
         </vs-row>
 
@@ -296,7 +296,7 @@ export default {
             edit: false,
             money_active: false,
             image: false,
-            
+
             categories: [],
             status:[
                 {
@@ -376,7 +376,7 @@ export default {
 
                 video: null,
                 video_validation: false,
-                
+
                 images: []
             },
 
@@ -457,51 +457,51 @@ export default {
             let i = true
 
             this.form.name_validation = !this.form.name ? true : false
-            if(!this.form.name)                
+            if(!this.form.name)
                 i = false
 
             this.form.price_validation = !this.form.price ? true : false
-            if(!this.form.price)                
+            if(!this.form.price)
                 i = false
 
             this.form.width_validation = !this.form.width ? true : false
-            if(!this.form.width)                
+            if(!this.form.width)
                 i = false
 
             this.form.weight_validation = !this.form.weight ? true : false
-            if(!this.form.weight)                
+            if(!this.form.weight)
                 i = false
 
             this.form.length_validation = !this.form.length ? true : false
-            if(!this.form.length)                
+            if(!this.form.length)
                 i = false
 
             this.form.height_validation = !this.form.height ? true : false
-            if(!this.form.height)                
+            if(!this.form.height)
                 i = false
 
             this.form.category_validation = !this.form.category_id ? true : false
-            if(!this.form.category_id)                
+            if(!this.form.category_id)
                 i = false
 
             this.form.width_validation = !this.form.width ? true : false
-            if(!this.form.width)                
+            if(!this.form.width)
                 i = false
-            
+
             this.form.weight_validation = !this.form.weight ? true : false
-            if(!this.form.weight)                
+            if(!this.form.weight)
                 i = false
 
             this.form.length_validation = !this.form.length ? true : false
-            if(!this.form.length)                
+            if(!this.form.length)
                 i = false
 
             this.form.height_validation = !this.form.height ? true : false
-            if(!this.form.height)                
+            if(!this.form.height)
                 i = false
 
             this.form.video_validation = !this.form.video ? true : false
-            if(!this.form.video)                
+            if(!this.form.video)
                 i = false
 
             return i
@@ -520,7 +520,7 @@ export default {
         },
 
         recordProduct(){
-            
+
             if (this.validate()){
 
                 if (this.edit){

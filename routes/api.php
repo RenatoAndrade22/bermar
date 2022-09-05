@@ -10,6 +10,7 @@ use \App\Http\Controllers\API\EnterpriseController;
 use \App\Http\Controllers\API\AddressController;
 use \App\Http\Controllers\API\UserController;
 use \App\Http\Controllers\API\ProductImageController;
+use \App\Http\Controllers\API\InvoiceController;
 use \App\Http\Controllers\API\SaleOrderController;
 use \App\Http\Controllers\API\WarrantyController;
 use \App\Http\Controllers\API\ChatController;
@@ -72,11 +73,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'warranty' => WarrantyController::class,
         'chat' => ChatController::class,
         'chat-message' => ChatMessageController::class,
+        'sale-order' => SaleOrderController::class,
         'warranty-product' => WarrantyProductController::class,
         'budget' => BudgetController::class,
     ]);
-    
+
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
+    Route::get('sale-orders-by-user', [SaleOrderController::class, 'getSaleOrderByUser']);
     Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
 
 });
