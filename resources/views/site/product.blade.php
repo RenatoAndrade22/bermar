@@ -43,6 +43,7 @@
                         <br>
 
                         <h5>R$ {{ $product['price'] }} <span></span> <a href="#"></a></h5>
+                        <!--
                         <div class="available mt-3">
                             <p>Informe o CEP para calcular o frete:</p>
                             <div class="content-input-field">
@@ -50,9 +51,9 @@
                                 <button class="btn submit" style="width: 200px;margin-left: 10px;margin-top: -3px; border-radius: 0.25rem !important;">Calcular frete</button>
                             </div>
                             <form action="#" method="post" class="w3pvt-newsletter subscribe-sec" style="width: 100%;float: left;margin-bottom: 30px;">
-                                {{-- <button class="btn submit">Comprar</button> --}}
                             </form>
                         </div>
+                        -->
                         <div class="share-desc mt-5">
                             <div class="share text-left">
                                 <h4>COMPARTILHAR PRODUTO:</h4>

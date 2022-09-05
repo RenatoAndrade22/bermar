@@ -46,7 +46,7 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
-                        <p class="text-label">Categoria</p>
+                        <p class="text-label">Família</p>
                         <vs-select
                             v-model="form.category_id"
                             :danger="form.category_validation"
@@ -57,9 +57,35 @@
                     </div>
                 </vs-col>
 
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Tensão do motor</p>
+                        <vs-select
+                            v-model="form.voltage"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in voltage" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Potencia do motor</p>
+                        <vs-select
+                            v-model="form.power"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in power" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+               
+
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <hr class="divisor" />
                 </vs-col>
+
+                <h2 class="subtitle">Dimensões do produto</h2>
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
@@ -115,6 +141,64 @@
                             danger-text="Campo obrigatório"
                             placeholder="Altura"
                             v-model="form.height"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <hr class="divisor" />
+                </vs-col>
+
+                <h2 class="subtitle">Dimensões da embalagem</h2>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Largura</p>
+                        <vs-input
+                            v-if="money_active"
+                            placeholder="Largura"
+                            v-model="form.packing_width"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Peso</p>
+                        <vs-input
+                            v-if="money_active"
+                            placeholder="Peso"
+                            v-model="form.packing_weight"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Comprimento</p>
+                        <vs-input
+                            v-if="money_active"
+                            placeholder="Comprimento"
+                            v-model="form.packing_length"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Altura</p>
+                        <vs-input
+                            v-if="money_active"
+                            placeholder="Altura"
+                            v-model="form.packing_height"
                             v-money="money"
                             masked
                         />
@@ -224,14 +308,48 @@ export default {
                     name: 'Inativo'
                 },
             ],
+
+            voltage:[
+                {
+                    id: '110',
+                    name: '110 volts'
+                },
+                {
+                    id: '220',
+                    name: '220 volts'
+                },
+            ],
+
+            power:[
+                {
+                    id: '1000',
+                    name: '1.000'
+                },
+                {
+                    id: '2000',
+                    name: '2.000'
+                },
+                {
+                    id: '3000',
+                    name: '3.000'
+                },
+            ],
+
             form:{
                 id: null,
 
                 name: null,
                 name_validation: false,
 
-                status: 1,
+                power: '1000',
+                voltage: '110',
+                packing_width: null,
+                packing_weight: null,
+                packing_length: null,
+                packing_height: null,
 
+
+                status: 1,
                 category_id: null,
                 category_validation: false,
 
@@ -323,6 +441,19 @@ export default {
             this.form.height = this.form.height.replace(".", "")
             this.form.height = parseFloat(this.form.height.toString().replace(",", "."))
 
+
+            this.form.packing_width = this.form.packing_width.replace(".", "")
+            this.form.packing_width = parseFloat(this.form.packing_width.toString().replace(",", "."))
+
+            this.form.packing_weight = this.form.packing_weight.replace(".", "")
+            this.form.packing_weight = parseFloat(this.form.packing_weight.toString().replace(",", "."))
+
+            this.form.packing_length = this.form.packing_length.replace(".", "")
+            this.form.packing_length = parseFloat(this.form.packing_length.toString().replace(",", "."))
+
+            this.form.packing_height = this.form.packing_height.replace(".", "")
+            this.form.packing_height = parseFloat(this.form.packing_height.toString().replace(",", "."))
+
             let i = true
 
             this.form.name_validation = !this.form.name ? true : false
@@ -412,7 +543,7 @@ export default {
 
         getProduct(){
             axios.get('/api/product/'+this.$route.params.id).then((data)=>{
-
+                console.log('data', data.data)
                 this.form.id = data.data.id
                 this.form.name = data.data.name
 
@@ -428,9 +559,15 @@ export default {
                 this.form.video = data.data.video
                 this.form.images = data.data.product_images
 
-                this.money_active = true
+                this.form.power = data.data.power
+                this.form.voltage = data.data.voltage
 
-                console.log('this.form', this.form)
+                this.form.packing_width  = data.data.packing_width
+                this.form.packing_weight = data.data.packing_weight
+                this.form.packing_length = data.data.packing_length
+                this.form.packing_height = data.data.packing_height
+
+                this.money_active = true
 
             })
         },
@@ -455,6 +592,15 @@ export default {
 </script>
 
 <style scoped>
+
+    .subtitle{
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin: 20px;
+        float: left;
+        width: 100%;
+    }
     .centerx{
         width: 100%;
         float: left;

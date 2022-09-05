@@ -19,10 +19,10 @@
                     Produtos
                 </router-link>
 
-                <router-link to="/painel/categorias" v-if="$user.enterprise.enterprise_type_id == 1">
+                <router-link to="/painel/familias" v-if="$user.enterprise.enterprise_type_id == 1">
                     <UilAngleRight size="12px" class="icon_angle" />
                     <UilCube size="20px" class="icon_route" />
-                    Categorias
+                    Família
                 </router-link>
 
                 <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 1">

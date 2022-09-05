@@ -40,6 +40,8 @@
                     -->
                     <p class="error" v-if="error">Usuário e/ou senha inválido(s).</p>
                     <b-button type="submit" class="button" variant="primary">Acessar</b-button>
+                    <p class="cadastro" @click="$router.push({name: 'cadastro'})">Cadastre-se</p>
+                    
                 </b-form>
             </div>
         </div>

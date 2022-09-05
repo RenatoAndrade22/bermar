@@ -4,7 +4,7 @@
             <div slot="title">
                 <vs-navbar-title>
                 <span style="color: #ee1b21">({{ list_categories.length }})</span>
-                Categorias
+                Família
                 </vs-navbar-title>
             </div>
 
@@ -12,7 +12,7 @@
                 >Cadastrar nova</vs-button
             >
         </vs-navbar>
-        <vs-table stripe :data="list_categories" noDataText="Nenhuma categoria encontrada." class="header mt-5">
+        <vs-table stripe :data="list_categories" noDataText="Nenhuma família encontrada." class="header mt-5">
             <template slot="thead">
                 <vs-th> Nome </vs-th>
                 <vs-th> Produtos </vs-th>
@@ -50,17 +50,17 @@
                 </vs-tr>
             </template>
         </vs-table>
-        <vs-popup :title="categ_edit ? 'Editar categoria' : 'Cadastrar categoria'" :active.sync="popup_new">
+        <vs-popup :title="categ_edit ? 'Editar família' : 'Cadastrar família'" :active.sync="popup_new">
             <h4>
-                <span v-if="categ_edit">Editar categoria</span>    
-                <span v-if="!categ_edit">Cadastrar categoria</span>
+                <span v-if="categ_edit">Editar família</span>    
+                <span v-if="!categ_edit">Cadastrar família</span>
             </h4>
              <vs-row>
                     <vs-col vs-w="12">
                         <vs-input
                             label="Nome"
                             class="mb-3 mt-2"
-                            placeholder="Nome da categoria"
+                            placeholder="Nome da família"
                             v-model="form.name"
                             :danger="form.name_validation"
                             danger-text="Esse campo é obrigatório"
@@ -117,8 +117,8 @@ export default {
                 
                 this.$vs.dialog({
                     color: "danger",
-                    title: 'Categoria',
-                    text: 'A categoria contem produtos, para excluir a categoria deve se desvincular os produtos dela.',
+                    title: 'Família',
+                    text: 'A família contem produtos, para excluir a família deve se desvincular os produtos dela.',
                     acceptText: "Ok",
                     accept: ()=>{}
                 })
@@ -129,7 +129,7 @@ export default {
                     color: "danger",
                     title: `Confirme`,
                     text:
-                    "Deseja excluir a categoria " + this.delete_categ.name + "?",
+                    "Deseja excluir a Família " + this.delete_categ.name + "?",
                     accept: this.acceptDelete,
                     acceptText: "Excluir",
                     cancelText: "Cancelar",
@@ -151,7 +151,7 @@ export default {
 
           this.$vs.notify({
             color: "success",
-            title: "Categoria excluída!",
+            title: "Família excluída!",
             text: "",
           });
         });
@@ -175,7 +175,7 @@ export default {
                     this.popup_new = false
                     this.$vs.notify({
                             color:'success',
-                            title:'Categoria editada!',
+                            title:'Família editada!',
                             text:''
                         })
                     })
@@ -186,7 +186,7 @@ export default {
                     this.form.name = null
                     this.$vs.notify({
                             color:'success',
-                            title:'Categoria cadastrada!',
+                            title:'Família cadastrada!',
                             text:''
                         })
                     })

@@ -1,7 +1,5 @@
 <template>
     <div class="register">
-        <h3>Seja um revendedor.</h3>
-
         <div class="form">
             <vs-row>
                 <vs-col vs-w="12" v-if="step == 0">
@@ -522,6 +520,7 @@ export default {
 }
 .form{
     margin: 0 auto;
+    margin-top: 39px;
     width: 540px;
     padding: 30px;
     background: #fff;

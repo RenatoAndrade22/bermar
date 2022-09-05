@@ -23,7 +23,13 @@ class Product extends Model
         'weight',
         'length',
         'height',
-        'video'
+        'video',
+        'power',
+        'voltage',
+        'packing_width',
+        'packing_weight',
+        'packing_length',
+        'packing_height',
     ];
     
     protected $with = [

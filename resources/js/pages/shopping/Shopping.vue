@@ -49,12 +49,6 @@
                         </template>
                     </div>
                 </vs-tab>
-
-                <vs-tab @click="colorx = 'danger'" label="Ainda não enviados">
-                    <div class="con-tab-ejemplo">
-                        Nenhuma compra encontrada
-                    </div>
-                </vs-tab>
                 <vs-tab @click="colorx = 'danger'" label="Pendentes">
                     <div class="con-tab-ejemplo">
                         Nenhuma compra encontrada

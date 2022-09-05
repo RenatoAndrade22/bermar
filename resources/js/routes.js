@@ -46,7 +46,8 @@ export default {
                     component: Login,
                 },
                 {
-                    path:'/cadastro/revendedor',
+                    path:'/cadastro',
+                    name: 'cadastro',
                     component: Register
                 },
 
@@ -89,7 +90,7 @@ export default {
                     component: ProductView
                 },
                 {
-                    path:'/painel/categorias',
+                    path:'/painel/familias',
                     name: 'categories',
                     component: Categories
                 },

@@ -50,7 +50,7 @@
     </section>
     <!-- /banner-bottom -->
     <!--/collections -->
-
+<!--
     <div class="container">
 
     <img src="{{ asset('site/images/c1.jpg') }}" width="100%" height="100%" align-content="">
@@ -108,15 +108,14 @@
 
         </div>
     </section>
-    <!-- //collections-->
-    <!-- /mid-section -->
+ 
+    
     <section class="mid-section">
         
     </section>
-    <!-- //mid-section -->
-
-    <!--/gallery -->
-
+ 
+    
+-->
         <section class="newsletter-w3pvt py-5">
         <div class="container py-md-5">
 
