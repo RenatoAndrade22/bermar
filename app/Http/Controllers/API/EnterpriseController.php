@@ -29,6 +29,13 @@ class EnterpriseController extends Controller
     }
 
     public function enterpriseAssistance(){
-        return Enterprise::query()->where('enterprise_type_id', 4)->get();
+        $enterprises = Enterprise::query()->where('enterprise_type_id', 4)->get();
+        return collect($enterprises)->map(function($enterprise){   
+            return [
+                'id' => $enterprise->id,
+                'name' => $enterprise->name,
+                'address' => $enterprise->address->street.', '.$enterprise->address->number.', '.$enterprise->address->district.', '.$enterprise->address->city.'/'.$enterprise->address->state
+            ];
+        });
     }
 }

@@ -15,7 +15,8 @@ use \App\Http\Controllers\API\SaleOrderController;
 use \App\Http\Controllers\API\WarrantyController;
 use \App\Http\Controllers\API\ChatController;
 use \App\Http\Controllers\API\ChatMessageController;
-
+use \App\Http\Controllers\API\WarrantyProductController;
+use \App\Http\Controllers\API\BudgetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +44,8 @@ Route::resources([
 Route::post('/upload/{id}', [ProductImageController::class, 'store']);
 Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
 
-Route::post('/upload-invoice/{id}', [InvoiceController::class, 'store']);
-Route::get('/download-invoice/{id}', [InvoiceController::class, 'downloadInvoice']);
+Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
+
 
 Route::post('register/user', [\App\Http\Controllers\API\UserController::class, 'store']);
 Route::post('register/enterprise', [\App\Http\Controllers\API\EnterpriseController::class, 'store']);
@@ -73,10 +74,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'chat' => ChatController::class,
         'chat-message' => ChatMessageController::class,
         'sale-order' => SaleOrderController::class,
+        'warranty-product' => WarrantyProductController::class,
+        'budget' => BudgetController::class,
     ]);
 
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
     Route::get('sale-orders-by-user', [SaleOrderController::class, 'getSaleOrderByUser']);
+    Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
 
 });
 

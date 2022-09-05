@@ -14,7 +14,6 @@
         placeholder="Buscar produto"
         v-model="search"
       />
-
       <vs-button v-if="$user.enterprise.enterprise_type_id == 2" type="relief" @click="select_new = !select_new"
         >Produtos</vs-button
       >
@@ -189,7 +188,7 @@ export default {
             name: null,
             name_validation: false,
             status: 1,
-            price: "",
+            price: "55",
             price_validation: false
         },
         status:[
@@ -240,6 +239,7 @@ export default {
                 })
             }else{
                 axios.put("/api/warranty-product", this.form).then((data) => {
+                    this.edit_product =  false
                     this.getProducts()
                     this.popup_new = false
                     this.$vs.notify({
@@ -271,14 +271,11 @@ export default {
     },
 
     editItem(id) {
-        this.money_active = false
+        this.edit_product =  true
         let product = this.$c(this.products).where('id', id).first()
         this.form.name = product.name
-        this.form.price = product.price
         this.form.status = product.status
         this.popup_new = true
-        console.log('teste', this.form)
-        
     },
 
     getProducts() {

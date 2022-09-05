@@ -4,49 +4,63 @@
             <img src="/images/logo.png" alt="">
         </div>
         <div class="menu">
-            <router-link to="/painel" v-if="$user.enterprise.enterprise_type_id == 1" >
-                <UilAngleRight color="#626262" size="12px" class="icon_angle" />
-                <UilEstate size="20px" class="icon_route" />
-                Painel
-            </router-link>
-            <router-link to="/painel/produtos" v-if="$user.enterprise.enterprise_type_id == 2 || $user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilCube size="20px" class="icon_route" />
-                Produtos
-            </router-link>
-            <router-link to="/painel/categorias" v-if="$user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilCube size="20px" class="icon_route" />
-                Categorias
-            </router-link>
-            <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilTagAlt size="20px" class="icon_route" />
-                Minhas Vendas
-            </router-link>
 
-            <router-link to="/painel/empresas" v-if="$user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilShop size="20px" class="icon_route" />
-                Empresas
-            </router-link>
+            <template v-if="$user.enterprise_id">
 
-            <router-link to="/painel/usuarios" v-if="$user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilUsersAlt size="20px" class="icon_route" />
-                Usuários
-            </router-link>
+                <router-link to="/painel" v-if="$user.enterprise.enterprise_type_id == 1" >
+                    <UilAngleRight color="#626262" size="12px" class="icon_angle" />
+                    <UilEstate size="20px" class="icon_route" />
+                    Painel
+                </router-link>
 
-            <router-link to="/painel/minhas-compras" v-if="$user.enterprise.enterprise_type_id == 1">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilShoppingBag size="20px" class="icon_route" />
-                Minhas compras
-            </router-link>
+                <router-link to="/painel/produtos" v-if="$user.enterprise.enterprise_type_id == 2 || $user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilCube size="20px" class="icon_route" />
+                    Produtos
+                </router-link>
+
+                <router-link to="/painel/categorias" v-if="$user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilCube size="20px" class="icon_route" />
+                    Categorias
+                </router-link>
+
+                <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilTagAlt size="20px" class="icon_route" />
+                    Minhas Vendas
+                </router-link>
+
+                <router-link to="/painel/empresas" v-if="$user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilShop size="20px" class="icon_route" />
+                    Empresas
+                </router-link>
+
+                <router-link to="/painel/usuarios" v-if="$user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilUsersAlt size="20px" class="icon_route" />
+                    Usuários
+                </router-link>
+
+                <router-link to="/painel/minhas-compras" v-if="$user.enterprise.enterprise_type_id == 1">
+                    <UilAngleRight size="12px" class="icon_angle" />
+                    <UilShoppingBag size="20px" class="icon_route" />
+                    Minhas compras
+                </router-link>
+
+            </template>
 
             <router-link to="/painel/garantias">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Pedidos de garantia
+            </router-link>
+
+            <router-link to="/painel/produtos/garantias">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Produtos de garantia
             </router-link>
 
         </div>

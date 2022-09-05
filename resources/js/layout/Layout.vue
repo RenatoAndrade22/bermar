@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <div class="nav">
-            <Nav />
+            <Nav></Nav>
         </div>
         <div class="content">
             <div class="header">
