@@ -1,6 +1,13 @@
 /node_modules
-/public
+
 /public/storage
+/public/chat-images
+/public/css
+/public/fonts
+/public/images
+/public/products-images
+/public/js
+.htaccess
 /storage/*.key
 /vendor
 .env

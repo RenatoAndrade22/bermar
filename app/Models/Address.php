@@ -20,6 +20,7 @@ class Address extends Model
         'complement',
         'enterprise_id',
         'city_id',
+        'region',
     ];
 
 }

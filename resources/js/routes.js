@@ -14,7 +14,7 @@ import ProductRecord from "./pages/products/Record";
 
 import Company from "./pages/company/Company";
 
-import Sales from "./pages/sales/Sales";
+import Sales from "./pages/sales/Sale";
 
 import Warranty from "./pages/warranty/Warranty"
 

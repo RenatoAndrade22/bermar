@@ -246,12 +246,23 @@
                     </vs-col>
 
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
-                    <div class="form_item">
-                        <vs-button type="relief" @click="record" class="mt-4">
-                            Cadastrar
-                        </vs-button>
-                    </div>
-                </vs-col>
+                        <div class="form_item">
+                            <p class="text-label">Região</p>
+                            <vs-select
+                                v-model="address.region"
+                            >
+                                <vs-select-item :key="index" :value="item.name" :text="item.name" v-for="item,index in region" />
+                            </vs-select>
+                        </div>
+                    </vs-col>
+
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                        <div class="form_item">
+                            <vs-button type="relief" @click="record" class="mt-4">
+                                Cadastrar
+                            </vs-button>
+                        </div>
+                    </vs-col>
 
                 </template>
 
@@ -332,6 +343,7 @@ export default {
                 enterprise_id: null,
 
                 status: true,
+                region: 'Capital',
             },
             status:[
                 {
@@ -341,6 +353,17 @@ export default {
                 {
                     id: 0,
                     name: 'Inativo'
+                },
+            ],
+            region:[
+                {
+                    name: 'Capital'
+                },
+                {
+                    name: 'Interior'
+                },
+                {
+                    name: 'Litoral'
                 },
             ],
             categories:[
@@ -497,8 +520,6 @@ export default {
         },
 
         deleteItem(id){
-            console.log('name', id)
-
             this.delete_providers = this.$c(this.providers).where('id', id)
             this.$vs.dialog({
                 type:'confirm',
