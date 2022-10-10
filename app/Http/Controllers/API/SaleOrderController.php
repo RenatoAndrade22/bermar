@@ -28,7 +28,7 @@ class SaleOrderController extends Controller
             $item = new SaleOrderItems();
             $item->sale_order_id = $sale->id;
             $item->product_id = $p['id'];
-            $item->quantity = $p['qnt'];
+            $item->quantity = $p['quantity'];
             $item->price = $product->price;
             $item->saveOrFail();
         }
@@ -37,8 +37,14 @@ class SaleOrderController extends Controller
 
     public function index()
     {
-        return SaleOrder::with(['user', 'saleOrderItems'])
-            ->where('enterprise_id', Auth::user()->enterprise_id)->get();
+        $saleOrders = SaleOrder::with(['enterprise', 'user', 'saleOrderItems'])
+            ->where('user_id', Auth::user()->id)->get();
+/*
+        $saleOrders = collect($saleOrders)->map(function ($sale){
+            $sale['']
+        });
+*/
+        return $saleOrders;
     }
 
     public function getSaleOrderByUser()
