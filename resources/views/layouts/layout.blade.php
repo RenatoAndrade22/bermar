@@ -49,7 +49,7 @@
             }
         </style>
     @endif
-    
+
     <div class="social-ficons">
         <ul>
             <li><a href="https://pt-br.facebook.com/BM.BERMAR/"><span class="fa fa-facebook"></span> Facebook</a></li>
@@ -72,7 +72,7 @@
 
                     <div class="forms ml-auto">
                         <a href="/login" class="btn"><span class="fa fa-user-circle-o"></span> ENTRAR </a>
-                        <a href="shop.html" class="btn shop">COMPRE ONLINE<i class="fa fa-shopping-cart" aria-hidden="true"></i></a>              
+{{--                        <a href="shop.html" class="btn shop">COMPRE ONLINE<i class="fa fa-shopping-cart" aria-hidden="true"></i></a>--}}
                     </div>
                 </div>
                 <div class="nav-top-wthree">
@@ -81,25 +81,27 @@
                         <input type="checkbox" id="drop" />
                         <ul class="menu">
                             <li class="active"><a href="index.html">Início</a></li>
-                            <li><a href="about.html">Empresa</a></li>
-                            <li style="position: relative;">
-                                <!-- First Tier Drop Down -->
-                                <label for="drop-2" class="toggle">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span>
-                                </label>
-                                <a href="#">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span></a>
-                                <input type="checkbox" id="drop-2" />
-                                <ul style="left: 0;">
-                                @foreach ($categories as $category)
-                                    <li><a href="{{ url('categoria/'.$category['slug']) }}" class="drop-text">{{ $category['name'] }}</a></li>
-                                    <hr>
-                                @endforeach
-                                    
-                                </ul>
-                            </li>
+                            <li><a href="{{ url('empresa') }}">Empresa</a></li>
+                            <li><a href="#categories" class="drop-text">Produtos</a></li>
+{{--                            <li style="position: relative;">--}}
+{{--                                <!-- First Tier Drop Down -->--}}
+{{--                                <label for="drop-2" class="toggle">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span>--}}
+{{--                                </label>--}}
+{{--                                <a href="#">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span></a>--}}
+{{--                                <input type="checkbox" id="drop-2" />--}}
+{{--                                <ul style="left: 0;">--}}
+{{--                                @foreach ($categories as $category)--}}
+{{--                                    <li><a href="{{ url('categoria/'.$category['slug']) }}" class="drop-text">{{ $category['name'] }}</a></li>--}}
+{{--                                    <hr>--}}
+{{--                                @endforeach--}}
 
-                            <li><a href="representantes.html">Representantes</a></li>
-                            <li><a href="assistencia.html">Assistência</a></li>
-                            <li><a href="contact.html">Contato</a></li>
+{{--                                </ul>--}}
+{{--                            </li>--}}
+
+                            <li><a href="{{ url('representantes') }}">Representantes</a></li>
+                            <li><a href="{{ url('assistencia') }}">Assistência</a></li>
+                            <li><a href="{{ url('revendas') }}">Revendas</a></li>
+                            <li><a href="{{ url('contato') }}">Contato</a></li>
                         </ul>
                     </nav>
                     <!-- //nav -->
@@ -141,18 +143,18 @@
            </div>
         </div>
         <style>
-            
+
         </style>
         @endif
     </div>
 
 
     @yield('content')
-    
-    
+
+
    <!-- footer -->
-    
-   <div class="cpy-right">
+
+    <div class="cpy-right">
         <div class="container py-md-5">
             <div class="row">
                 <div class="col-lg-3 footer_wthree_gridf mt-lg-5">
@@ -172,10 +174,6 @@
                         <li>
                             <a href="garantia.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Termos de Garantia</a>
                         </li>
-                        <li>
-                            <a href="recrutamento.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Trabalhe Conosco</a>
-                        </li>
-
                     </ul>
                 </div>
                 <div class="col-lg-3 footer_wthree_gridf mt-md-0 mt-sm-4 mt-3">
@@ -189,76 +187,41 @@
                             <a href="assistencia.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Assistência Técnica</a>
                         </li>
                         <li>
-                            <a href="shop.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Produtos</a>
-                        </li>
-                        <li>
-                            <a href="contact.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Contato</a>
+                            <a href="loja.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Produtos</a>
                         </li>
                     </ul>
                 </div>
 
                 <div class="col-lg-3 footer_wthree_gridf mt-md-0 mt-sm-4 mt-3">
                     <ul class="footer_wthree_gridf_list">
-                        <h4>CONTATO</h4><br>
-						<div class="address">
-							<div class="address-grid">
-								<div class="address-left">
-									<i class="fa fa-phone" aria-hidden="true"> Ligue-nos:</i>
-								</div>
-								<div class="address-right">
-                                  
-									<p><h6>+55 (17) 3214-9600</h6></p>
-								</div>
-								<div class="clearfix"> </div>
-							</div>
-                            
-                            <br>
+                        <h4>CONTATO</h4>
+                        <li>
+                            <a><span class="fa fa-phone" aria-hidden="true"></span> +55 (17) 3214-9600</a>
+                        </li>
 
-							<div class="address-grid">
-								<div class="address-left">
-									<i class="fa fa-envelope" aria-hidden="true"> Nos mande um e-mail:</i>
-								</div>
-								<div class="address-right">
-								
-									<p><h6><a href="mailto:example@email.com">bermar@bermar.ind.br</a></h6></p>
-								</div>
-								<div class="clearfix"> </div>
-							</div>
+                        <li>
+                            <a><span class="fa fa-envelope" aria-hidden="true"></span> bermar@bermar.ind.br</a>
+                        </li>
 
-                            <br>
-
-							<div class="address-grid">
-                                <div class="address-left">
-  
-									<i class="fa fa-map-marker" aria-hidden="true"> Onde estamos:</i>
-                                    								
-									</p>
-								</div>
-								<div class="address-right">
-								
-									<p><h6>R. Francisco Curti, 245 - Distrito Industrial, São José do Rio Preto - SP, 15035-620</h6>
-
-									</p>
-								</div>
-								<div class="clearfix"> </div>
-							</div>
-						</div>
+                        <li>
+                            <a><span class="fa fa-map-marker" aria-hidden="true"></span>CEP: 15035-620</a>
+                        </li>
                     </ul>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="cpy-right text-center py-3">
+        <p>© 2022 BERMAR. Todos os direitos reservados| Desenvolvido por
+            <a href="https://consultoriacgs.com.br/"> CGS</a>
+        </p>
+    </div>
 
-        </div>
-        </div>
-        <div class="cpy-right text-center py-3">
-            <p>© 2022 BERMAR. Todos os direitos reservados| Desenvolvido por
-                <a href="https://consultoriacgs.com.br/"> CGS</a>
-            </p>
-    
-        </div>
+
 
     <!-- //footer -->
     <!-- copyright -->
-   
+
     <!-- //copyright -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script><script  src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
@@ -268,8 +231,8 @@
         $("#cep").inputmask({"mask": "99999-999"});
     </script>
 
-    <script src="{{ asset('site/script.js') }}" defer></script> 
-    <script src="{{ asset('site/js/banner.js') }}" defer></script> 
+    <script src="{{ asset('site/script.js') }}" defer></script>
+    <script src="{{ asset('site/js/banner.js') }}" defer></script>
 
 
 </body>
