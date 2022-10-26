@@ -58,6 +58,7 @@ class SaleOrderController extends Controller
 
     public function getSaleOrderByUser()
     {
+
         return SaleOrder::with(['user', 'saleOrderItems'])
             ->where('enterprise_id', Auth::user()->enterprise_id)->get();
     }
