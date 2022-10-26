@@ -16,8 +16,8 @@ class Warranty extends Migration
         Schema::create('warranties', function (Blueprint $table) {
             $table->id();
             $table->integer('status')->nullable()->default(null);
-            $table->unsignedBigInteger('sale_order_id');
-            $table->foreign('sale_order_id')->references('id')->on('sale_orders');
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('products');
             $table->timestamps();
         });
     }

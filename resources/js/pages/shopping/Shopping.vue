@@ -39,26 +39,32 @@
                                     </div>
                                 </vs-col>
                                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="4">
+                                    <!--
                                     <div class="actions">
                                         <vs-button @click="downloadInvoice(product.product.id)" type="relief" size="small">Nota fiscal</vs-button>
                                         <vs-button type="relief" size="small">Manual</vs-button>
                                         <vs-button type="relief" size="small" @click="warranty = !warranty">Solicitar garantia</vs-button>
                                     </div>
+
+                                    -->
+                                    
                                 </vs-col>
                         </vs-row>
                         </template>
                     </div>
                 </vs-tab>
-                <vs-tab @click="colorx = 'danger'" label="Pendentes">
-                    <div class="con-tab-ejemplo">
-                        Nenhuma compra encontrada
-                    </div>
-                </vs-tab>
-                <vs-tab @click="colorx = 'warning'" label="Cancelados">
-                    <div class="con-tab-ejemplo">
-                        Nenhuma compra encontrada
-                    </div>
-                </vs-tab>
+                <!--
+                    <vs-tab @click="colorx = 'danger'" label="Pendentes">
+                        <div class="con-tab-ejemplo">
+                            Nenhuma compra encontrada
+                        </div>
+                    </vs-tab>
+                    <vs-tab @click="colorx = 'warning'" label="Cancelados">
+                        <div class="con-tab-ejemplo">
+                            Nenhuma compra encontrada
+                        </div>
+                    </vs-tab>
+                 -->   
 
             </vs-tabs>
 

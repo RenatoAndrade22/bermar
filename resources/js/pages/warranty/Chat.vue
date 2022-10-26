@@ -4,7 +4,7 @@
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
-                    Garantia: {{ chat[0].warranty.sale_order.sale_order_items[0].product.name }}
+                    Garantia: Nome do Produto
                 </vs-navbar-title>
             </div>
         </vs-navbar>
@@ -32,8 +32,9 @@
             />
 
             <input id="fileUpload" type="file" accept=".png, .jpg, .jpeg" v-on:change="onFileChange" hidden>
-
+            <!--
             <vs-button type="relief" size="small" class="float-left" @click="budget = !budget">Orçamento</vs-button>
+            -->
             <vs-button type="relief" size="small" class="float-left" @click="assistance_active = !assistance_active">Assistencia Tecnica</vs-button>
             
             <div @click="chooseFiles" style="width: 30px;float: right;margin-left: 15px;">
@@ -154,7 +155,7 @@ export default {
         recordBudget(){
 
             if(this.products_warranty.length > 0){
-                if(!this.budget){
+                
                     axios.post('/api/budget/',{description: this.description, products: this.products_warranty}).then((data)=>{
                         this.budget = false
                         this.$vs.notify({
@@ -163,16 +164,7 @@ export default {
                             text:''
                         })
                     })
-                }else{
-                    axios.put('/api/budget/'+this.budget.id,{description: this.description, products: this.products_warranty}).then((data)=>{
-                        this.budget = false
-                        this.$vs.notify({
-                            color:'success',
-                            title:'Orçamento atualizado!',
-                            text:''
-                        })
-                    })
-                }
+                
             }else{
                 this.$vs.notify({
                     color:'danger',
@@ -203,8 +195,8 @@ export default {
 
         addAssistance(){    
             if(this.assistance_selected){
-                axios.put('/api/warranty/'+this.chat[0].warranty.id, { enterprise_id: this.assistance_selected}).then((data)=>{
-                    // cria a mensagem de Bot para o Chat, informando que a assistencia tecnica foi inserida no chat.
+                axios.put('/api/chat/'+this.chat[0].warranty.id, { enterprise_id: this.assistance_selected}).then((data)=>{
+                    // cria a mensagem de Bot para o Chat, informando que a W tecnica foi inserida no chat.
                     axios.post('/api/chat-message', {user_id: 0, chat_id: this.chat[0].id, message: 'A Assistencia Tecnica foi inserida no chat.'}).then((data)=>{
                         this.assistance_active = false
                     })

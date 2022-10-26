@@ -14,6 +14,10 @@ class EnterpriseController extends Controller
         return Enterprise::all();
     }
 
+    public function getEnterpriseType($type){
+        return Enterprise::query()->where('enterprise_type_id', $type)->get();
+    }
+
     public function store(EnterpriseRequest $request){
         $enterprise = new Enterprise();
         $enterprise->fill($request->all());

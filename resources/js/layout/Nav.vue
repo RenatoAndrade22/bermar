@@ -4,60 +4,62 @@
             <img src="/images/logo.png" alt="">
         </div>
         <div class="menu">
+            
+            <router-link to="/painel" v-if="[0, 1, 3, 4].includes(user_type)" >
+                <UilAngleRight color="#626262" size="12px" class="icon_angle" />
+                <UilEstate size="20px" class="icon_route" />
+                Painel
+            </router-link>
 
-            <template v-if="$user.enterprise_id">
+            <router-link to="/painel/tabela-de-precos" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilCube size="20px" class="icon_route" />
+                Tabela de preço
+            </router-link>
 
-                <router-link to="/painel" v-if="$user.enterprise.enterprise_type_id == 1" >
-                    <UilAngleRight color="#626262" size="12px" class="icon_angle" />
-                    <UilEstate size="20px" class="icon_route" />
-                    Painel
-                </router-link>
+            <router-link to="/painel/produtos" v-if="[1, 2].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilCube size="20px" class="icon_route" />
+                Produtos
+            </router-link>
 
-                <router-link to="/painel/produtos" v-if="$user.enterprise.enterprise_type_id == 2 || $user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilCube size="20px" class="icon_route" />
-                    Produtos
-                </router-link>
+            <router-link to="/painel/familias" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilCube size="20px" class="icon_route" />
+                Família
+            </router-link>
 
-                <router-link to="/painel/familias" v-if="$user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilCube size="20px" class="icon_route" />
-                    Família
-                </router-link>
+            <router-link to="/painel/vendas" v-if="[3].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilTagAlt size="20px" class="icon_route" />
+                Minhas Vendas
+            </router-link>
 
-                <router-link to="/painel/vendas" v-if="$user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilTagAlt size="20px" class="icon_route" />
-                    Minhas Vendas
-                </router-link>
+            <router-link to="/painel/empresas" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShop size="20px" class="icon_route" />
+                Empresas
+            </router-link>
 
-                <router-link to="/painel/empresas" v-if="$user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilShop size="20px" class="icon_route" />
-                    Empresas
-                </router-link>
+            <router-link to="/painel/usuarios" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilUsersAlt size="20px" class="icon_route" />
+                Usuários
+            </router-link>
 
-                <router-link to="/painel/usuarios" v-if="$user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilUsersAlt size="20px" class="icon_route" />
-                    Usuários
-                </router-link>
+            <router-link to="/painel/minhas-compras" v-if="[2].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Minhas compras
+            </router-link>
 
-                <router-link to="/painel/minhas-compras" v-if="$user.enterprise.enterprise_type_id == 1">
-                    <UilAngleRight size="12px" class="icon_angle" />
-                    <UilShoppingBag size="20px" class="icon_route" />
-                    Minhas compras
-                </router-link>
-
-            </template>
-
-            <router-link to="/painel/garantias">
+            <router-link to="/painel/garantias" v-if="[0,1,4].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Pedidos de garantia
             </router-link>
 
-            <router-link to="/painel/produtos/garantias">
+            <router-link to="/painel/produtos/garantias" v-if="[1].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Produtos de garantia
@@ -76,12 +78,19 @@ export default {
     components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag  },
     return:{
         data(){
-            user: null
+            user_type: null
         }
     },
     created() {
         if (localStorage.user) {
-        this.user = JSON.parse(localStorage.user);
+            let user = JSON.parse(localStorage.user);
+            
+            if(user.enterprise){
+                this.user_type = user.enterprise.enterprise_type_id
+            }else{
+                // user_type = 0, é para o usuario final, aquele usuario que não está ligado a nenhuma empresa.   
+                this.user_type = 0
+            }
         }
   },
 }

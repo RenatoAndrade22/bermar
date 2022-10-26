@@ -66,8 +66,8 @@
                 </vs-tr>
             </template>
         </vs-table>
-        <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
-            <vs-row vs-w="12" style="width: 100% !important; display: block;">
+        <vs-popup class="holamundo" title="Cadastrar Usuário" :active.sync="popupActivo">
+            <vs-row vs-w="12" style="width: 100% !important; display: block;" id="cadastrar_usuario">
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
@@ -309,12 +309,23 @@ export default {
         },
 
         record(){
+
+            //loading
+            this.$vs.loading({
+                container: '#cadastrar_usuario',
+                scale: 0.6
+            })
+
             if(this.validate()){
 
                 if(!this.edit_company){
                     axios.post('/api/user', this.form).then((data)=>{
                         this.address.enterprise_id = data.data.id
                         this.getUsers()
+
+                        //close loading
+                        this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
+
                         this.popupActivo = false
                         this.$toast.open({
                             message: 'Usuário cadastrado!',
@@ -324,6 +335,10 @@ export default {
                 }else{
                     axios.put('/api/user/'+this.form.id, this.form).then((data)=>{
                         this.getUsers()
+
+                        //close loading
+                        this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
+                        
                         this.popupActivo = false
                         this.$toast.open({
                             message: 'Usuário atualizado!',
@@ -332,6 +347,9 @@ export default {
                     })
                 }
                 
+            }else{
+                //close loading
+                this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
             }
         },
 

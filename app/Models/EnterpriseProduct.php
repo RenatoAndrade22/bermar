@@ -16,8 +16,7 @@ class EnterpriseProduct extends Model
     ];
     
     protected $with = [
-        'products',
-        'address'
+        'products'
     ];
 
     public function products(): BelongsTo

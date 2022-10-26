@@ -12,4 +12,11 @@ class ChatController extends Controller
     {
         return Chat::query()->with(['messages', 'warranty'])->where('id', $id)->get();
     }
+
+    public function update(Request $request, $id){
+        $chat = Chat::find($id);
+        $chat->fill($request->all());
+        $chat->saveOrFail();
+        return $chat;
+    }
 }

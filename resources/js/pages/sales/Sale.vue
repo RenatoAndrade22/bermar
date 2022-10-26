@@ -36,10 +36,11 @@
                 <vs-th>
                     Status pagamento
                 </vs-th>
+                   -->
                 <vs-th>
-                    Status entrega
+                    Produtos
                 </vs-th>
-                -->
+             
                 <vs-th>
                     Nota fiscal
                 </vs-th>
@@ -51,17 +52,19 @@
                     <vs-td :data="data[indextr].id">
                         {{data[indextr].id}}
                     </vs-td>
-<!--
-                    <vs-td :data="data[indextr].sale_order_items[0].price">
-                        {{formatCurrency(data[indextr].sale_order_items[0].price * data[indextr].sale_order_items[0].quantity)}}
-                    </vs-td>
--->
-                    <vs-td :data="data[indextr].user.name">
-                        {{data[indextr].user.name}}
+
+                    <vs-td :data="data[indextr].total">
+                        {{ formatCurrency(data[indextr].total) }}
                     </vs-td>
 
                     <vs-td :data="data[indextr].enterprise.name">
-                        {{data[indextr].user.name}}
+                        {{data[indextr].enterprise.name}}
+                    </vs-td>
+
+                    <vs-td :data="data[indextr].sale_order_items">
+                        <vs-button type="relief" @click="viewProducts(data[indextr].sale_order_items)">
+                            <span>Produtos</span>
+                        </vs-button>
                     </vs-td>
 
                     <vs-td :data="data[indextr].invoices">
@@ -87,6 +90,15 @@
             <vs-upload automatic text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'+sale_order_id" />
         </vs-popup>
 
+        <vs-popup title="Produtos" :active.sync="view_products">
+            <ul class="sale_products">
+                <li v-for="(p, i) in sale_products">
+                    <p>{{ p.product.name }}</p>
+                    <span>{{ p.quantity }} x {{ p.price }}</span>
+                </li>
+            </ul>
+        </vs-popup>
+
         <vs-popup title="Cadastrar nova venda" :active.sync="popup_new">
 
              <vs-row id="cadastro_venda">
@@ -105,7 +117,7 @@
 
                 <template v-if="!buy_file">
 
-                    <vs-col vs-w="12">
+                    <vs-col vs-w="12" v-if="form.company">
                         <vs-input
                             class="mb-3 mt-2"
                             placeholder="Buscar produto"
@@ -115,7 +127,7 @@
                     </vs-col>
 
                     <div class="products">
-                        <div v-for="(product, index) in list_products" class="product-list">
+                        <div v-for="(product, index) in list_products" class="product-list" v-if="form.company">
                             <div class="name">
                                 <p>{{ product.name }}</p>
                                 <span>Preço: {{ product.price }}</span>  
@@ -178,9 +190,12 @@ export default {
             order_selected: null,
             delete_product: null,
             upload_file: false,
+            view_products: false,
+            sale_products: [],
             sale_order_id: null,
             step: 0,
             total: 0,
+            table_prices: [],
             filters:{
                 status_sale: null,
                 status_payment: null,
@@ -319,6 +334,16 @@ export default {
     },
     methods:{
 
+        viewProducts(items){
+            console.log('items', items)
+            this.sale_products = items
+            this.view_products = true
+        },
+
+        sumQntValues(quantity, price){
+            return quantity ? (parseFloat(quantity) * price) : 0
+        },
+
         addSale(){
             //loading
             this.$vs.loading({
@@ -339,10 +364,12 @@ export default {
                 this.$vs.loading.close('#cadastro_venda > .con-vs-loading')
 
                 this.popup_new = false
-                
+
+                this.getSaleOrders()
+
                 this.$vs.notify({
                     color:'success',
-                    title:'Família cadastrada!',
+                    title:'Venda cadastrada!',
                     text:''
                 })
               
@@ -353,7 +380,7 @@ export default {
         },
 
         getCompanies(){
-            axios.get('/api/enterprise').then((data)=>{
+            axios.get('/api/enterprises-type/2').then((data)=>{
                 this.companies = data.data
             })
         },
@@ -366,6 +393,14 @@ export default {
                     return product
                 })
                 this.products = this.products.items
+             })
+        
+        },
+
+        getTablePrices() {
+            
+            axios.get("/api/price_table").then((result) => { 
+                this.table_prices = result.data
              })
         
         },
@@ -419,14 +454,21 @@ export default {
 
         getSaleOrders(){
             axios.get('/api/sale-order').then((resp)=>{
-                this.sales = resp.data
+                this.sales = this.$c(resp.data).map((sale)=>{
+
+                    this.$c(sale.sale_order_items).each((s)=>{
+                        let value = s.quantity ? (parseFloat(s.quantity) * parseFloat(s.price)) : 0
+                        sale.total = (sale.total ? sale.total : 0) + value
+                    })
+                    return sale
+                })
+                this.sales = this.sales.items
             })
         },
 
         downloadInvoice(sale_order_id){
             axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
                 this.$vs.notify({color: "success", title: "Arquivo baixado!", text: ""})
-                console.log('oii', resp.data)
                 window.open('/invoices/'+resp.data.name, '_blank')
             })
         },
@@ -439,6 +481,7 @@ export default {
         this.getSaleOrders()
         this.getCompanies()
         this.getProductsBermar()
+        this.getTablePrices()
     },
     watch:{
         list_products: {
@@ -456,9 +499,25 @@ export default {
     computed:{
 
         list_products() {
-            console.log('entrou')
 
             let products = this.$c(this.products)
+
+            if(this.form.company){
+
+                //empresa selecionada
+                let company = this.$c(this.companies).where('id', this.form.company)
+                
+                // tabela referente ao Estado da empresa
+                let table_price = this.$c(this.table_prices).where('name', company.items[0]['address']['state'])
+                table_price = table_price.items[0].prices
+
+                products = this.$c(this.products).map((product)=>{
+                    let price = this.$c(table_price).where('product_id', product.id)
+                    product.price = price.items[0].price
+                    return product
+                })
+            }
+
             products = products.items
 
             if (this.form.search) {
@@ -498,6 +557,23 @@ export default {
 }
 </script>
 <style scoped>
+    .sale_products{
+        margin: 0;
+        padding: 0;
+    }
+    .sale_products p{
+        font-weight: 600 !important;
+        margin: 0;
+        color: #333 !important;
+    }
+    .sale_products span{
+        color: rgb(238, 27, 33);
+    }
+    .sale_products li{
+        list-style: none;
+        border-bottom: 1px solid #efeeee;
+        padding: 15px;
+    }
     .error{
         color:red
     }

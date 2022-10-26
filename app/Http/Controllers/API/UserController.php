@@ -15,6 +15,12 @@ class UserController extends Controller
         return User::all();
     }
 
+    public function getBuyers(){
+        return User::query()
+            ->whereNull('enterprise_id')
+            ->get();
+    }
+
     public function store(RecordUser $request)
     {
         $user = new User();

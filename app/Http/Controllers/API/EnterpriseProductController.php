@@ -11,6 +11,7 @@ class EnterpriseProductController extends Controller
 {
 
     public function index(){
+        
         $products = EnterpriseProduct::query()
             ->where('enterprise_id', Auth::user()->enterprise_id)
             ->get();

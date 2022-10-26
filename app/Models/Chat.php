@@ -13,6 +13,15 @@ class Chat extends Model
 
     protected $table = 'chat';
 
+    protected $with = [
+        'user'
+    ];
+
+    protected $fillable = [
+        'status',
+        'enterprise_id',
+    ];
+
     public function messages() :HasMany
     {
         return $this->hasMany(ChatMessage::class, 'chat_id', 'id');
@@ -21,5 +30,10 @@ class Chat extends Model
     public function warranty(): BelongsTo
     {
         return $this->belongsTo(Warranty::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

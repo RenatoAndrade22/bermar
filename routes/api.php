@@ -17,6 +17,7 @@ use \App\Http\Controllers\API\ChatController;
 use \App\Http\Controllers\API\ChatMessageController;
 use \App\Http\Controllers\API\WarrantyProductController;
 use \App\Http\Controllers\API\BudgetController;
+use \App\Http\Controllers\API\PriceTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,6 +56,7 @@ Route::put('update/user/{id}', [\App\Http\Controllers\API\UserController::class,
 
 Route::get('products-bermar', [\App\Http\Controllers\API\ProductController::class, 'getProductsBermar']);
 
+Route::get('buyers', [\App\Http\Controllers\API\UserController::class, 'getBuyers']);
 
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);
@@ -76,13 +78,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'sale-order' => SaleOrderController::class,
         'warranty-product' => WarrantyProductController::class,
         'budget' => BudgetController::class,
+        'price_table' => PriceTableController::class,
     ]);
 
+    Route::get('enterprises-type/{type}', [EnterpriseController::class, 'getEnterpriseType']);
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
     Route::get('sale-orders-by-user', [SaleOrderController::class, 'getSaleOrderByUser']);
     Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
 
 });
+
+//test
+Route::get('test', [EnterpriseController::class, 'test']);
 
 // SITE
 Route::resources([

@@ -27,6 +27,9 @@ import User from "./pages/users/User";
 
 import WarrantyProduct from "./pages/warranty-products/WarrantyProduct"
 
+import PriceTable from "./pages/price_table/PriceTable"
+import PriceTableNew from "./pages/price_table/New"
+
 export default {
     mode: 'history',
     linkActiveClass:'active-menu',
@@ -109,6 +112,18 @@ export default {
                     name: 'sales',
                     component: Sales
                 },
+                {
+                    path:'/painel/tabela-de-precos',
+                    name: 'PriceTable',
+                    component: PriceTable
+                },
+
+                {
+                    path:'/painel/tabela-de-precos/nova',
+                    name: 'PriceTableNew',
+                    component: PriceTableNew
+                },
+                
                 {
                     path:'/painel/minhas-compras',
                     name: 'shopping',

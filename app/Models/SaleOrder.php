@@ -31,7 +31,7 @@ class SaleOrder extends Model
 
     public function enterprise(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(enterprise::class);
     }
 
     public function saleOrderItems(): HasMany

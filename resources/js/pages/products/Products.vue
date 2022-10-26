@@ -3,7 +3,7 @@
     <vs-navbar class="header_page">
       <div slot="title">
         <vs-navbar-title>
-          <span style="color: #ee1b21">({{ list_products.length }})</span>
+          <span style="color: #ee1b21" v-if="list_products">({{ list_products.length }})</span>
           Produtos
         </vs-navbar-title>
       </div>
@@ -14,12 +14,14 @@
         placeholder="Buscar produto"
         v-model="search"
       />
-
-      <vs-button v-if="$user.enterprise.enterprise_type_id == 2" type="relief" @click="select_new = !select_new"
+      <!--
+        <vs-button v-if="$user.enterprise.enterprise_type_id == 2" @click="select_new = !select_new"
         >Produtos</vs-button
       >
+      -->
+      
 
-      <vs-button v-if="$user.enterprise.enterprise_type_id == 1" type="relief" @click="$router.push({ name: 'products_new' })"
+      <vs-button v-if="$user.enterprise.enterprise_type_id == 1" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
       >
     </vs-navbar>
@@ -27,17 +29,19 @@
     <vs-table stripe :data="list_products" noDataText="Nenhum produto encontrado." class="header mt-5">
       <template slot="thead">
         <vs-th> Nome </vs-th>
-        <vs-th> Preço </vs-th>
-        <vs-th> Status </vs-th>
-        <vs-th> Ações </vs-th>
       </template>
 
       <template slot-scope="{ data }">
         <vs-tr :key="indextr" v-for="(tr, indextr) in data">
           <vs-td :data="data[indextr].name">
             {{ data[indextr].name }}
+            <vs-input
+              class="search"
+              placeholder="Link"
+              v-model="data[indextr].link"
+            />
           </vs-td>
-
+          <!--
           <vs-td :data="data[indextr].price">
             {{ data[indextr].price }}
           </vs-td>
@@ -79,7 +83,9 @@
                 />
               </vs-tooltip>
             </div>
-          </vs-td>
+          </vs-td>  
+          -->
+          
         </vs-tr>
       </template>
     </vs-table>
@@ -116,13 +122,16 @@
         >
           <vs-col vs-w="1" vs-type="flex" vs-justify="center" vs-align="center">
             <div class="image">
-              <img style="width: 100%" :src="'/uploads/'+product.image[0].name" />
+              <span>{{product.image}}</span>
+                <img style="width: 100%" :src="'/products-images/'+product.product_images[0].name" />
             </div>
           </vs-col>
           <vs-col vs-w="8">
             <div class="info_delivery">
               <p class="name_product">{{ product.name }}</p>
+              <!--
               <p class="desc_product">{{ product.description }}</p>
+              -->
               <p>Valor: {{ product.price }}</p>
             </div>
           </vs-col>
@@ -244,8 +253,10 @@ export default {
           }else{
             this.products_bermar = this.$c(data.data).map((data)=>{
               data.stock = null
+              data.link = null
               return data
             })
+            this.products_bermar = this.products_bermar.items
           }
           
       });
@@ -309,17 +320,21 @@ export default {
     this.getProductsBermar();
   },
   computed: {
+
     list_products() {
-      let products = this.products;
+
+      let products = this.products_bermar;
 
       if (this.search) {
         products = this.$c(products).filter((product) => {
           return product.name.toLowerCase().search(this.search) >= 0;
         });
+        products = products.items
       }
 
-      return products.items;
+      return products;
     },
+
   },
 };
 </script>

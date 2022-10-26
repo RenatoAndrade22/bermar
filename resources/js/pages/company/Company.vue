@@ -67,7 +67,7 @@
             </template>
         </vs-table>
         <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
-            <vs-row vs-w="12" style="width: 100% !important; display: block;">
+            <vs-row vs-w="12" style="width: 100% !important; display: block;" id="new_company">
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
@@ -378,7 +378,8 @@ export default {
                 {
                     id: 4,
                     name: 'Assistência'
-                }
+                },
+                
             ]
         }
     },
@@ -402,6 +403,12 @@ export default {
         },
 
         record(){
+            //loading
+            this.$vs.loading({
+                container: '#new_company',
+                scale: 0.6
+            })
+
             if(this.validate()){
 
                 if(!this.edit_company){
@@ -415,6 +422,9 @@ export default {
                     })
                 }
                 
+            }else{
+                //close loading
+                this.$vs.loading.close('#new_company > .con-vs-loading')
             }
         },
 
@@ -425,6 +435,9 @@ export default {
                     this.popupActivo = false
 
                     this.getCompanies()
+
+                    //close loading
+                    this.$vs.loading.close('#new_company > .con-vs-loading')
 
                     this.$toast.open({
                         message: 'Empresa cadastrada!',
@@ -437,6 +450,9 @@ export default {
                     this.popupActivo = false
 
                     this.getCompanies()
+
+                    //close loading
+                    this.$vs.loading.close('#new_company > .con-vs-loading')
 
                     this.$toast.open({
                         message: 'Empresa atualizada!',
