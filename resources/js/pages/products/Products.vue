@@ -33,7 +33,7 @@
 
       <template slot-scope="{ data }">
         <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-          <vs-td :data="data[indextr].name">
+          <vs-td :data="data[indextr].name"  v-if="$user.enterprise.enterprise_type_id != 1">
             {{ data[indextr].name }}
             <vs-input
               class="search"
@@ -41,50 +41,53 @@
               v-model="data[indextr].link"
             />
           </vs-td>
-          <!--
-          <vs-td :data="data[indextr].price">
-            {{ data[indextr].price }}
-          </vs-td>
+          
+          <template v-if="$user.enterprise.enterprise_type_id == 1">
+            <vs-td :data="data[indextr].price">
+              {{ data[indextr].price }}
+            </vs-td>
 
-          <vs-td :data="data[indextr].status">
-            <vs-button
-              v-if="data[indextr].status == 1"
-              line-origin="left"
-              color="success"
-              type="flat"
-              >Ativo</vs-button
-            >
-            <vs-button
-              v-if="data[indextr].status == 0"
-              line-origin="left"
-              color="danger"
-              type="flat"
-              >Inativo</vs-button
-            >
-          </vs-td>
+            <vs-td :data="data[indextr].status">
+              <vs-button
+                v-if="data[indextr].status == 1"
+                line-origin="left"
+                color="success"
+                type="flat"
+                >Ativo</vs-button
+              >
+              <vs-button
+                v-if="data[indextr].status == 0"
+                line-origin="left"
+                color="danger"
+                type="flat"
+                >Inativo</vs-button
+              >
+            </vs-td>
 
-          <vs-td :data="data[indextr].id" style="width: 195px">
-            <div
-              @click="editItem(data[indextr].id)"
-              class="icons"
-              style="float: left; margin: 0 5px"
-            >
-              <vs-tooltip text="Editar">
-                <UilEdit size="19px" class="icon_view" />
-              </vs-tooltip>
-            </div>
+            <vs-td :data="data[indextr].id" style="width: 195px"> 
+              <div
+                @click="editItem(data[indextr].id)"
+                class="icons"
+                style="float: left; margin: 0 5px"
+              >
+                <vs-tooltip text="Editar">
+                  <UilEdit size="19px" class="icon_view" />
+                </vs-tooltip>
+              </div>
 
-            <div @click="deleteItem(data[indextr].id)" class="icons">
-              <vs-tooltip text="Desativar">
-                <UilTrashAlt
-                  size="19px"
-                  class="icon_view"
-                  @click="deleteItem(data[indextr].id)"
-                />
-              </vs-tooltip>
-            </div>
-          </vs-td>  
-          -->
+              <div @click="deleteItem(data[indextr].id)" class="icons">
+                <vs-tooltip text="Desativar">
+                  <UilTrashAlt
+                    size="19px"
+                    class="icon_view"
+                    @click="deleteItem(data[indextr].id)"
+                  />
+                </vs-tooltip>
+              </div>
+            </vs-td>  
+            
+          </template>
+          
           
         </vs-tr>
       </template>
@@ -246,7 +249,7 @@ export default {
       axios.get("/api/products-bermar").then((data) => {
 
           if (this.$user.enterprise.enterprise_type_id == 1) {
-            this.products = this.$c(data.data).map((data)=>{
+            this.products_bermar = this.$c(data.data).map((data)=>{
               data.stock = null
               return data
             })
