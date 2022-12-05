@@ -3,42 +3,47 @@
 @section('content')
 
 <!--/banner-bottom -->
-<section class="banner-bottom py-5">
+<section>
         <div class="container py-5">
+
+        @if(isset($category_name))
             <h3 class="title-wthree mb-lg-5 mb-4 text-center">{{ $category_name }}</h3>
-        
+        @endif
             <!--/row-->
             <div class="row shop-wthree-info text-center">
-                <div class="col-xl-2 categories" style="background: #efeeee;">
-                    <br>
-                    <h3>Categorias</h3>
-                    <br>
+                <div class="col-xl-2 categories">
+          
                     <div class='menu'>
+                        <p style="font-weight: 600;">Categorias</p>
                         @foreach ($categories as $category)
                             <a href="{{ url('categoria/'.$category['slug']) }}"><p>{{ $category['name'] }}</p></a>
                         @endforeach
                     </div>             
                 </div>
                 <div class="col-xl-10">
-                    <div class="row">
+                    <div class="row" style="    margin-top: -27px;">
                         
                         @foreach ($products as $product)
-                            <div class="col-lg-3 shop-info-grid text-center mt-4">
+                            <div class="col-lg-3 shop-info-grid text-center mb-4">
                                 <div class="product-shoe-info shoe">
                                     <div class="men-thumb-item">
+                                        @if(count($product['productImages']))
                                         <a href="{{ url('produto/'.$product['slug']) }}">
-                                            <img src="{{ asset('products-images/'.$product['productImages'][0]['name']) }}" class="img-fluid" alt="">
+                                            <img src="{{ asset('products-images/'.$product['productImages'][0]['name']) }}" class="img_product img-fluid" alt="">
                                         </a>
+                                        @endif
                                     </div>
                                     <div class="item-info-product">
                                         <h4>
                                             <a href="{{ url('produto/'.$product['slug']) }}">{{ $product['name'] }}</a>
                                         </h4>
+                                        <!--
                                         <div class="product_price">
                                             <div class="grid-price">
                                                 <span class="money">{{ $product['price'] }}</span>
                                             </div>
                                         </div>
+                                        -->
                                        
                                     </div>
                                 </div>
