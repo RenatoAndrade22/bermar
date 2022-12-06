@@ -40,12 +40,10 @@
                         <h2>{{ $product['name'] }}</h2>
                         {!! nl2br($product['description'])!!}
                         <!-- <p><a href="220v.html"><span class="fa fa-bolt" aria-hidden="true"></span> TENSÃO 220 V</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="220v.html"><span class="fa fa-cogs" aria-hidden="true"></span> 1/2 HP 760 w</a></p> -->
-                        
-                        <!--
                         <br>
 
                         <h5>R$ {{ $product['price'] }} <span></span> <a href="#"></a></h5>
-                        
+                        <!--
                         <div class="available mt-3">
                             <p>Informe o CEP para calcular o frete:</p>
                             <div class="content-input-field">
@@ -57,6 +55,15 @@
                         </div>
                         -->
                         <div class="share-desc mt-5">
+                            <div class="share text-left">
+                                <h4>COMPARTILHAR PRODUTO:</h4>
+                                <div class="social-ficons mt-4">
+                                    <ul>
+                                        <li><a href="https://pt-br.facebook.com/"><span class="fa fa-facebook"></span> Facebook</a></li>
+                                        <li><a href="https://www.instagram.com/"><span class="fa fa-instagram"></span> Instagram</a></li>
+                                    </ul>
+                                </div>
+                            </div>
                             <div class="available mt-3">
                                 <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
                                    
@@ -78,8 +85,8 @@
                             <iframe width="1120" height="630" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         @endif
                         <div class="row">
-                            <div class="desc1-left col-md-6 mt-3">
-                                {!! nl2br($product['datasheet']) !!}
+                            <div class="desc1-left col-md-6">
+                                {!! nl2br($product['description']) !!}
                             </div>
                             <div class="desc1-right col-md-6 pl-lg-3">
                                 
@@ -96,43 +103,40 @@
                 </div>
         
                 
-                @if(count($products_related) > 0)
+
                 <!--/row-->
                 <h3 class="title-wthree-single my-lg-5 my-4 text-left">CONHEÇA TAMBÉM</h3>
                 <div class="row shop-wthree-info text-center">
-                    
-                        @foreach ($products_related as $related)
 
-                            <div class="col-md-3 shop-info-grid text-center mt-4">
-                                <div class="product-shoe-info shoe">
-                                    <div class="men-thumb-item">
-                                        @if(count($related['productImages']))
-                                        <a href="{{ url('produto/'.$related['slug']) }}">
-                                            <img src="{{ asset('products-images/'.$related['productImages'][0]['name']) }}" class="img-fluid" alt="">
-                                        </a>
-                                        @endif
-                                    </div>
-                                    <div class="item-info-product">
-                                        <h4>
-                                            <a href="{{ url('produto/'.$related['slug']) }}">{{ $related['name'] }}</a>
-                                        </h4>
+                    @foreach ($products_related as $related)
 
-                                        <div class="product_price">
-                                            <div class="grid-price">
-                                                <span class="money"><span class="line"></span>R$ {{ $related['price'] }}</span>
-                                            </div>
+                        <div class="col-md-3 shop-info-grid text-center mt-4">
+                            <div class="product-shoe-info shoe">
+                                <div class="men-thumb-item">
+                                    <a href="{{ url('produto/'.$related['slug']) }}">
+                                        <img src="{{ asset('products-images/'.$related['productImages'][0]['name']) }}" class="img-fluid" alt="">
+                                    </a>
+                                </div>
+                                <div class="item-info-product">
+                                    <h4>
+                                        <a href="{{ url('produto/'.$related['slug']) }}">{{ $related['name'] }}</a>
+                                    </h4>
+
+                                    <div class="product_price">
+                                        <div class="grid-price">
+                                            <span class="money"><span class="line"></span>R$ {{ $related['price'] }}</span>
                                         </div>
-                                        
-                                        </ul>
                                     </div>
+                                    
+                                    </ul>
                                 </div>
                             </div>
-                            
-                        @endforeach
-                    
+                        </div>
+                        
+                    @endforeach
                 </div>
                 <!--//row-->
-                @endif
+
             </div>
         </div>
     </section>
