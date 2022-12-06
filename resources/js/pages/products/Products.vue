@@ -19,7 +19,6 @@
         >Produtos</vs-button
       >
       -->
-      
 
       <vs-button v-if="$user.enterprise.enterprise_type_id == 1" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
@@ -28,42 +27,27 @@
 
     <vs-table stripe :data="list_products" noDataText="Nenhum produto encontrado." class="header mt-5">
       <template slot="thead">
-        <vs-th> Nome </vs-th>
+        <vs-th> Nome</vs-th>
+        <vs-th> Status</vs-th>
       </template>
 
       <template slot-scope="{ data }">
         <vs-tr :key="indextr" v-for="(tr, indextr) in data">
-          <vs-td :data="data[indextr].name"  v-if="$user.enterprise.enterprise_type_id != 1">
+          <vs-td :data="data[indextr].name">
             {{ data[indextr].name }}
             <vs-input
+              v-if="$user.enterprise.enterprise_type_id != 1"
               class="search"
               placeholder="Link"
               v-model="data[indextr].link"
             />
           </vs-td>
+          <vs-td :data="data[indextr].status">
+            <span v-if="data[indextr].status" style="color:green;">Ativo</span>
+            <span v-if="!data[indextr].status" style="color:red;">Inativo</span>
+          </vs-td>
           
           <template v-if="$user.enterprise.enterprise_type_id == 1">
-            <vs-td :data="data[indextr].price">
-              {{ data[indextr].price }}
-            </vs-td>
-
-            <vs-td :data="data[indextr].status">
-              <vs-button
-                v-if="data[indextr].status == 1"
-                line-origin="left"
-                color="success"
-                type="flat"
-                >Ativo</vs-button
-              >
-              <vs-button
-                v-if="data[indextr].status == 0"
-                line-origin="left"
-                color="danger"
-                type="flat"
-                >Inativo</vs-button
-              >
-            </vs-td>
-
             <vs-td :data="data[indextr].id" style="width: 195px"> 
               <div
                 @click="editItem(data[indextr].id)"
@@ -126,7 +110,7 @@
           <vs-col vs-w="1" vs-type="flex" vs-justify="center" vs-align="center">
             <div class="image">
               <span>{{product.image}}</span>
-                <img style="width: 100%" :src="'/products-images/'+product.product_images[0].name" />
+                <img v-if="product.product_images.length > 0" style="width: 100%" :src="'/products-images/'+product.product_images[0].name" />
             </div>
           </vs-col>
           <vs-col vs-w="8">
@@ -280,9 +264,9 @@ export default {
     },
 
     deleteItem(id) {
-      console.log("name", id);
 
-      this.delete_product = this.$c(this.products).where("id", id);
+      this.delete_product = this.$c(this.list_products).where("id", id);
+      console.log('aqqqq', this.delete_product)
       this.$vs.dialog({
         type: "confirm",
         color: "danger",
@@ -298,18 +282,24 @@ export default {
     acceptAlert() {
       axios
         .delete(
-          "/api/products/" + this.delete_product.items[0].id
+          "/api/product/" + this.delete_product.items[0].id
         )
         .then((data) => {
-          this.products = this.$c(this.products).filter((item) => {
+          this.products_bermar = this.$c(this.products_bermar).filter((item) => {
             return item.id !== this.delete_product.items[0].id;
           });
 
-          this.products = this.products.items;
+          this.products_bermar = this.products_bermar.items;
 
           this.$vs.notify({
             color: "success",
             title: "Produto excluído!",
+            text: "",
+          });
+        }).catch((e)=>{
+          this.$vs.notify({
+            color: "danger",
+            title: "Existe venda com esse produto, por isso ele não pode ser excluído, caso não queira mais esse produto, clique para editar e desative esse produto.",
             text: "",
           });
         });
@@ -333,8 +323,10 @@ export default {
           return product.name.toLowerCase().search(this.search) >= 0;
         });
         products = products.items
+      }else{
+        products = products.items
       }
-
+      
       return products;
     },
 

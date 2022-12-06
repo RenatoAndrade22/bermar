@@ -18,6 +18,7 @@ use \App\Http\Controllers\API\ChatMessageController;
 use \App\Http\Controllers\API\WarrantyProductController;
 use \App\Http\Controllers\API\BudgetController;
 use \App\Http\Controllers\API\PriceTableController;
+use \App\Http\Controllers\API\getEnterprisesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,7 @@ Route::put('update/user/{id}', [\App\Http\Controllers\API\UserController::class,
 Route::get('products-bermar', [\App\Http\Controllers\API\ProductController::class, 'getProductsBermar']);
 
 Route::get('buyers', [\App\Http\Controllers\API\UserController::class, 'getBuyers']);
+Route::get('get-representatives', [\App\Http\Controllers\API\getEnterprisesController::class, 'getRepresentatives']);
 
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);

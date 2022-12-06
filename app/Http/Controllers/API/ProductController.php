@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\EnterpriseProduct;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Price;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -95,12 +96,16 @@ class ProductController extends Controller
 
         $product = Product::find($id);
         $product->fill($request->all());
+        
         if($request->get('name')){
             $product->slug = $this->sanitizeString($request->get('name'));
         }
+
         $product->video = $video;
         $product->saveOrFail();
+
         return $product;
+
     }
 
     /**
@@ -111,11 +116,10 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::find($id);
-
         $images = ProductImage::query()->where('product_id', $id)->delete();
+        $images = Price::query()->where('product_id', $id)->delete();
+        $product = Product::query()->where('id', $id)->delete();
 
-        $product->delete();
         return true;
     }
 
