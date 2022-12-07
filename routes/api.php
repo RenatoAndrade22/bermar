@@ -58,7 +58,7 @@ Route::put('update/user/{id}', [\App\Http\Controllers\API\UserController::class,
 Route::get('products-bermar', [\App\Http\Controllers\API\ProductController::class, 'getProductsBermar']);
 
 Route::get('buyers', [\App\Http\Controllers\API\UserController::class, 'getBuyers']);
-Route::get('get-representatives', [\App\Http\Controllers\API\getEnterprisesController::class, 'getRepresentatives']);
+Route::get('get-companies-state/{type}/{uf}', [\App\Http\Controllers\API\getEnterprisesController::class, 'getRepresentatives']);
 
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);

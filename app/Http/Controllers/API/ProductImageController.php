@@ -18,8 +18,8 @@ class ProductImageController extends Controller
 
         $file = $request->file('image');
 
-        $name = 'teste.png';
-
+        $name = uniqid() . '_&&_' . trim($file->getClientOriginalName());
+        
         $file->move($path, $name);
 
         $product = new ProductImage();

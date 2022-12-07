@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Enterprise extends Model
 {
@@ -26,9 +27,9 @@ class Enterprise extends Model
         'status',
     ];
 
-    public function address(): HasOne
+    public function address(): HasMany
     {
-        return $this->hasOne(address::class);
+        return $this->hasMany(Address::class, 'enterprise_id');
     }
 
     public function enterpriseType(): BelongsTo

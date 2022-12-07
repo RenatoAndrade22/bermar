@@ -95,9 +95,9 @@
                         <input type="checkbox" id="drop" />
         -->
                         <ul class="menu">
-                            <li class="active"><a href="{{ url('/') }}">Início</a></li>
-                            <li><a href="{{ url('empresa') }}">Empresa</a></li>
-                            <li><a href="{{ url('produtos') }}" class="drop-text">Produtos</a></li>
+                            <li class="{{ (request()-> is('/')) ? 'active' : '' }}"><a href="{{ url('/') }}">Início</a></li>
+                            <li class="{{ (request()-> is('empresa')) ? 'active' : '' }}"><a href="{{ url('empresa') }}">Empresa</a></li>
+                            <li class="{{ (request()-> is('produtos')) ? 'active' : '' }}"><a href="{{ url('produtos') }}" class="drop-text">Produtos</a></li>
 {{--                            <li style="position: relative;">--}}
 {{--                                <!-- First Tier Drop Down -->--}}
 {{--                                <label for="drop-2" class="toggle">Produtos <span class="fa fa-angle-down" aria-hidden="true"></span>--}}
@@ -113,10 +113,10 @@
 {{--                                </ul>--}}
 {{--                            </li>--}}
 
-                            <li><a href="{{ url('representantes') }}">Representantes</a></li>
-                            <li><a href="{{ url('assistencia') }}">Assistência</a></li>
-                            <li><a href="{{ url('revendas') }}">Revendas</a></li>
-                            <li><a href="{{ url('contato') }}">Contato</a></li>
+                            <li class="{{ (request()-> is('representantes')) ? 'active' : '' }}"><a href="{{ url('representantes') }}">Representantes</a></li>
+                            <li class="{{ (request()-> is('assistencia')) ? 'active' : '' }}"><a href="{{ url('assistencia') }}">Assistência</a></li>
+                            <li class="{{ (request()-> is('revendas')) ? 'active' : '' }}"><a href="{{ url('revendas') }}">Revendas</a></li>
+                            <li class="{{ (request()-> is('contato')) ? 'active' : '' }}"><a href="{{ url('contato') }}">Contato</a></li>
                         </ul>
                     </nav>
                     <!-- //nav -->

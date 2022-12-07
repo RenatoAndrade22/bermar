@@ -22,7 +22,10 @@
                                     <div class="col-md-7">
                                       <div class="product-image">
 
-                                        <div class="image" style="background-image: url({{ asset('products-images/'.$product['productImages'][0]['name']) }})"></div>
+                                        @if(count($product['productImages']) > 0)
+                                            <div class="image" style="background-image: url({{ asset('products-images/'.$product['productImages'][0]['name']) }})"></div>
+                                        @endif
+
                                       </div>
                                       <div class="row product-thumbnails">
                                         @foreach ($product['productImages'] as $image)

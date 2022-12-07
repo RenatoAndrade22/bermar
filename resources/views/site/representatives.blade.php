@@ -47,69 +47,7 @@
     </section>
     <!--//newsletter -->
     <section class="mb-5">
-        <div class="row" id="representatives">
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-            <div class="col-lg-4 px-4 mb-4">
-                <div class="col-lg-12 p-4 boxStyle">
-                    <p class="col-lg-12 text-center colorRed font-weight-bold h5 borderBotton pb-2">São Paulo</p>
-                    <p class="col-lg-12 text-center" style="margin:0;">Endereço</p>
-                    <p class="col-lg-12 text-secondary text-center">
-                        RUA PREFEITO MANUEL REGUEIRA, 20, ALTO DA MINA, ALTO DA MINA, AL, Brasil</p>
-                    <p class="col-lg-12 text-center">(17) 98122-5539</p>
-                </div>
-            </div>
-
-
+        <div class="row" id="list-representatives">
         </div>
     </section>
 @endsection
@@ -121,26 +59,71 @@
         document.getElementById("loading").style.display = "block";
 
         $.ajax({
-            url: "/api/get-representatives",
+            url: "/api/get-companies-state/representantes/"+uf,
             cache: false,
             success: function(resp){
                 document.getElementById("loading").style.display = "none";
 
-                var text = '';
 
-                for (let i = 0; i < resp.length; i++) {
-              
+                if(resp.length > 0){
+
+                    var html = '<ul>';
+
+                    for (let i = 0; i < resp.length; i++) {
+
+                        html = html+'<li><h5>'+resp[i].address[0].city+' - '+resp[i].address[0].state+'</h5><p>Endereço<br>'+resp[i].address[0].street+', '+resp[i].address[0].number+', '+resp[i].address[0].district+', '+resp[i].address[0].complement+'<br>(17) 98122-5539</p></li>';
+                    }
+                    
+                    html = html+'</ul>';
+
+                    console.log('teste', html)
+
+                }else{
+                    var html = '<p>Nenhuma empresa encontrada</p>';
                 }
-
+                
+                $('#list-representatives').html(html);
             }
         });
         
     }
 
-    
 </script>
 
 <style>
+
+    #list-representatives{
+  
+    }
+
+    #list-representatives ul{
+        width: 100%;
+        float: left;
+    }
+
+    #list-representatives ul li{
+        width: 410px;
+        margin: 20px;
+        float: left;
+        border: 1px solid #efeeee;
+        border-radius: 15px;
+        -webkit-box-shadow: 0px 0px 22px 0px rgb(239 238 238);
+        -moz-box-shadow: 0px 0px 22px 0px rgba(239,238,238,1);
+        box-shadow: 0px 0px 22px 0px rgb(239 238 238);
+    }
+
+    #list-representatives p{
+        text-align: center;
+        font-size: 13px;
+    }
+    
+    #list-representatives h5{
+        padding: 13px 0px;
+        text-align: center !important;
+        font-weight: 700 !important;
+        border-bottom: 1px solid #c1c1c1;
+    }
+
     #loading {
         text-align: center;
         display: none;
