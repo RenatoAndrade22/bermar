@@ -258,10 +258,11 @@
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="3" v-for="(img, i) in form.images" :key="i">
                         <div class="single_image">
                             <span @click="deleteImageById(img.id)">X</span>
-                            <img :src="'http://127.0.0.1:8000/products-images/'+img.name" alt="">
+                            <img :src="'/products-images/'+img.name" alt="">
                         </div>
                     </vs-col>
                 </vs-row>
+                
 
                 <div class="centerx">
                     <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
