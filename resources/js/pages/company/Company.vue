@@ -7,7 +7,7 @@
                 </vs-navbar-title>
             </div>
             <vs-input icon="search" class="search" placeholder="Buscar empresa" v-model="search"/>
-            <vs-button type="relief" @click="popupActivo=true"
+            <vs-button type="relief" @click="[popupActivo=true, edit_company=false, resertAddress()]"
                 >Cadastrar novo</vs-button
             >
         </vs-navbar>
@@ -259,7 +259,8 @@
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                         <div class="form_item">
                             <vs-button type="relief" @click="record" class="mt-4">
-                                Cadastrar
+                                <span v-if="!edit_company">Cadastrar</span>
+                                <span v-if="edit_company">Editar</span>
                             </vs-button>
                         </div>
                     </vs-col>
@@ -384,6 +385,19 @@ export default {
         }
     },
     methods:{
+        
+        resertAddress(){
+            this.address.city_id = null
+            this.address.city    = null
+            this.address.state   = null
+            this.address.street  = null
+            this.address.district   = null
+            this.address.name  = null
+            this.address.email  = null
+            this.address.cnpj  = null
+            this.address.phone  = null
+            this.address.status = true
+        },
 
         searchCity(){
             if(this.address.zipcode){
@@ -522,6 +536,8 @@ export default {
 
             let company = this.$c(this.providers).where('id',id).first()
 
+            console.log('company', company.address)
+
             this.form.id = company.id
             this.form.cnpj = company.cnpj
             this.form.email = company.email
@@ -530,7 +546,18 @@ export default {
             this.form.phone = company.phone
             this.form.status = company.status
 
-            this.address = company.address
+
+            this.address.id = company.address[0].id
+            this.address.zipcode = company.address[0].zipcode
+            this.address.city = company.address[0].city
+            this.address.city_id = company.address[0].city_id
+            this.address.state = company.address[0].state
+            this.address.street = company.address[0].street
+            this.address.number = company.address[0].number
+            this.address.district = company.address[0].district
+            this.address.complement = company.address[0].complement
+            this.address.enterprise_id = company.address[0].enterprise_id
+            this.address.region = company.address[0].region
 
             this.popupActivo = true
         },

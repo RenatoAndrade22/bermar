@@ -11,7 +11,7 @@ use App\Models\Enterprise;
 class EnterpriseController extends Controller
 {
     public function index(){
-        return Enterprise::all();
+        return Enterprise::query()->with('address')->get();
     }
 
     public function getEnterpriseType($type){
