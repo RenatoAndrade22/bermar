@@ -43,7 +43,6 @@
             @media (max-width: 1366px){
                 .main-sec {
                     background:none;
-                    border-bottom: 1px solid #d0d3d4;
                     min-height: 8em;
                     position: relative;
                 }

@@ -23,12 +23,14 @@
       <vs-button v-if="$user.enterprise.enterprise_type_id == 1" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
       >
+      <vs-button v-if="$user.enterprise.enterprise_type_id != 1" @click="saveLinks"
+        >Salvar links</vs-button
+      >
     </vs-navbar>
 
     <vs-table stripe :data="list_products" noDataText="Nenhum produto encontrado." class="header mt-5">
       <template slot="thead">
         <vs-th> Nome</vs-th>
-        <vs-th> Status</vs-th>
       </template>
 
       <template slot-scope="{ data }">
@@ -42,10 +44,7 @@
               v-model="data[indextr].link"
             />
           </vs-td>
-          <vs-td :data="data[indextr].status">
-            <span v-if="data[indextr].status" style="color:green;">Ativo</span>
-            <span v-if="!data[indextr].status" style="color:red;">Inativo</span>
-          </vs-td>
+          
           
           <template v-if="$user.enterprise.enterprise_type_id == 1">
             <vs-td :data="data[indextr].id" style="width: 195px"> 
@@ -196,6 +195,24 @@ export default {
     };
   },
   methods: {
+
+    saveLinks(){
+      
+      let links = this.$c(this.list_products).filter((item)=>{
+        return item.link ? true : false
+      })
+
+      if(links.items.length > 0){
+        axios.post("/api/links", links.items).then((resp) => {
+          this.$vs.notify({
+              color: "success",
+              title: "Links salvos",
+              text: "",
+            });
+        })
+      }
+    },
+
     updateProduct(){
       axios.put('/api/enterprise-products/'+this.product_selected.id, {product_id: this.product_selected.id, status: this.product_selected.status}).then((item)=>{
         this.$vs.notify({
@@ -223,9 +240,17 @@ export default {
         });
       }
     },
+
     getProducts() {
       axios.get("/api/enterprise-products").then((data) => {
           this.products = data.data
+      });
+    },
+
+    getProductsLinks() {
+      axios.get("/api/links").then((data) => {
+        this.products_bermar = data.data
+        
       });
     },
 
@@ -240,13 +265,13 @@ export default {
           }else{
             this.products_bermar = this.$c(data.data).map((data)=>{
               data.stock = null
-              data.link = null
               return data
             })
             this.products_bermar = this.products_bermar.items
           }
           
       });
+
     },
 
     viewItem(id) {
@@ -266,7 +291,7 @@ export default {
     deleteItem(id) {
 
       this.delete_product = this.$c(this.list_products).where("id", id);
-      console.log('aqqqq', this.delete_product)
+
       this.$vs.dialog({
         type: "confirm",
         color: "danger",
@@ -306,11 +331,18 @@ export default {
     },
   },
   created() {
-    if (this.$user.enterprise.enterprise_type_id != 1) {
+
+    if (this.$user.enterprise.enterprise_type_id != 1 && this.$user.enterprise.enterprise_type_id != 2) {
       this.getProducts();
     }
+
+    if (this.$user.enterprise.enterprise_type_id == 2) {
+      this.getProductsLinks();
+    }
     
-    this.getProductsBermar();
+    if(this.$user.enterprise.enterprise_type_id == 1){
+      this.getProductsBermar();
+    }
   },
   computed: {
 
@@ -319,14 +351,16 @@ export default {
       let products = this.products_bermar;
 
       if (this.search) {
+
         products = this.$c(products).filter((product) => {
           return product.name.toLowerCase().search(this.search) >= 0;
         });
         products = products.items
       }else{
-        products = products.items
+        products = products.items != undefined ? products.items : products
       }
-      
+      console.log('pr2', products)
+
       return products;
     },
 

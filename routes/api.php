@@ -19,6 +19,7 @@ use \App\Http\Controllers\API\WarrantyProductController;
 use \App\Http\Controllers\API\BudgetController;
 use \App\Http\Controllers\API\PriceTableController;
 use \App\Http\Controllers\API\getEnterprisesController;
+use \App\Http\Controllers\API\LinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,6 +82,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'warranty-product' => WarrantyProductController::class,
         'budget' => BudgetController::class,
         'price_table' => PriceTableController::class,
+        'links' => LinkController::class
     ]);
 
     Route::get('enterprises-type/{type}', [EnterpriseController::class, 'getEnterpriseType']);

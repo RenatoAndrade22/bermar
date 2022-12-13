@@ -41,6 +41,7 @@
                     </div>
                     <div class="desc1-right col-md-6 pl-lg-3">
                         <h2>{{ $product['name'] }}</h2>
+
                         {!! nl2br($product['description'])!!}
                         <!-- <p><a href="220v.html"><span class="fa fa-bolt" aria-hidden="true"></span> TENSÃO 220 V</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="220v.html"><span class="fa fa-cogs" aria-hidden="true"></span> 1/2 HP 760 w</a></p> -->
                         
@@ -63,9 +64,16 @@
                             <div class="available mt-3">
                                 <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
                                    
-                                    <button class="btn submit">DOWNLOAD MANUAL</button>
+                                    <button type="button" onclick="btnlinks()" class="btn submit">Comprar</button>
         
                                 </form>
+
+                                <div class="links mt-4">
+                                    <h6>Links para compra</h6>
+                                    @foreach ($product['links'] as $link)
+                                    <p style="color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" >{{ mb_strimwidth($link['link'], 0, 35, "...") }}</a></p>
+                                    @endforeach
+                                </div>
                                 
                             </div>
                             <div class="clearfix"></div>
@@ -139,6 +147,17 @@
             </div>
         </div>
     </section>
+    <script>
+        function btnlinks(){
+            $('.links').show()
+        }
+        
+    </script>
+    <style>
+        .links{
+            display: none;
+        }
+    </style>
     <!-- /banner-bottom -->
     <!--/newsletter -->
     

@@ -23,11 +23,12 @@ class ProductSiteController extends Controller
 
     public function show($slug){
 
+
         $categories = new CategoryController();
 
         $product = Product::query()->where('slug', $slug)->first();
 
-        $products_related = Product::query()->where('category_id', $product->category_id)->get();
+        $products_related = Product::query()->with('links')->where('category_id', $product->category_id)->get();
 
         return view('site.product', ['product' => $product, 'categories' => $categories->index(), 'products_related' => $products_related ]);
 
