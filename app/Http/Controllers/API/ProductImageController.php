@@ -20,11 +20,15 @@ class ProductImageController extends Controller
 
         $name = uniqid() . '_&&_' . trim($file->getClientOriginalName());
         
-        $file->move($path, $name);
+        $image_name = $request->file('image')->getRealPath();
+       
+        $upload = UploadCloudController::upload($image_name);
 
         $product = new ProductImage();
         $product->name = $name;
         $product->product_id = $id;
+        $product->public_id = $upload['public_id'];
+        $product->url = $upload['secure_url'];
         $product->saveOrFail();
 
         return $product;

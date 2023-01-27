@@ -45,6 +45,7 @@ Route::resources([
 ]);
 
 Route::post('/upload/{id}', [ProductImageController::class, 'store']);
+Route::post('/upload-manual/{id}', [ProductController::class, 'uploadManual']);
 Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
@@ -89,6 +90,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
     Route::get('sale-orders-by-user', [SaleOrderController::class, 'getSaleOrderByUser']);
     Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
+    
+    Route::get('total-sales', [SaleOrderController::class, 'getTotalSales']);
 
 });
 

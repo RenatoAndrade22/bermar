@@ -91,6 +91,7 @@ export default {
                 // user_type = 0, é para o usuario final, aquele usuario que não está ligado a nenhuma empresa.   
                 this.user_type = 0
             }
+            console.log('t',this.user_type)
         }
   },
 }

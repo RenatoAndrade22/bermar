@@ -19,7 +19,7 @@ class SaleOrderController extends Controller
 
         // encontra a tabela de preços pelo Estado do cliente.
         $enterprise = Enterprise::query()->where('id', $request->get('enterprise_id'))->first();
-        $table_price = PriceTable::query()->with('prices')->where('name', $enterprise->address['state'])->first();
+        $table_price = PriceTable::query()->with('prices')->where('name', $enterprise->address[0]['state'])->first();
 
         $sale = new SaleOrder();
         $sale->fill($request->all());
@@ -51,7 +51,7 @@ class SaleOrderController extends Controller
 
     public function index()
     {
-        $saleOrders = SaleOrder::with(['enterprise', 'user', 'saleOrderItems'])
+        $saleOrders = SaleOrder::query()
             ->where('user_id', Auth::user()->id)->get();
         return $saleOrders;
     }
@@ -61,6 +61,37 @@ class SaleOrderController extends Controller
 
         return SaleOrder::with(['user', 'saleOrderItems'])
             ->where('enterprise_id', Auth::user()->enterprise_id)->get();
+    }
+
+    public function getTotalSales()
+    {
+        $currentMonth = date('m');
+
+        $saleOrders = SaleOrder::query()
+            ->whereRaw('MONTH(created_at) = ?',[$currentMonth])
+            ->where('user_id', Auth::user()->id)->get();
+
+        $financial_total = $this->getPriceSale($saleOrders);
+
+        return [
+            'total_sales' => count($saleOrders),
+            'financial_total' => $financial_total
+        ];
+    }
+
+    public function getPriceSale($saleOrders){
+
+        $price = 0;
+
+        foreach($saleOrders as $sale){
+            // dd($sale['saleOrderItems']);
+            foreach($sale['saleOrderItems'] as $items){
+                $price = $items['price'] * $items['quantity'];
+            }
+        }
+
+        return $price;
+
     }
 
 }

@@ -23,13 +23,13 @@
                                       <div class="product-image">
 
                                         @if(count($product['productImages']) > 0)
-                                            <div class="image" style="background-image: url({{ asset('products-images/'.$product['productImages'][0]['name']) }})"></div>
+                                            <div class="image" style="background-image: url({{ asset($product['productImages'][0]['url']) }})"></div>
                                         @endif
 
                                       </div>
                                       <div class="row product-thumbnails">
                                         @foreach ($product['productImages'] as $image)
-                                            <img src="{{ asset('products-images/'.$image['name']) }}" alt="" class="img-thumbnail col-md-3" />
+                                            <img src="{{ asset($image['url']) }}" alt="" class="img-thumbnail col-md-3" />
                                         @endforeach
                                       </div>
                                     </div>
@@ -119,7 +119,7 @@
                                     <div class="men-thumb-item">
                                         @if(count($related['productImages']))
                                         <a href="{{ url('produto/'.$related['slug']) }}">
-                                            <img src="{{ asset('products-images/'.$related['productImages'][0]['name']) }}" class="img-fluid" alt="">
+                                            <img src="{{ asset($related['productImages'][0]['url']) }}" class="img-fluid" alt="">
                                         </a>
                                         @endif
                                     </div>

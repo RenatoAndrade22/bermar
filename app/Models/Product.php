@@ -30,6 +30,7 @@ class Product extends Model
         'packing_weight',
         'packing_length',
         'packing_height',
+        'manual'
     ];
 
     protected $with = [

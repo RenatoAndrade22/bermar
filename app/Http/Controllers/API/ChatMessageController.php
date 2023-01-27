@@ -38,15 +38,13 @@ class ChatMessageController extends Controller
         if (!file_exists($path)) {
           mkdir($path, 0777, true);
         }
+        
+        $name = $request->file('file')->getRealPath();
       
-        $file = $request->file('file');
-
-        $name = uniqid() . '_&&_' . trim($file->getClientOriginalName());
-      
-        $file->move($path, $name);
+        $upload = UploadCloudController::upload($name);
 
         $chatMessage = new ChatMessage();
-        $chatMessage->file = $name;
+        $chatMessage->file = $upload['secure_url'];
         $chatMessage->chat_id = $chat_id;
         $chatMessage->user_id = Auth::user()->id;
         $chatMessage->saveOrFail();

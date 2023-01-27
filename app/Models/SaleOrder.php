@@ -36,7 +36,7 @@ class SaleOrder extends Model
 
     public function saleOrderItems(): HasMany
     {
-        return $this->hasMany(saleOrderItems::class);
+        return $this->hasMany(SaleOrderItems::class);
     }
 
     public function invoices(): hasMany

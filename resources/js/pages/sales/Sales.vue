@@ -140,10 +140,11 @@
             </template>
         </vs-table>
         <vs-popup title="Enviar nota fiscal" :active.sync="upload_file">
-            <h1>{{sale_order_id}}</h1>
             <vs-upload automatic text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'+sale_order_id" />
         </vs-popup>
+
     </div>
+
 </template>
 
 <script>

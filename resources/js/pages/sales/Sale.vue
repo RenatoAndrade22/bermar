@@ -86,7 +86,6 @@
             </template>
         </vs-table>
         <vs-popup title="Enviar nota fiscal" :active.sync="upload_file">
-            <h1>{{sale_order_id}}</h1>
             <vs-upload automatic text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'+sale_order_id" />
         </vs-popup>
 
@@ -127,7 +126,7 @@
                     </vs-col>
 
                     <div class="products">
-                        <div v-for="(product, index) in list_products" class="product-list" v-if="form.company">
+                        <div v-for="(product, index) in list_products" class="product-list" v-if="form.company && product.price">
                             <div class="name">
                                 <p>{{ product.name }}</p>
                                 <span>Preço: {{ product.price }}</span>  
@@ -511,14 +510,16 @@ export default {
                 let table_price = this.$c(this.table_prices).where('name', company.items[0]['address']['state'])
                 table_price = table_price.items[0].prices
 
-                products = this.$c(this.products).map((product)=>{
-                    let price = this.$c(table_price).where('product_id', product.id)
-                    product.price = price.items[0].price
-                    return product
+                products = this.$c(this.products).map((p)=>{
+                    let price = this.$c(table_price).where('product_id', p.id)
+                    if(price.items.length > 0){
+                        p.price = price.items[0].price 
+                    }else{
+                        p.price = null
+                    }
+                    return p
                 })
             }
-
-            products = products.items
 
             if (this.form.search) {
                 products = this.$c(products).filter((product) => {
@@ -550,7 +551,7 @@ export default {
                 if(this.filters.invoice === 2)
                     sales = sales.where('invoices', null)
             }
-            console.log('aqqqqq', sales.all())
+
             return sales.all()
         }
     }

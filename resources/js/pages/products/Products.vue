@@ -106,10 +106,11 @@
           v-for="(product, index) in products_bermar"
           :key="index"
         >
+
           <vs-col vs-w="1" vs-type="flex" vs-justify="center" vs-align="center">
             <div class="image">
               <span>{{product.image}}</span>
-                <img v-if="product.product_images.length > 0" style="width: 100%" :src="'/products-images/'+product.product_images[0].name" />
+                <img v-if="product.product_images.length > 0" style="width: 100%" :src="product.product_images[0].url" />
             </div>
           </vs-col>
           <vs-col vs-w="8">

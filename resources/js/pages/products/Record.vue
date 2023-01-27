@@ -246,6 +246,14 @@
                 <div class="centerx">
                     <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
                 </div>
+                
+                <div class="manual">
+                    <hr />
+                    <h3>Upload do Manual</h3>
+                    <div class="centerx">
+                        <vs-upload automatic fileName="pdf" text="Clique aqui" :action="'/api/upload-manual/'+form.id" />
+                    </div>
+                </div>
             </template>
 
             <template v-if="edit">
@@ -258,19 +266,30 @@
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="3" v-for="(img, i) in form.images" :key="i">
                         <div class="single_image">
                             <span @click="deleteImageById(img.id)">X</span>
-                            <img :src="'/products-images/'+img.name" alt="">
+                            <img :src="img.url" alt="">
                         </div>
                     </vs-col>
                 </vs-row>
-                
 
                 <div class="centerx">
                     <vs-upload automatic fileName="image" text="Clique aqui" :action="'/api/upload/'+form.id" @on-delete="deleteImage" />
                 </div>
+
+                <div class="manual">
+                    <hr />
+                    <h3>Upload do Manual</h3>
+                    <div class="centerx">
+                        <vs-upload automatic fileName="pdf" text="Clique aqui" :action="'/api/upload-manual/'+form.id" @on-delete="deleteImage" />
+                        <iframe v-if="form.manual" :src="form.manual" height="200" width="200" />
+                    </div>
+                </div>
+                
+
+
             </template>
 
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
-                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image && !edit">Adicionar imagens</vs-button>
+                <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="!image && !edit">Próxima etapa</vs-button>
                 <vs-button type="relief" class="mt-3" @click="recordProduct" v-if="edit">Atualizar</vs-button>
                 <vs-button type="relief" class="mt-3" @click="finish" v-if="image">Finalizar</vs-button>
             </vs-col>
@@ -341,7 +360,7 @@ export default {
 
                 name: null,
                 name_validation: false,
-
+                manual: null,
                 power: '1000',
                 voltage: '110',
                 packing_width: null,
@@ -501,10 +520,6 @@ export default {
             if(!this.form.height)
                 i = false
 
-            this.form.video_validation = !this.form.video ? true : false
-            if(!this.form.video)
-                i = false
-
             return i
         },
 
@@ -547,6 +562,7 @@ export default {
                 console.log('data', data.data)
                 this.form.id = data.data.id
                 this.form.name = data.data.name
+                this.form.manual = data.data.manual
 
                 this.form.status = data.data.status
                 this.form.category_id = data.data.category_id
@@ -594,6 +610,10 @@ export default {
 
 <style scoped>
 
+    .manual{
+        width: 100%;
+        float: left ;
+    }
     .subtitle{
         font-size: 16px;
         font-weight: 600;

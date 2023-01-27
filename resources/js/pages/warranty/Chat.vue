@@ -14,7 +14,7 @@
             <div class="box">
                 <div v-for="(message, i) in chat[0].messages" :class="'message '+message.type" :key="i">
                     <p v-if="message.message">{{ message.message }}</p>
-                    <img v-if="message.file" :src="'/chat-images/'+message.file" alt="" class="mb-2" style="width:100%;">
+                    <img v-if="message.file" :src="message.file" alt="" class="mb-2" style="width:100%;">
                     <span>{{ message.user.name }} - {{ message.created_at }}</span>
                 </div>
             </div>

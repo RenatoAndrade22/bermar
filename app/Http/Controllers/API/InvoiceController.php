@@ -19,14 +19,11 @@ class InvoiceController extends Controller
           mkdir($path, 0777, true);
         }
 
-        $file = $request->file('file');
+        $name = $request->file('file')->getRealPath();
+        $upload = UploadCloudController::upload($name);
 
-        $name = uniqid() . '_&&_' . trim($file->getClientOriginalName());
-
-        $file->move($path, $name);
-
-        $invoice = new Invoice();
-        $invoice->name = $name;
+        $invoice = Invoice::query()->where('sale_order_id', $id)->firstOrNew();
+        $invoice->name = $upload['secure_url'];
         $invoice->sale_order_id = $id;
         $invoice->saveOrFail();
 

@@ -29,7 +29,7 @@
                                     <div class="men-thumb-item">
                                         @if(count($product['productImages']))
                                         <a href="{{ url('produto/'.$product['slug']) }}">
-                                            <img src="{{ asset('products-images/'.$product['productImages'][0]['name']) }}" class="img_product img-fluid" alt="">
+                                            <img src="{{ asset($product['productImages'][0]['url']) }}" class="img_product img-fluid" alt="">
                                         </a>
                                         @endif
                                     </div>
