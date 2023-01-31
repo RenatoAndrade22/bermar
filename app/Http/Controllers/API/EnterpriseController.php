@@ -38,7 +38,7 @@ class EnterpriseController extends Controller
             return [
                 'id' => $enterprise->id,
                 'name' => $enterprise->name,
-                'address' => $enterprise->address->street.', '.$enterprise->address->number.', '.$enterprise->address->district.', '.$enterprise->address->city.'/'.$enterprise->address->state
+                'address' => $enterprise->address[0]->street.', '.$enterprise->address[0]->number.', '.$enterprise->address[0]->district.', '.$enterprise->address[0]->city.'/'.$enterprise->address[0]->state
             ];
         });
     }

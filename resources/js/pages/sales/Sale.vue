@@ -27,7 +27,7 @@
                     Valor
                 </vs-th>
                 <vs-th>
-                    Comprador
+                    Revenda
                 </vs-th>
                 <!--
                 <vs-th>
@@ -41,8 +41,16 @@
                     Produtos
                 </vs-th>
              
-                <vs-th>
+                <vs-th v-if="[1, 2].includes(user.enterprise.enterprise_type_id)">
                     Nota fiscal
+                </vs-th>
+
+                <vs-th v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
+                    Boletos
+                </vs-th>
+
+                <vs-th>
+                    Garantia
                 </vs-th>
                 
             </template>
@@ -67,13 +75,14 @@
                         </vs-button>
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoices">
-                        <div v-if="data[indextr].invoices.length === 0">
+                    <vs-td :data="data[indextr].invoices" v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
+                        <div v-if="data[indextr].invoices.length === 0 && [1].includes(user.enterprise.enterprise_type_id)">
                             <div @click="[upload_file = true, sale_order_id = data[indextr].id]">
                                 <UilCloudUpload size="19px" color="#e85d04" />
                                 <span>Enviar</span>
                             </div>
                         </div>
+       
                         <div v-if="data[indextr].invoices.length !== 0">
                             <div @click="downloadInvoice(data[indextr].id)">
                                 <UilCloudDownload size="19px" color="#76c893" />
@@ -82,11 +91,39 @@
                         </div>
                     </vs-td>
 
+                    <vs-td :data="data[indextr].invoices" v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
+                        <div>
+                            <div @click="openModalBoletos(data[indextr].id, data[indextr].boletos)">
+                                <UilBill size="19px" color="#76c893" />
+                            </div>
+                        </div>
+                    </vs-td>
+
+                    <vs-td :data="data[indextr].sale_order_items">
+                        <vs-button type="relief" @click="warrantyProducts(data[indextr].sale_order_items)">
+                            <span>Solicitar</span>
+                        </vs-button>
+                    </vs-td>
+
                 </vs-tr>
             </template>
         </vs-table>
         <vs-popup title="Enviar nota fiscal" :active.sync="upload_file">
             <vs-upload automatic text="Upload nota fiscal" fileName="file" :action="'/api/upload-invoice/'+sale_order_id" />
+        </vs-popup>
+
+        <vs-popup title="Enviar boleto" :active.sync="upload_boleto">
+            <vs-upload automatic text="Upload boleto" fileName="file" :action="'/api/upload-boleto/'+sale_order_id" />
+        
+            <div class="boletos">
+                <div class="boleto" v-for="(b, i) in boletos" :key="i">
+                    <div class="actions">
+                        <span @click="openPdf(b.url)" style="cursor:pointer" >Abrir</span>
+                        <span @click="deleteBoleto(b.id)" class="delete">x</span>
+                    </div>
+                    <iframe :src="b.url" height="200" width="200" style="cursor:pointer" />
+                </div>
+            </div>
         </vs-popup>
 
         <vs-popup title="Produtos" :active.sync="view_products">
@@ -111,7 +148,20 @@
                             <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in companies" />
                         </vs-select>
                     </div>
-                    <span class="error" v-if="error && !form.company">{{error}}</span>
+                    <span class="error" v-if="error_company && !form.company">{{error_company}}</span>
+                </vs-col>
+                
+                
+                <vs-col vs-w="12" >
+                    <div class="form_item">
+                        <p class="text-label">Metodo de pagamento</p>
+                        <vs-select
+                            v-model="form.payment_method"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in payment_methods" />
+                        </vs-select>
+                    </div>
+                    <span class="error" v-if="error_payment && !form.company">{{error_payment}}</span>
                 </vs-col>
 
                 <template v-if="!buy_file">
@@ -167,34 +217,73 @@
              </vs-row>
         </vs-popup>
 
+        <vs-popup title="Solicitar garantia" :active.sync="list_products_warranty.length > 0" @close="closeWarranty">
+            <vs-row id="record_warranty">
+
+                <vs-col vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Cliente final</p>
+                        <vs-select
+                            v-model="form.user"
+                            autocomplete
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in users" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+                <vs-col vs-w="12" >
+                    <div class="form_item">
+                        <p class="text-label">Produto</p>
+                        <vs-select
+                            v-model="form.product"
+                            autocomplete
+                        >
+                            <vs-select-item :key="index" :value="item.product.id" :text="item.product.name" v-for="item,index in list_products_warranty" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-w="12">
+                    <vs-button type="filled" @click="record">
+                        <span>Cadastrar</span>
+                    </vs-button>
+                </vs-col>
+
+            </vs-row>
+        </vs-popup>
+
     </div>
 </template>
 
 <script>
 
-import { UilCloudUpload, UilCloudDownload, UilTimes } from '@iconscout/vue-unicons'
+import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill } from '@iconscout/vue-unicons'
 import { UploadMedia, UpdateMedia } from 'vue-media-upload';
 import axios from "axios";
 
 export default {
     name: "Sales",
     components:{
-        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia
+        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill
     },
     data(){
         return{
             popup_new: false,
-            error: null,
+            user: null,
+            error_company: null,
+            error_payment: null,
             search: null,
             order_selected: null,
             delete_product: null,
             upload_file: false,
+            upload_boleto: false,
             view_products: false,
             sale_products: [],
             sale_order_id: null,
             step: 0,
             total: 0,
             table_prices: [],
+            payment_methods:[],
             filters:{
                 status_sale: null,
                 status_payment: null,
@@ -202,69 +291,14 @@ export default {
                 invoice: null
             },
             form:{
-                company: null,
-                search: null,
-                company_validation: false,
-                products: []
+                user: null,
+                product: null,
             },
+            users: [],
             buy_file: false,
             companies:[
-                {
-                    id: 1,
-                    name: 'Empresa 1',
-                },
-                {
-                    id: 2,
-                    name: 'Empresa 2',
-                },
-                {
-                    id: 3,
-                    name: 'Empresa 3',
-                },
             ],
             products: [
-                {
-                    id: 1,
-                    name: 'Produto 1',
-                    price: 100.50,
-                    quantity: 0,
-                },
-                {
-                    id: 2,
-                    name: 'Produto 2',
-                    price: 200.97,
-                    quantity: 0,
-                },
-                {
-                    id: 3,
-                    name: 'Produto 3',
-                    price: 300,
-                    quantity: 0,
-                },
-                {
-                    id: 4,
-                    name: 'Produto 4',
-                    price: 300,
-                    quantity: 0,
-                },
-                {
-                    id: 5,
-                    name: 'Produto 5',
-                    price: 300,
-                    quantity: 0,
-                },
-                {
-                    id: 6,
-                    name: 'Produto 6',
-                    price: 300,
-                    quantity: 0,
-                },
-                {
-                    id: 7,
-                    name: 'Produto 7',
-                    price: 300,
-                    quantity: 0,
-                },
             ],
             cart: {
                 value: 0,
@@ -328,10 +362,96 @@ export default {
             invoice:[
                 {text:'Enviada',value:1},
                 {text:'Pendente',value:2},
-            ]
+            ],
+            boletos: [],
+            list_products_warranty: [],
+            assistances: [],
+            users: [],
         }
     },
     methods:{
+
+        getAssitences(){
+            axios.get('/api/enterprises-type/4').then((data)=>{
+                this.assistances = data.data
+            })
+        },
+
+        getUsers(){
+            axios.get('/api/buyers').then((data)=>{
+                this.users = data.data
+            })
+        },
+
+
+        record(){
+
+            //loading
+            this.$vs.loading({
+                container: '#record_warranty',
+                scale: 0.6
+            })
+
+            if(this.validation())
+            {
+                axios.post('/api/warranty', this.form).then((item)=>{
+
+                    //close loading
+                    this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                    
+                    this.list_products_warranty = []
+
+                    this.$vs.notify({
+                        color:'success',
+                        title:'Garantia cadastrada!',
+                        text:''
+                    })
+                })
+
+            }else{
+                //close loading
+                this.$vs.loading.close('#record_warranty > .con-vs-loading')
+            }
+        },
+
+        validation(){
+            let v = true
+
+            if(!this.form.user || !this.form.product){
+                v = false
+            }
+
+            return v
+        },
+
+        closeWarranty(){
+            this.list_products_warranty = []
+        },
+
+        warrantyProducts(products){
+            this.list_products_warranty = products
+        },
+        
+        openModalBoletos(id, boletos){
+
+            this.sale_order_id = id
+
+            this.boletos = boletos
+
+            this.upload_boleto = true
+        },
+
+        openPdf(pdf){
+            window.open(pdf, '_blank').focus();
+        },
+
+        deleteBoleto(id){
+            axios.delete('/api/boleto-delete/'+id).then((response)=>{
+                this.boletos = this.$c(this.boletos).filter((item)=>{
+                    return item.id != id
+                })
+            })
+        },
 
         viewProducts(items){
             console.log('items', items)
@@ -354,6 +474,7 @@ export default {
             let sale = {
                 "user_id": this.$user.id,
                 "enterprise_id": this.form.company,
+                "payment_method_id": this.form.payment_method,
                 "products": this.cart.products
             }
 
@@ -373,9 +494,6 @@ export default {
                 })
               
             })
-
-           
-        
         },
 
         getCompanies(){
@@ -384,6 +502,12 @@ export default {
             })
         },
 
+        getPaymentMethods(){
+            axios.get('/api/payment-methods').then((data)=>{
+                this.payment_methods = data.data
+            })
+        },
+        
         getProductsBermar() {
             
             axios.get("/api/products-bermar").then((data) => { 
@@ -406,7 +530,7 @@ export default {
 
         addProducts(){
 
-            if(this.form.company){
+            if(this.form.company && this.form.payment_method){
 
                  /* reset cart */
                 this.cart.products = []
@@ -417,8 +541,16 @@ export default {
 
                 this.cart.products = products.items
                 this.step = 1
+
             }else{
-                this.error = 'Selecione uma empresa'
+
+                if(this.form.company){
+                    this.error_company = 'Selecione uma empresa'
+                }
+                
+                if(this.form.payment_method){
+                    this.error_payment = 'Selecione uma empresa'
+                }
             }
            
 
@@ -452,7 +584,20 @@ export default {
         },
 
         getSaleOrders(){
-            axios.get('/api/sale-order').then((resp)=>{
+
+            if (localStorage.user) {
+                this.user = JSON.parse(localStorage.user);
+            }
+
+            let url
+
+            if(this.user.enterprise.enterprise_type_id == 1){
+                url = 'all-sale-orders'
+            }else{
+                url = 'sale-order'
+            }
+
+            axios.get('/api/'+url).then((resp)=>{
                 this.sales = this.$c(resp.data).map((sale)=>{
 
                     this.$c(sale.sale_order_items).each((s)=>{
@@ -467,8 +612,7 @@ export default {
 
         downloadInvoice(sale_order_id){
             axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
-                this.$vs.notify({color: "success", title: "Arquivo baixado!", text: ""})
-                window.open('/invoices/'+resp.data.name, '_blank')
+                window.open(resp.data.name, '_blank').focus();
             })
         },
 
@@ -481,6 +625,9 @@ export default {
         this.getCompanies()
         this.getProductsBermar()
         this.getTablePrices()
+        this.getPaymentMethods()
+        this.getAssitences()
+        this.getUsers()
     },
     watch:{
         list_products: {
@@ -558,6 +705,29 @@ export default {
 }
 </script>
 <style scoped>
+
+    .boletos{
+        width: 100%;
+        float: left;
+    }
+
+    .actions{
+        width: 100%;
+        float: left;
+    }
+
+    .delete{
+        cursor: pointer;
+        color: red;
+        float: right;
+        margin-right: 16px;
+    }
+
+    .boleto{
+        width: 200px;
+        float: left;
+        margin-right: 10px;
+    }
     .sale_products{
         margin: 0;
         padding: 0;

@@ -8,7 +8,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <br>
-                <h4 class="col-lg-12 mt-3 mb-3  text-center ">Busque o representante por Estado.</h4>
+                <h4 class="col-lg-12 mt-3 mb-3  text-center ">Busque a revenda por Estado.</h4>
                 <div class="col-lg-12 text-center">
                     <div class="fs-dropdown fs-light" id="fs-dropdown__1-dropdown" tabindex="0" role="listbox" aria-haspopup="true" aria-live="polite" aria-labelledby="fs-dropdown__1-dropdown-selected">
                         <select id="select_state" onchange="selectState()" style="border-radius:20px;" required="" name="estado" class="form-input dropdown-select fs-dropdown-element col-lg-3 p-3 text-secondary" tabindex="-1">

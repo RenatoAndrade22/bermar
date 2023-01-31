@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Catalog;
 use Illuminate\Http\Request;
 
 class CategorySiteController extends Controller
 {
     public function index(){
+
         $categories = Category::all();
 
-        return view('site.index', ['categories' => $categories]);
+        $catalog = Catalog::first();
+
+        return view('site.index', ['categories' => $categories, 'catalog' => $catalog->url]);
     }
 
     public function pageCategory(){

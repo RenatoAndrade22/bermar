@@ -56,6 +56,19 @@ class SaleOrderController extends Controller
         return $saleOrders;
     }
 
+    public function myShopping(){
+        $saleOrders = SaleOrder::query()
+            ->with('boletos')
+            ->where('enterprise_id', Auth::user()->enterprise_id)->get();
+        return $saleOrders;
+    }
+
+    public function allSales()
+    {
+        $saleOrders = SaleOrder::query()->with('boletos')->get();
+        return $saleOrders;
+    }
+
     public function getSaleOrderByUser()
     {
 

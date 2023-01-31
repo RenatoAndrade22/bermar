@@ -15,13 +15,14 @@ class SaleOrder extends Model
         'status',
         'status_payment',
         'status_delivery',
+        'payment_method_id',
     ];
 
     protected $with = [
         'user',
         'enterprise',
         'saleOrderItems',
-        'invoices'
+        'invoices',
     ];
 
     public function user(): BelongsTo
@@ -42,6 +43,11 @@ class SaleOrder extends Model
     public function invoices(): hasMany
     {
         return $this->hasMany(Invoice::class);
+    }
+
+    public function boletos(): hasMany
+    {
+        return $this->hasMany(Boleto::class);
     }
 
 }

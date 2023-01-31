@@ -57,7 +57,7 @@
                 <div class="col-md-4 ab-content text-center p-lg-5 p-3 my-lg-5">
                     <h4>Catálogo de Produtos</h4>
                     <p>Baixe agora a última versão do catálogo Bermar.</p>
-                    <a href="shop.html" class="btn shop mt-3">DOWNLOAD</a>
+                    <a href="{{ $catalog }}" target="_blank" class="btn shop mt-3">DOWNLOAD</a>
 
                 </div>
             </div>

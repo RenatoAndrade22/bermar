@@ -21,13 +21,13 @@
                     <div class="card_column">
                         <h1>Catalogo</h1>
 
-                        <p v-if="!url_pdf && !form.url_catalog" style="cursor:pointer;" @click="chooseFiles">Carregar catalogo</p>
-                        <p v-if="!url_pdf && form.url_catalog" style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
+
+                        <p style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
                        
                         <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="onFileChange" hidden>
-                        <iframe v-if="url_pdf" :src="url_pdf" height="200" width="200" />
+                        <iframe :src="url_pdf" height="200" width="200" />
 
-                        <p style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="url_pdf">Enviar</p>
+                        <p style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="active_send">Enviar</p>
 
                     </div>
                 </b-col>
@@ -53,6 +53,7 @@ export default {
             form:{
                 url_catalog: null
             },
+            active_send: false,
             total_sales: 0,
             financial_total: 0,
             user_type: null,
@@ -72,26 +73,36 @@ export default {
         onFileChange(e) {
             this.file = e.target.files[0]
             this.url_pdf = URL.createObjectURL(this.file)
+            this.active_send = true
         },
 
-        chooseFiles(){
+        chooseFiles(){catalog
             document.getElementById("fileUploadCatalogo").click()
         },
 
         sendCatalog(){
 
-            let formData = new FormData();
+            let formData = new FormData()
 
-            formData.append('file', this.file);
-            axios.post('/api/upload-file-chat/'+this.chat[0].id, formData).then((data)=>{
-                this.url_image = null
+            formData.append('file', this.file)
+
+            axios.post('/api/update-catalog/1', formData).then((data)=>{
+                this.active_send = false
             })
-        }
+
+        },
+
+        getCatalog(){
+            axios.get('/api/catalog').then((resp)=>{
+                this.url_pdf = resp.data.url
+            })
+        },
 
     },
 
     created(){
         this.getTotal()
+        this.getCatalog()
         if (localStorage.user) {
             let user = JSON.parse(localStorage.user);
             

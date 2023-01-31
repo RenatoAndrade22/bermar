@@ -79,7 +79,7 @@
                     Valor
                 </vs-th>
                 <vs-th>
-                    Comprador
+                    Revenda
                 </vs-th>
                 <vs-th>
                     Status compra

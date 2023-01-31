@@ -35,6 +35,12 @@
                 Minhas Vendas
             </router-link>
 
+            <router-link to="/painel/vendas" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilTagAlt size="20px" class="icon_route" />
+                Vendas
+            </router-link>
+
             <router-link to="/painel/empresas" v-if="[1].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShop size="20px" class="icon_route" />
@@ -91,7 +97,6 @@ export default {
                 // user_type = 0, é para o usuario final, aquele usuario que não está ligado a nenhuma empresa.   
                 this.user_type = 0
             }
-            console.log('t',this.user_type)
         }
   },
 }

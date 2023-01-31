@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class ProductSiteController extends Controller
 {
-    
+
     public function index($slug){
 
         $categories = new CategoryController();
@@ -17,7 +17,7 @@ class ProductSiteController extends Controller
         $category = Category::query()->with('products')->where('slug', $slug)->first();
 
         $products = Product::query()->where('category_id', $category->id)->get();
-  return $products;
+ 
         return view('site.category', ['category_name' => $category->name,'products' => $products, 'categories' => $categories->index()]);
     }
 

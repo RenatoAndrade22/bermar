@@ -484,41 +484,41 @@ export default {
             if(!this.form.price)
                 i = false
 
-            this.form.width_validation = !this.form.width ? true : false
-            if(!this.form.width)
-                i = false
+            // this.form.width_validation = !this.form.width ? true : false
+            // if(!this.form.width)
+            //     i = false
 
-            this.form.weight_validation = !this.form.weight ? true : false
-            if(!this.form.weight)
-                i = false
+            // this.form.weight_validation = !this.form.weight ? true : false
+            // if(!this.form.weight)
+            //     i = false
 
-            this.form.length_validation = !this.form.length ? true : false
-            if(!this.form.length)
-                i = false
+            // this.form.length_validation = !this.form.length ? true : false
+            // if(!this.form.length)
+            //     i = false
 
-            this.form.height_validation = !this.form.height ? true : false
-            if(!this.form.height)
-                i = false
+            // this.form.height_validation = !this.form.height ? true : false
+            // if(!this.form.height)
+            //     i = false
 
             this.form.category_validation = !this.form.category_id ? true : false
             if(!this.form.category_id)
                 i = false
 
-            this.form.width_validation = !this.form.width ? true : false
-            if(!this.form.width)
-                i = false
+            // this.form.width_validation = !this.form.width ? true : false
+            // if(!this.form.width)
+            //     i = false
 
-            this.form.weight_validation = !this.form.weight ? true : false
-            if(!this.form.weight)
-                i = false
+            // this.form.weight_validation = !this.form.weight ? true : false
+            // if(!this.form.weight)
+            //     i = false
 
-            this.form.length_validation = !this.form.length ? true : false
-            if(!this.form.length)
-                i = false
+            // this.form.length_validation = !this.form.length ? true : false
+            // if(!this.form.length)
+            //     i = false
 
-            this.form.height_validation = !this.form.height ? true : false
-            if(!this.form.height)
-                i = false
+            // this.form.height_validation = !this.form.height ? true : false
+            // if(!this.form.height)
+            //     i = false
 
             return i
         },

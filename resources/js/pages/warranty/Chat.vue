@@ -32,10 +32,10 @@
             />
 
             <input id="fileUpload" type="file" accept=".png, .jpg, .jpeg" v-on:change="onFileChange" hidden>
-            <!--
+       
             <vs-button type="relief" size="small" class="float-left" @click="budget = !budget">Orçamento</vs-button>
-            -->
-            <vs-button type="relief" size="small" class="float-left" @click="assistance_active = !assistance_active">Assistencia Tecnica</vs-button>
+          
+            <vs-button v-if="$user.enterprise.enterprise_type_id == 1" type="relief" size="small" class="float-left" @click="assistance_active = !assistance_active">Assistencia Tecnica</vs-button>
             
             <div @click="chooseFiles" style="width: 30px;float: right;margin-left: 15px;">
                 <UilPaperclip size="18px" />

@@ -64,15 +64,25 @@
                             <div class="available mt-3">
                                 <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
                                    
-                                    <button type="button" onclick="btnlinks()" class="btn submit">Comprar</button>
-        
+                                <button type="button" onclick="btnlinks()" class="btn submit">Comprar</button>
+                                
+                                @if($product['manual'])
+                                <button type="button" onclick="openManual('{{$product['manual']}}')" class="btn submit">Manual</button>
+                                @endif
                                 </form>
 
                                 <div class="links mt-4">
                                     <h6>Links para compra</h6>
                                     @foreach ($product['links'] as $link)
-                                    <p style="color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" >{{ mb_strimwidth($link['link'], 0, 35, "...") }}</a></p>
+                                    <div style="margin-bottom: 0; margin-bottom: 0;border-bottom: 2px solid #9999;padding: 10px 0px;">
+                                        <p style="margin-bottom: 0;">{{ $link['enterprise']['name'] }} | {{ $link['enterprise']['phone'] }}</p>
+                                        <p style="margin-bottom: 0;color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" >Comprar</a></p>
+                                    </div>
                                     @endforeach
+
+                                    @if(count($product['links']) == 0)
+                                        <p><a href="{{ asset('revendas') }}">Clique aqui para buscar a revenda mais próxima</a></p>
+                                    @endif
                                 </div>
                                 
                             </div>
@@ -127,13 +137,6 @@
                                         <h4>
                                             <a href="{{ url('produto/'.$related['slug']) }}">{{ $related['name'] }}</a>
                                         </h4>
-
-                                        <div class="product_price">
-                                            <div class="grid-price">
-                                                <span class="money"><span class="line"></span>R$ {{ $related['price'] }}</span>
-                                            </div>
-                                        </div>
-                                        
                                         </ul>
                                     </div>
                                 </div>
@@ -150,6 +153,10 @@
     <script>
         function btnlinks(){
             $('.links').show()
+        }
+
+        function openManual(url){
+            window.open(url, '_blank').focus()
         }
         
     </script>

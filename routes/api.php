@@ -20,7 +20,8 @@ use \App\Http\Controllers\API\BudgetController;
 use \App\Http\Controllers\API\PriceTableController;
 use \App\Http\Controllers\API\getEnterprisesController;
 use \App\Http\Controllers\API\LinkController;
-
+use \App\Http\Controllers\API\PaymentMethodController;
+use \App\Http\Controllers\API\CatalogController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -50,6 +51,10 @@ Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'dest
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
 
+Route::post('/upload-boleto/{id}', [\App\Http\Controllers\API\BoletoController::class, 'store']);
+Route::delete('/boleto-delete/{id}', [\App\Http\Controllers\API\BoletoController::class, 'destroy']);
+
+Route::get('/download-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'downloadInvoice']);
 
 Route::post('register/user', [\App\Http\Controllers\API\UserController::class, 'store']);
 Route::post('register/enterprise', [\App\Http\Controllers\API\EnterpriseController::class, 'store']);
@@ -83,8 +88,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'warranty-product' => WarrantyProductController::class,
         'budget' => BudgetController::class,
         'price_table' => PriceTableController::class,
-        'links' => LinkController::class
+        'links' => LinkController::class,
+        'catalog' => CatalogController::class
     ]);
+    
+    
+    Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
+
+    Route::post('update-catalog/{id}', [CatalogController::class, 'updateCatalog']);
 
     Route::get('enterprises-type/{type}', [EnterpriseController::class, 'getEnterpriseType']);
     Route::get('companies-assistance', [EnterpriseController::class, 'enterpriseAssistance']);
@@ -92,6 +103,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
     
     Route::get('total-sales', [SaleOrderController::class, 'getTotalSales']);
+    Route::get('payment-methods', [PaymentMethodController::class, 'index']);
+
+    Route::get('all-sale-orders', [SaleOrderController::class, 'allSales']);
 
 });
 

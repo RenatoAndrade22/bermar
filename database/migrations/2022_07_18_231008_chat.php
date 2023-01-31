@@ -20,7 +20,8 @@ class Chat extends Migration
             $table->unsignedBigInteger('warranty_id');
             $table->foreign('warranty_id')->references('id')->on('warranties');
 
-            $table->unsignedBigInteger('enterprise_id');
+            $table->unsignedBigInteger('enterprise_id')->nullable()->default(null);
+
             $table->foreign('enterprise_id')->references('id')->on('enterprises');
 
             $table->unsignedBigInteger('user_id');
