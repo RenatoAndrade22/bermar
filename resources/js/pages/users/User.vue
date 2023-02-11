@@ -311,10 +311,14 @@ export default {
         record(){
 
             //loading
+  
+
             this.$vs.loading({
-                container: '#cadastrar_usuario',
-                scale: 0.6
-            })
+                container: "#cadastrar_usuario",
+                scale: 0.45,
+            });
+
+            
 
             if(this.validate()){
 
@@ -324,7 +328,10 @@ export default {
                         this.getUsers()
 
                         //close loading
-                        this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
+                        setTimeout(() => {
+                            this.$vs.loading.close("#cadastrar_usuario > .con-vs-loading");
+                        }, 1);        
+                                
 
                         this.popupActivo = false
                         this.$toast.open({
@@ -337,8 +344,10 @@ export default {
                         this.getUsers()
 
                         //close loading
-                        this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
-                        
+                        setTimeout(() => {
+                            this.$vs.loading.close("#cadastrar_usuario > .con-vs-loading");
+                        }, 1);        
+
                         this.popupActivo = false
                         this.$toast.open({
                             message: 'Usuário atualizado!',
@@ -348,8 +357,9 @@ export default {
                 }
                 
             }else{
-                //close loading
-                this.$vs.loading.close('#cadastrar_usuario > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#cadastrar_usuario > .con-vs-loading");
+                }, 1);
             }
         },
 

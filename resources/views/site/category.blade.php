@@ -2,6 +2,17 @@
 
 @section('content')
 
+<section class="search">
+    <div class="container">
+            
+        <div class="box-search">
+            <input type="text" placeholder="Buscar produto" id="text-search" class="search-text" />
+            <input value="Buscar" type="button" class="search-button" onclick="searchProduct()" />                    
+        </div>
+            
+    </div>
+</section>
+
 <!--/banner-bottom -->
 <section>
         <div class="container py-5">
@@ -23,6 +34,10 @@
                 <div class="col-xl-10">
                     <div class="row" style="    margin-top: -27px;">
                         
+                        @if(count($products) == 0)
+                            <h4>Nenhum produto encontrado.</h4>
+                        @endif
+
                         @foreach ($products as $product)
                             <div class="col-lg-3 shop-info-grid text-center mb-4">
                                 <div class="product-shoe-info shoe">
@@ -92,5 +107,15 @@
 
     </section>
     <!--//shipping-->
+
+    <script>
+        function searchProduct(){
+            let value = document.getElementById('text-search').value
+
+            if(value){
+                location.replace("/busca/produtos/"+value)
+            }
+        }
+    </script>
 
 @endsection

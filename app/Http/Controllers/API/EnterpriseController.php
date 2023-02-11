@@ -20,6 +20,7 @@ class EnterpriseController extends Controller
 
     public function store(EnterpriseRequest $request){
         $enterprise = new Enterprise();
+        $enterprise->enterprise_id = $request->get('enterprise_representative');
         $enterprise->fill($request->all());
         $enterprise->saveOrFail();
         return $enterprise;
@@ -27,6 +28,7 @@ class EnterpriseController extends Controller
 
     public function update(Request $request, $id){
         $enterprise = Enterprise::find($id);
+        $enterprise->enterprise_id = $request->get('enterprise_representative');
         $enterprise->fill($request->all());
         $enterprise->saveOrFail();
         return $enterprise;

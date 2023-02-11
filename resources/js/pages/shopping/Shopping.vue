@@ -339,8 +339,10 @@ export default {
 
             axios.post('/api/sale', sale).then((response)=>{
                  
-                 //close loading
-                this.$vs.loading.close('#cadastro_venda > .con-vs-loading')
+                //close loading
+                setTimeout(() => {
+                    this.$vs.loading.close("#cadastro_venda > .con-vs-loading");
+                }, 1);  
 
                 this.popup_new = false
 
@@ -368,8 +370,10 @@ export default {
                 axios.post('/api/warranty', this.form).then((item)=>{
 
                     //close loading
-                    this.$vs.loading.close('#record_warranty > .con-vs-loading')
-                    
+                    setTimeout(() => {
+                        this.$vs.loading.close("#cadastro_venda > .con-vs-loading");
+                    }, 1);         
+
                     this.list_products_warranty = []
 
                     this.$vs.notify({
@@ -381,7 +385,9 @@ export default {
 
             }else{
                 //close loading
-                this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#cadastro_venda > .con-vs-loading");
+                }, 1);  
             }
         },
 

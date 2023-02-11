@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Budget extends Model
 {
@@ -12,11 +13,11 @@ class Budget extends Model
     protected $table = 'budgets';
 
     protected $with = [
-        'budgetItem'
+        'budgetItems'
     ];
 
-    public function budgetItem(): BelongsTo
+    public function budgetItems(): HasMany
     {
-        return $this->belongsTo(BudgetItem::class);
+        return $this->hasMany(BudgetItem::class);
     }
 }

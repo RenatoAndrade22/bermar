@@ -67,7 +67,7 @@
             </template>
         </vs-table>
         <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
-            <vs-row vs-w="12" style="width: 100% !important; display: block;" id="new_company">
+            <vs-row vs-w="12" style="width: 100% !important; display: block;" id="company_new">
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
@@ -78,6 +78,19 @@
                             danger-text="Campo obrigatório"
                         >
                             <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" v-if="form.enterprise_type_id == 2" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Representante</p>
+                        <vs-select
+                            v-model="form.enterprise_representative"
+                            :danger="form.enterprise_representative_validate"
+                            danger-text="Campo obrigatório"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in representatives" />
                         </vs-select>
                     </div>
                 </vs-col>
@@ -300,6 +313,9 @@ export default {
                 enterprise_type_id: null,
                 enterprise_type_id_validate: false,
 
+                enterprise_representative: null,
+                enterprise_representative_validate: false,
+
                 name: null,
                 name_validate: false,
 
@@ -381,7 +397,8 @@ export default {
                     name: 'Assistência'
                 },
                 
-            ]
+            ],
+            representatives: []
         }
     },
     methods:{
@@ -417,14 +434,15 @@ export default {
         },
 
         record(){
-            //loading
             this.$vs.loading({
-                container: '#new_company',
-                scale: 0.6
-            })
+                container: "#company_new",
+                scale: 0.45,
+            });
+
+               
 
             if(this.validate()){
-
+                
                 if(!this.edit_company){
                     axios.post('/api/enterprise', this.form).then((data)=>{
                         this.address.enterprise_id = data.data.id
@@ -438,7 +456,9 @@ export default {
                 
             }else{
                 //close loading
-                this.$vs.loading.close('#new_company > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#company_new > .con-vs-loading");
+                }, 1);  
             }
         },
 
@@ -451,7 +471,9 @@ export default {
                     this.getCompanies()
 
                     //close loading
-                    this.$vs.loading.close('#new_company > .con-vs-loading')
+                    setTimeout(() => {
+                        this.$vs.loading.close("#company_new > .con-vs-loading");
+                    }, 1);  
 
                     this.$toast.open({
                         message: 'Empresa cadastrada!',
@@ -466,7 +488,9 @@ export default {
                     this.getCompanies()
 
                     //close loading
-                    this.$vs.loading.close('#new_company > .con-vs-loading')
+                    setTimeout(() => {
+                        this.$vs.loading.close("#company_new > .con-vs-loading");
+                    }, 1);  
 
                     this.$toast.open({
                         message: 'Empresa atualizada!',
@@ -522,12 +546,21 @@ export default {
             if(!this.address.number)                
                 i = false
 
+            if(this.form.enterprise_type_id == 2){
+                this.form.enterprise_representative_validate = !this.form.enterprise_representative ? true : false
+                if(!this.form.enterprise_representative)                
+                    i = false
+            }
+
             return i
         },
 
         getCompanies(){
             axios.get('/api/enterprise').then((data)=>{
                 this.providers = data.data
+                this.representatives = this.$c(data.data).filter((item)=>{
+                    return item.enterprise_type_id == 2
+                }).all()
             })
         },
 
@@ -536,8 +569,7 @@ export default {
 
             let company = this.$c(this.providers).where('id',id).first()
 
-            console.log('company', company.address)
-
+            this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
             this.form.cnpj = company.cnpj
             this.form.email = company.email

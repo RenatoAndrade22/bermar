@@ -153,7 +153,9 @@ export default {
                 this.getWarranties()
 
                 //close loading
-                this.$vs.loading.close('#warranties > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#warranties > .con-vs-loading");
+                }, 1);  
 
                 this.$vs.notify({
                     color:'success',
@@ -181,7 +183,9 @@ export default {
                     this.popup_new = false
 
                     //close loading
-                    this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                    setTimeout(() => {
+                        this.$vs.loading.close("#warranties > .con-vs-loading");
+                    }, 1);  
 
                     this.$vs.notify({
                         color:'success',
@@ -192,7 +196,9 @@ export default {
 
             }else{
                 //close loading
-                this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#warranties > .con-vs-loading");
+                }, 1);  
             }
         },
 

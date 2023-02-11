@@ -9,7 +9,7 @@
                 </div>
                 <div class="col-lg-9 text-left">
                     <h4>Sobre A Empresa</h4>
-                    <p>Em 1986 nasce a BERMAR. A escolha do nome BERMAR partiu da junção dos sobrenomes dos proprietários, Sr. Valdemir Fernandes Martines (Poli) e do Sr. João Roberto de Abreu Berton, formou-se então o nome BERMAR (BERTON e MARTINES). </p>
+                    <p>A BERMAR foi criada em 1986, trazendo consigo uma mistura única dos sobrenomes dos seus fundadores. Valdemir Fernandes Martines (conhecido como Poli) e João Roberto de Abreu Berton uniram suas habilidades e visões empresariais para dar vida a este empreendimento. A escolha do nome BERMAR foi inspirada nesses fundadores, combinando as primeiras sílabas dos seus sobrenomes, Berton e Martines. Desde então, a BERMAR tem se expandido e consolidado como uma empresa respeitada no mercado, graças à sua dedicação e paixão pelo trabalho bem feito.</p>
                 </div>
             </div>
             <div class="row grids-wthree-info text-center">

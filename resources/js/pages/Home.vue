@@ -76,7 +76,7 @@ export default {
             this.active_send = true
         },
 
-        chooseFiles(){catalog
+        chooseFiles(){
             document.getElementById("fileUploadCatalogo").click()
         },
 

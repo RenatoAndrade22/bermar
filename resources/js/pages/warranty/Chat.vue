@@ -45,42 +45,44 @@
 
             <vs-popup title="Orçamento" :active.sync="budget">
 
-                <div v-if="!add_product">
-
-                    <vs-button @click="add_product = !add_product" type="relief" size="small" class="mb-2">Adicionar produto ao orçamento</vs-button>
-
-                    <ul>
-                        <li v-for="(p, i) in products_warranty">{{ p.name }} - R$: {{ p.price }} <span @click="removeProduct(p.id)">x</span></li>
-                    </ul>
-
-                    <h6 class="text-center m-4">Total: {{ total_warranty }}</h6>
-
-                    <vs-textarea
-                        label="Descrição do orçamento"
-                        v-model="description"
-                    />
-
-                    <vs-button type="relief" size="small" @click="recordBudget">Cadastrar orçamento</vs-button>
-
-                </div>
-
-                <div v-if="add_product">
+       
                     
-                    <p @click="add_product = !add_product"> Voltar </p>
+                    <div v-if="!add_product">
+                        <vs-button v-if="$user.enterprise.enterprise_type_id != 1" @click="add_product = !add_product" type="relief" size="small" class="mb-2">Adicionar produto ao orçamento</vs-button>
 
-                    <vs-input class="mb-2" placeholder="Buscar produto" v-model="search_product"/>
+                        <ul>
+                            <li v-for="(p, i) in products_warranty">{{ p.name }} - R$: {{ p.price }} <span v-if="$user.enterprise.enterprise_type_id != 1" @click="removeProduct(p.id)">x</span></li>
+                        </ul>
 
-                    <div class="users_container">
-                        <div class="enterprise" v-for="(product, i) in products_list">
-                            <vs-radio v-model="product_selected" vs-name="radios1" :vs-value="product.id">
-                                <h6>{{ product.name }}</h6>
-                            </vs-radio>
+                        <h6 class="text-center m-4">Total: {{ total_warranty }}</h6>
+
+                        <vs-textarea
+                            label="Descrição do orçamento"
+                            v-model="description"
+                        />
+
+                        <vs-button v-if="$user.enterprise.enterprise_type_id != 1" type="relief" size="small" @click="recordBudget">Cadastrar orçamento</vs-button>
+
                         </div>
+
+                        <div v-if="add_product">
+
+                        <p @click="add_product = !add_product"> Voltar </p>
+
+                        <vs-input class="mb-2" placeholder="Buscar produto" v-model="search_product"/>
+
+                        <div class="users_container">
+                            <div class="enterprise" v-for="(product, i) in products_list">
+                                <vs-radio v-model="product_selected" vs-name="radios1" :vs-value="product.id">
+                                    <h6>{{ product.name }}</h6>
+                                </vs-radio>
+                            </div>
+                        </div>
+
+                        <vs-button type="relief" size="small" @click="addProductWarranty">Inserir produto</vs-button>
                     </div>
-                    
-                    <vs-button type="relief" size="small" @click="addProductWarranty">Inserir produto</vs-button>
-                </div>
-               
+
+
             </vs-popup>
 
             <vs-popup title="Assistencia Tecnica" :active.sync="assistance_active">
@@ -134,6 +136,10 @@ export default {
             total_warranty: 0,
             description: null,
             budget: null,
+            budget_list:{
+                budget_items:[],
+                description: null,
+            }, 
         }
     },
     methods:{
@@ -153,17 +159,22 @@ export default {
         },
 
         recordBudget(){
-
             if(this.products_warranty.length > 0){
-                
-                    axios.post('/api/budget/',{description: this.description, products: this.products_warranty}).then((data)=>{
-                        this.budget = false
-                        this.$vs.notify({
-                            color:'success',
-                            title:'Orçamento cadastrado!',
-                            text:''
-                        })
+      
+                axios.post('/api/budget/',{ 
+                        description: this.description, 
+                        products: this.products_warranty,
+                        warranty_id: this.chat[0]['warranty_id']
+                    }).then((data)=>{
+
+                    this.budget = false
+                    this.$vs.notify({
+                        color:'success',
+                        title:'Orçamento cadastrado!',
+                        text:''
                     })
+
+                })
                 
             }else{
                 this.$vs.notify({
@@ -216,6 +227,21 @@ export default {
             })
         },
 
+        getBudget(){
+            
+            axios.get('/api/budget/'+this.chat[0]['warranty_id']).then((resp)=>{
+               
+                this.products_warranty = resp.data.budget_items
+                this.description       = resp.data.description
+
+                this.$c(resp.data.budget_items).each((item)=>{
+                    this.total_warranty = parseFloat(this.total_warranty) + parseFloat(item.price)
+                    this.total_warranty = this.total_warranty.toFixed(2)
+                })                
+
+            })
+        },
+
         getMessages(){
             axios.get('/api/chat/'+this.$route.params.id).then((data)=>{
                 
@@ -226,6 +252,8 @@ export default {
                 }).sortByDesc('id')
 
                 this.chat = data.data
+
+                this.getBudget()
             })
         },
 
@@ -318,6 +346,7 @@ export default {
         this.getMessages()
         this.getUsers()
         this.getProducts()
+        
 
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;

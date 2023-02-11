@@ -1782,7 +1782,6 @@ h3.sub-w3ls-headf {
     padding: 15px 0;
     text-transform: uppercase;
     color: #ec1c24;
-    float: right;
     width: 65%;
     background-color: rgba(250, 250, 250, .25);
   }
@@ -1866,4 +1865,24 @@ h3.sub-w3ls-headf {
 
 .img_product{
     border-radius: 16px;;
+}
+
+.search{
+    background: #ec1c24;
+    text-align: right;
+}
+
+.search-text{
+    margin: 10px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 5px;
+    color: #666;
+}
+.search-button{
+    background: #ffffff;
+    border: 0;
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: #666;
 }

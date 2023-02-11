@@ -20,8 +20,19 @@ class CategorySiteController extends Controller
 
     public function pageCategory(){
 
-        $categories = Category::all();
+        $categories = Category::query()->orderBy('name')->get();
         $products = Product::query()->where('status', 1)->get();
+
+        return view('site.category', ['categories' => $categories, 'products' => $products]);
+    }
+
+    public function searchProducts($slug)
+    {
+        $categories = Category::query()->orderBy('name')->get();
+        $products = Product::query()
+            ->where('status', 1)
+            ->where('name', 'LIKE', '%'.$slug.'%')
+            ->get();
 
         return view('site.category', ['categories' => $categories, 'products' => $products]);
     }

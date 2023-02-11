@@ -6,7 +6,7 @@
                     <span style="color:#EE1B21">({{ sales.length }})</span> Vendas
                 </vs-navbar-title>
             </div>
-            <vs-button type="relief" @click="popup_new = true">
+            <vs-button type="relief" v-if="$user.enterprise.enterprise_type_id != 1" @click="popup_new = true">
                 Cadastrar nova venda
             </vs-button>
         </vs-navbar>
@@ -135,86 +135,13 @@
             </ul>
         </vs-popup>
 
-        <vs-popup title="Cadastrar nova venda" :active.sync="popup_new">
-
-             <vs-row id="cadastro_venda">
-
-                <vs-col vs-w="12" >
-                    <div class="form_item">
-                        <p class="text-label">Empresa</p>
-                        <vs-select
-                            v-model="form.company"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in companies" />
-                        </vs-select>
-                    </div>
-                    <span class="error" v-if="error_company && !form.company">{{error_company}}</span>
-                </vs-col>
-                
-                
-                <vs-col vs-w="12" >
-                    <div class="form_item">
-                        <p class="text-label">Metodo de pagamento</p>
-                        <vs-select
-                            v-model="form.payment_method"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in payment_methods" />
-                        </vs-select>
-                    </div>
-                    <span class="error" v-if="error_payment && !form.company">{{error_payment}}</span>
-                </vs-col>
-
-                <template v-if="!buy_file">
-
-                    <vs-col vs-w="12" v-if="form.company">
-                        <vs-input
-                            class="mb-3 mt-2"
-                            placeholder="Buscar produto"
-                            v-model="form.search"
-                            danger-text="Esse campo é obrigatório"
-                        />
-                    </vs-col>
-
-                    <div class="products">
-                        <div v-for="(product, index) in list_products" class="product-list" v-if="form.company && product.price">
-                            <div class="name">
-                                <p>{{ product.name }}</p>
-                                <span>Preço: {{ product.price }}</span>  
-                                
-                            </div>
-                            <div class="number_items">
-                                <vs-input
-                                    min='0'
-                                    type="number"
-                                    v-model="product.quantity"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                </template>
-
-                <vs-col vs-w="12">
-                    <p class="total">
-                        Total: {{ formatCurrency(total) }}
-                    </p>
-                </vs-col>
-
-                <vs-col vs-w="12">
-                    <vs-button type="relief" @click="buy_file = !buy_file">
-                        <span>Cadastrar arquivo de compra</span>
-                    </vs-button>
-                    <vs-button type="relief"  @click="addProducts" v-if="step == 0">
-                        <span>Cadastrar venda</span>
-                    </vs-button>
-                    <vs-button color="danger" type="filled" @click="step = 0" v-if="step == 1">
-                        <span>Cancelar</span>
-                    </vs-button>
-                    <vs-button color="success" type="filled" @click="addSale" v-if="step == 1">
-                        <span>Confirmar</span>
-                    </vs-button>
-                </vs-col>
-             </vs-row>
+        <vs-popup fullscreen title="Cadastrar nova venda" :active.sync="popup_new">
+            <SaleComponent 
+                :companies="companies" 
+                :products="products" 
+                :payment_methods="payment_methods" 
+                :table_prices="table_prices"
+            />
         </vs-popup>
 
         <vs-popup title="Solicitar garantia" :active.sync="list_products_warranty.length > 0" @close="closeWarranty">
@@ -258,13 +185,14 @@
 <script>
 
 import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill } from '@iconscout/vue-unicons'
-import { UploadMedia, UpdateMedia } from 'vue-media-upload';
-import axios from "axios";
-
+import { UploadMedia, UpdateMedia } from 'vue-media-upload'
+import axios from "axios"
+import SaleComponent from '../../components/sale/SaleComponent'
 export default {
     name: "Sales",
     components:{
-        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill
+        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill,
+        SaleComponent
     },
     data(){
         return{
@@ -397,7 +325,9 @@ export default {
                 axios.post('/api/warranty', this.form).then((item)=>{
 
                     //close loading
-                    this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                    setTimeout(() => {
+                        this.$vs.loading.close("#record_warranty > .con-vs-loading");
+                    }, 1);  
                     
                     this.list_products_warranty = []
 
@@ -410,7 +340,9 @@ export default {
 
             }else{
                 //close loading
-                this.$vs.loading.close('#record_warranty > .con-vs-loading')
+                setTimeout(() => {
+                    this.$vs.loading.close("#record_warranty > .con-vs-loading");
+                }, 1);  
             }
         },
 
@@ -481,7 +413,9 @@ export default {
             axios.post('/api/sale', sale).then((response)=>{
                  
                  //close loading
-                this.$vs.loading.close('#cadastro_venda > .con-vs-loading')
+                 setTimeout(() => {
+                    this.$vs.loading.close("#record_warranty > .con-vs-loading");
+                }, 1);  
 
                 this.popup_new = false
 
@@ -758,30 +692,6 @@ export default {
     }
     .form_item{
         width: 100% !important;
-    }
-    .products {
-        background: #efee;
-        width: 100%;
-        margin-bottom: 20px;
-        padding: 15px;
-        border-radius: 8px;
-        border-bottom: 3px solid #fff;
-        padding: 0px 15px;
-        height: 230px;
-        overflow: auto;
-    }
-    .products p{
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        margin: 0;
-    }
-    .products span{
-        font-size: 12px;
-    }
-    .product-list{
-        padding: 15px 0px;
-        border-bottom: 3px solid #fff;
-        min-height: 70px;
     }
 </style>
 <style>

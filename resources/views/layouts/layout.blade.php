@@ -54,7 +54,7 @@
         <div class='container'>
             <ul>
                 <li><p><span class="fa fa-phone"></span> (17) 3214-9600</p></li>
-                <a href="{{ asset('login') }}"><li><p><span class="fa fa-user"></span> Entrar</p></li></a>
+                <a href="/login"><li><p><span class="fa fa-user"></span> Entrar</p></li></a>
             </ul>
         
         
