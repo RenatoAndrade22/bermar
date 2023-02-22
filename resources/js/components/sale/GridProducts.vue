@@ -1,36 +1,95 @@
 <template>
-    <vs-row>
-        <vs-col vs-w="12">
-                    <vs-input
-                        class="mb-3 mt-2"
-                        placeholder="Buscar produto"
-                        v-model="search"
-                        danger-text="Esse campo é obrigatório"
-                    />
+    <div>
+        <vs-row class="list_products_grid">
+            <vs-col vs-w="12">
+                <vs-input
+                    class="mb-3 mt-2"
+                    placeholder="Buscar produto"
+                    v-model="search"
+                    danger-text="Esse campo é obrigatório"
+                />
+            </vs-col>
+
+            <!-- LISTAGEM DOS PRODUTOS -->
+            <vs-col vs-w="12" class="mb-1" style="font-weight: 600;">
+                <vs-col vs-w="4" class="p-2">
+                    Produto
                 </vs-col>
 
-                <div class="products">
-                    <div v-for="(product, index) in list_products" class="product-list" v-if="product.price">
-                        <div class="name">
-                            <p>{{ product.name }}</p>
-                            <span>Preço: {{ product.price }}</span>     
-                        </div>
-                        <div class="number_items">
-                            <vs-input
-                                min='0'
-                                type="number"
-                                v-model="product.quantity"
-                            />
-                        </div>
-                    </div>
-                </div>
-            
-                <vs-col vs-w="12">
-                    <p class="total">
+                <vs-col vs-w="2" class="p-2">
+                    Quantidade
+                </vs-col>
+
+                <vs-col vs-w="2" class="p-2">
+                    Total sem desconto
+                </vs-col>
+
+                <vs-col vs-w="2" class="p-2">
+                    % de desconto
+                </vs-col>
+                
+                <vs-col vs-w="2" class="p-2">
+                    Total com desconto
+                </vs-col>
+            </vs-col>
+
+            <vs-col vs-w="12" v-for="(product, index) in list_products" v-if="product.price" :key="index">
+                <vs-col vs-w="4" class="p-2">
+                    <p>{{ product.name }}</p>
+                </vs-col>
+                <vs-col vs-w="2" class="p-2">
+                    <vs-input
+                        type="number"
+                        v-model="product.quantity"
+                        @input="noDiscount(product)"
+                        min="0"
+                    />
+                </vs-col>
+                <vs-col vs-w="2" class="p-2">
+                    <vs-input
+                        disabled
+                        :value="formatCurrency(product.total)"
+                    />
+                </vs-col>
+                
+                <vs-col vs-w="2" class="p-2">
+                    <vs-input
+                        type="number"
+                        v-model="product.discount"
+                        @input="withDiscount(product)"
+                        min="0"
+                    />
+                </vs-col>
+                
+                <vs-col vs-w="2" class="p-2">
+                    <vs-input
+                        disabled
+                        :value="formatCurrency(product.total_discount)"
+                    />
+                </vs-col>
+            </vs-col>
+        </vs-row>
+
+        <div class="bottom_grid_products">
+            <vs-row>
+                <vs-col vs-w="6">
+                    <h3 class="total">
                         Total: {{ formatCurrency(total) }}
-                    </p>
+                    </h3>
+                </vs-col>
+                <vs-col vs-w="6">
+                    <div v-if="!confirm">
+                        <vs-button class="float-end mb-2" color="primary" @click="confirm = !confirm" type="filled">Cadastrar</vs-button>
+                    </div>
+                    <div v-if="confirm">
+                        <vs-button class="float-end mb-2"  color="danger" @click="confirm = !confirm" type="filled">Cancelar</vs-button>
+                        <vs-button @click="record" style="margin-right: 15px;" class="float-end mb-2"  color="success" type="filled">Confirmar venda</vs-button>
+                    </div>
                 </vs-col> 
-    </vs-row>
+            </vs-row>
+        </div>
+        
+    </div>
 </template>
 
 <script>
@@ -69,13 +128,63 @@ export default {
     data(){
         return{
             search: null,
+            total: 0,
+            confirm: false
         }
     },
 
     methods:{
+
         formatCurrency(value){
             return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
         },
+
+        noDiscount(product){
+            this.list_products = this.$c(this.list_products).map((item) => {
+                if(item.id == product.id){
+                    product.total = (parseFloat(item.quantity) * parseFloat(item.price))
+                }
+                return product
+            })
+
+            this.withDiscount(product)
+        },
+
+        withDiscount(product){
+
+            this.list_products = this.$c(this.list_products).map((item) => {
+                if(item.id == product.id && product.total > 0){
+
+                    // retirando a porcentagem do valor total
+                    let valor_total = product.total
+                    let percentual = product.discount
+
+                    let valor_percentual = (parseFloat(valor_total) * parseFloat(percentual)) / 100
+                    let valor_final = valor_total - valor_percentual
+
+                    product.total_discount = valor_final
+                }
+
+                if(product.total == 0){
+                    product.discount = 0
+                    product.total_discount = 0
+                }
+
+                
+                return product
+            })
+
+            this.total = this.$c(this.list_products).sum('total_discount')
+        },
+
+        record(){
+            let products = this.$c(this.products).filter((item)=>{
+                return item.total_discount > 0
+            }).all()
+
+            this.$emit('products_sale', products)
+        }
+
     },
 
     computed:{
@@ -85,36 +194,31 @@ export default {
             let products = this.$c(this.products)
 
             if(this.company){
-
-                //empresa selecionada
-                let company = this.$c(this.companies).where('id', this.company)
                 
-                if(company){
-                    // tabela referente ao Estado da empresa
-                    let table_price = this.$c(this.table_prices).where('name', company.items[0]['address']['state'])       
-                    table_price = table_price.items[0].prices
+                // tabela referente ao Estado da empresa
+                let table_price = this.$c(this.table_prices).where('name', this.company.address[0]['state']) 
+                
+                table_price = table_price.items[0].prices
 
-                    products = this.$c(this.products).map((p)=>{
-                        let price = this.$c(table_price).where('product_id', p.id)
-                        if(price.items.length > 0){
-                            p.price = price.items[0].price 
-                        }else{
-                            p.price = null
-                        }
-                        return p
-                    })
-                }
-               
+                products = this.$c(this.products).map((p)=>{
+                    let price = this.$c(table_price).where('product_id', p.id)
+                    if(price.items.length > 0){
+                        p.price = price.items[0].price 
+                    }else{
+                        p.price = null
+                    }
+
+                    return p
+                })
             }
 
-            if (this.form.search) {
+            if (this.search) {
                 products = this.$c(products).filter((product) => {
-                    return product.name.toLowerCase().search(this.form.search) >= 0;
+                    return product.name.toLowerCase().search(this.search) >= 0;
                 });
-                products = products.items
             }
 
-            return products
+            return products.all()
 
         },
     }
@@ -122,3 +226,39 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+    .list_products_grid{
+        height: 417px;
+    }
+    .bottom_grid_products{
+        width: 94%;
+        position: absolute;
+        bottom: 17px;
+    }
+
+    .products {
+        width: 100%;
+        margin-bottom: 20px;
+        padding: 15px;
+        border-radius: 8px;
+        border-bottom: 3px solid #fff;
+        padding: 0px 15px;
+        height: 230px;
+        overflow: auto;
+    }
+    .products p{
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        margin: 0;
+    }
+    .products span{
+        font-size: 12px;
+    }
+    .product-list{
+        padding: 15px 0px;
+        border-bottom: 3px solid #fff;
+        min-height: 70px;
+    }
+</style>

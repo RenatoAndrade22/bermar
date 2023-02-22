@@ -24,7 +24,7 @@ class SaleOrderController extends Controller
         $sale = new SaleOrder();
         $sale->fill($request->all());
         $sale->user_id = $request->get('user_id');
-        $sale->status = 1;
+        $sale->status = $request->get('status');
         $sale->status_payment = 1;
         $sale->status_delivery = 1;
         $sale->enterprise_id = $request->get('enterprise_id');
@@ -41,6 +41,10 @@ class SaleOrderController extends Controller
             $item->sale_order_id = $sale->id;
             $item->product_id = $p['id'];
             $item->quantity = $p['quantity'];
+
+            $item->discount_percentage = $p['discount'];
+            $item->total = $p['total_discount'];
+
             $item->price = $price->price;
             $item->saveOrFail();
         }
@@ -51,27 +55,33 @@ class SaleOrderController extends Controller
 
     public function index()
     {
+        $enterprises = Enterprise::select('id')->where('enterprise_id', Auth::user()->enterprise_id)->get();
+
+        $enterprises = collect($enterprises)->map(function ($e) {
+            return $e['id'];
+        });
+
         $saleOrders = SaleOrder::query()
-            ->where('user_id', Auth::user()->id)->get();
+            ->whereIn('enterprise_id', $enterprises)->get();
         return $saleOrders;
     }
 
     public function myShopping(){
+
         $saleOrders = SaleOrder::query()
             ->with('boletos')
-            ->where('enterprise_id', Auth::user()->enterprise_id)->get();
+            ->where('enterprise_id', Auth::user()->enterprise_id)->orderByDesc('id')->get();
         return $saleOrders;
     }
 
     public function allSales()
     {
-        $saleOrders = SaleOrder::query()->with('boletos')->get();
+        $saleOrders = SaleOrder::query()->with('boletos')->orderByDesc('id')->get();
         return $saleOrders;
     }
 
     public function getSaleOrderByUser()
     {
-
         return SaleOrder::with(['user', 'saleOrderItems'])
             ->where('enterprise_id', Auth::user()->enterprise_id)->get();
     }
@@ -102,9 +112,15 @@ class SaleOrderController extends Controller
                 $price = $items['price'] * $items['quantity'];
             }
         }
-
         return $price;
+    }
 
+    public function update(Request $request, $id)
+    {
+        $sale = SaleOrder::find($id);
+        $sale->fill($request->all());
+        $sale->saveOrFail();
+        return $sale;
     }
 
 }

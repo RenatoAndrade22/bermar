@@ -21,7 +21,6 @@
                     <div class="card_column">
                         <h1>Catalogo</h1>
 
-
                         <p style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
                        
                         <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="onFileChange" hidden>

@@ -47,10 +47,11 @@ export default {
                     scale: 0.6
                 })
 
-            }else{
+            }else{            
+
                 setTimeout(() => {
                     this.$vs.loading.close("#"+this.id_loadding+" > .con-vs-loading");
-                }, 1); 
+                }, 1)
             }
             return this.name_button
         }

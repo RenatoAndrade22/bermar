@@ -140,13 +140,15 @@ class ProductController extends Controller
     }
 
     public function uploadManual(Request $request, $id){
-        $name = $request->file('pdf')->getRealPath();
+
+        $name = $request->file('file')->getRealPath();
         $upload = UploadCloudController::upload($name);
 
-        
         $product = Product::find($id);
         $product->manual = $upload['secure_url'];
         $product->saveOrFail();
+
+        return $product;
     }
 
 }

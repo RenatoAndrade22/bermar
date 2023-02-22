@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div id="page_sales">
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
                     <span style="color:#EE1B21">({{ sales.length }})</span> Vendas
                 </vs-navbar-title>
             </div>
-            <vs-button type="relief" v-if="$user.enterprise.enterprise_type_id != 1" @click="popup_new = true">
+            <vs-button type="relief" @click="popup_new = true">
                 Cadastrar nova venda
             </vs-button>
         </vs-navbar>
@@ -29,6 +29,9 @@
                 <vs-th>
                     Revenda
                 </vs-th>
+                <!-- <vs-th>
+                    Representante
+                </vs-th> -->
                 <!--
                 <vs-th>
                     Status compra
@@ -52,6 +55,10 @@
                 <vs-th>
                     Garantia
                 </vs-th>
+
+                <vs-th>
+                    Status
+                </vs-th>
                 
             </template>
 
@@ -68,6 +75,10 @@
                     <vs-td :data="data[indextr].enterprise.name">
                         {{data[indextr].enterprise.name}}
                     </vs-td>
+
+                    <!-- <vs-td :data="data[indextr].enterprise.name">
+                        {{data[indextr].enterprise.name}}
+                    </vs-td> -->
 
                     <vs-td :data="data[indextr].sale_order_items">
                         <vs-button type="relief" @click="viewProducts(data[indextr].sale_order_items)">
@@ -105,6 +116,11 @@
                         </vs-button>
                     </vs-td>
 
+                    <vs-td :data="data[indextr]">
+                        <vs-button @click="statusOpen(data[indextr].status, data[indextr].id)" color="primary" v-if="data[indextr].status == 1" type="flat">Aprovada</vs-button>
+                        <vs-button @click="statusOpen(data[indextr].status, data[indextr].id)" color="danger" v-if="data[indextr].status == 2" type="flat">Pendente</vs-button>
+                    </vs-td>
+
                 </vs-tr>
             </template>
         </vs-table>
@@ -130,7 +146,7 @@
             <ul class="sale_products">
                 <li v-for="(p, i) in sale_products">
                     <p>{{ p.product.name }}</p>
-                    <span>{{ p.quantity }} x {{ p.price }}</span>
+                    <span>{{ p.quantity }} x {{ p.price }} | {{ p.discount_percentage }}% de desconto</span>
                 </li>
             </ul>
         </vs-popup>
@@ -141,6 +157,8 @@
                 :products="products" 
                 :payment_methods="payment_methods" 
                 :table_prices="table_prices"
+                @products_sale="addSale"
+                v-if="popup_new"
             />
         </vs-popup>
 
@@ -179,23 +197,44 @@
             </vs-row>
         </vs-popup>
 
+        <vs-popup title="Atualizar status" :active.sync="update_status">
+            <vs-select v-model="update_status_value">
+                <vs-select-item key="aprovado" value="1" text="Aprovado" />
+                <vs-select-item key="pendente" value="2" text="Pendente" />
+            </vs-select>
+            <ButtonComponent
+                v-model="active_load" 
+                id_loadding="page_sales" 
+                name_button="Atualizar" 
+                @send="updateStatus"
+                class="mt-3"
+                style="text-align: right;"
+            />
+        </vs-popup>
+
     </div>
 </template>
 
 <script>
 
-import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill } from '@iconscout/vue-unicons'
+import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill, ButtonLoadding } from '@iconscout/vue-unicons'
 import { UploadMedia, UpdateMedia } from 'vue-media-upload'
 import axios from "axios"
 import SaleComponent from '../../components/sale/SaleComponent'
+import ButtonComponent from '../../components/ButtonLoadding'
+
+
 export default {
     name: "Sales",
     components:{
         UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill,
-        SaleComponent
+        SaleComponent, ButtonComponent
     },
     data(){
         return{
+            active_load: false,
+            update_status_value: null,
+            update_status_id: null,
             popup_new: false,
             user: null,
             error_company: null,
@@ -206,6 +245,7 @@ export default {
             upload_file: false,
             upload_boleto: false,
             view_products: false,
+            update_status: false,
             sale_products: [],
             sale_order_id: null,
             step: 0,
@@ -298,6 +338,21 @@ export default {
         }
     },
     methods:{
+
+        statusOpen(status, sale_order_id){
+            this.update_status_id = sale_order_id
+            this.update_status_value = status
+            this.update_status = true
+        },
+
+        updateStatus(){
+            this.active_load = true
+            axios.put('/api/sale-order/'+this.update_status_id, {status:this.update_status_value}).then((data)=>{
+                this.update_status = false
+                this.active_load = false
+                this.getSaleOrders()
+            })
+        },
 
         getAssitences(){
             axios.get('/api/enterprises-type/4').then((data)=>{
@@ -395,7 +450,8 @@ export default {
             return quantity ? (parseFloat(quantity) * price) : 0
         },
 
-        addSale(){
+        addSale(data){
+
             //loading
             this.$vs.loading({
                 container: '#cadastro_venda',
@@ -404,17 +460,29 @@ export default {
 
             // payload
             let sale = {
+
+                // VENDEDOR
                 "user_id": this.$user.id,
-                "enterprise_id": this.form.company,
-                "payment_method_id": this.form.payment_method,
-                "products": this.cart.products
+
+                //COMPRADOR
+                "enterprise_id": data.form.company.id,
+
+                "payment_method_id": data.form.payment_method,
+
+                "shipping_type": data.form.frete,
+                "observation": data.form.observation,
+                "phone": data.form.phone,
+                "status": 1,
+                "shipping_company": data.form.shipping,
+
+                "products": data.products
             }
 
             axios.post('/api/sale', sale).then((response)=>{
                  
                  //close loading
                  setTimeout(() => {
-                    this.$vs.loading.close("#record_warranty > .con-vs-loading");
+                    this.$vs.loading.close("#cadastro_venda > .con-vs-loading");
                 }, 1);  
 
                 this.popup_new = false
@@ -426,13 +494,44 @@ export default {
                     title:'Venda cadastrada!',
                     text:''
                 })
+
+                this.products = this.$c(this.products).map((item)=>{
+                    item.discount = 0
+                    item.price = 0
+                    item.quantity = 0
+                    item.total_discount = 0
+                    item.total = 0
+                    return item
+                }).all()
               
             })
         },
 
         getCompanies(){
-            axios.get('/api/enterprises-type/2').then((data)=>{
-                this.companies = data.data
+            axios.get('/api/enterprises-type/2').then((resp)=>{
+
+                let data
+
+                // ADMIN
+                if(this.$user.enterprise.enterprise_type_id == 1){
+                    data = resp.data
+                }
+
+                // REVENDA
+                if(this.$user.enterprise.enterprise_type_id == 2){
+                    data = this.$c(resp.data).filter((item)=>{
+                        return item.id == this.$user.enterprise.id
+                    }).all()
+                }
+
+                // REPRESENTANTE
+                if(this.$user.enterprise.enterprise_type_id == 3){
+                    data = this.$c(resp.data).filter((item)=>{
+                        return item.enterprise_id == this.$user.enterprise.id
+                    }).all()
+                }
+
+                this.companies = data
             })
         },
 
@@ -447,6 +546,9 @@ export default {
             axios.get("/api/products-bermar").then((data) => { 
                 this.products = this.$c(data.data).map((product)=>{
                     product.quantity = 0
+                    product.discount = 0
+                    product.total = 0
+                    product.total_discount = 0
                     return product
                 })
                 this.products = this.products.items
@@ -462,33 +564,7 @@ export default {
         
         },
 
-        addProducts(){
-
-            if(this.form.company && this.form.payment_method){
-
-                 /* reset cart */
-                this.cart.products = []
-
-                let products = this.$c(this.list_products).filter((product)=>{
-                    return product.total && product.total > 0 ? true : false
-                })
-
-                this.cart.products = products.items
-                this.step = 1
-
-            }else{
-
-                if(this.form.company){
-                    this.error_company = 'Selecione uma empresa'
-                }
-                
-                if(this.form.payment_method){
-                    this.error_payment = 'Selecione uma empresa'
-                }
-            }
-           
-
-        },
+        
 
         getText(id, items){
             let text = this.$c(items).where('value', id).first()
@@ -510,7 +586,6 @@ export default {
         },
 
         handleSelected(tr) {
-            console.log('handle', tr)
         },
 
         doubleSelection(tr) {
@@ -535,8 +610,8 @@ export default {
                 this.sales = this.$c(resp.data).map((sale)=>{
 
                     this.$c(sale.sale_order_items).each((s)=>{
-                        let value = s.quantity ? (parseFloat(s.quantity) * parseFloat(s.price)) : 0
-                        sale.total = (sale.total ? sale.total : 0) + value
+                        sale.total = sale.total ? sale.total : 0
+                        sale.total = (parseFloat(sale.total) + parseFloat(s.total))
                     })
                     return sale
                 })
@@ -563,19 +638,7 @@ export default {
         this.getAssitences()
         this.getUsers()
     },
-    watch:{
-        list_products: {
-            deep: true,
-            handler(new_value){
-                let products = this.$c(new_value).map((product)=>{
-                    product.total = product.quantity ? (parseFloat(product.quantity) * product.price) : 0
-                    return product
-                })
-                this.step = 0
-                this.total = this.$c(products.items).sum('total')
-            }
-        }
-    },
+   
     computed:{
 
         list_products() {

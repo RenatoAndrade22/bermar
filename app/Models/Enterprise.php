@@ -38,4 +38,8 @@ class Enterprise extends Model
         return $this->belongsTo(EnterpriseType::class);
     }
 
+    
+
+    
+
 }

@@ -16,6 +16,10 @@ class SaleOrder extends Model
         'status_payment',
         'status_delivery',
         'payment_method_id',
+        'shipping_type',
+        'shipping_company',
+        'phone',
+        'observation',
     ];
 
     protected $with = [

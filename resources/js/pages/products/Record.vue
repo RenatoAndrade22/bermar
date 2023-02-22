@@ -1,7 +1,6 @@
 <template>
-    <div>
+    <div id="product-record">
         <h1>Cadastrar novo produto</h1>
-
         <vs-row vs-w="12" style="width: 100% !important; display: block;">
 
             <template v-if="!image">
@@ -251,7 +250,9 @@
                     <hr />
                     <h3>Upload do Manual</h3>
                     <div class="centerx">
-                        <vs-upload automatic fileName="pdf" text="Clique aqui" :action="'/api/upload-manual/'+form.id" />
+                        <div class="con-input-upload"><input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addManual" ><span class="text-input"> Clique aqui </span><span class="input-progress" style="width: 0%;"></span><button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload"><i translate="no" class="material-icons notranslate"> cloud_upload </i></button></div>
+                        <iframe v-if="url_manual" :src="url_manual" height="200" width="200" />
+                        <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
                     </div>
                 </div>
             </template>
@@ -279,13 +280,12 @@
                     <hr />
                     <h3>Upload do Manual</h3>
                     <div class="centerx">
-                        <vs-upload automatic fileName="pdf" text="Clique aqui" :action="'/api/upload-manual/'+form.id" @on-delete="deleteImage" />
-                        <iframe v-if="form.manual" :src="form.manual" height="200" width="200" />
+                        <div class="con-input-upload"><input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addManual" ><span class="text-input"> Clique aqui </span><span class="input-progress" style="width: 0%;"></span><button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload"><i translate="no" class="material-icons notranslate"> cloud_upload </i></button></div>
+                        <iframe v-if="url_manual" :src="url_manual" height="200" width="200" />
+                        <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
                     </div>
                 </div>
                 
-
-
             </template>
 
             <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
@@ -316,7 +316,6 @@ export default {
             edit: false,
             money_active: false,
             image: false,
-
             categories: [],
             status:[
                 {
@@ -415,11 +414,33 @@ export default {
                 thousands: '.',
                 precision: 2,
                 masked: false /* doesn't work with directive */
-            }
+            },
+            url_manual: null,
         }
     },
     directives: {money: VMoney},
     methods:{
+
+        addManual(e){
+            
+            let file = e.target.files[0]
+            this.url_manual = URL.createObjectURL(file)
+            let formData = new FormData()
+
+            formData.append('file', file)
+
+            //loading
+            this.$vs.loading({
+                container: '#product-record',
+                scale: 0.6
+            })
+
+            axios.post('/api/upload-manual/'+this.form.id, formData).then((data)=>{
+                setTimeout(() => {
+                    this.$vs.loading.close("#product-record > .con-vs-loading");
+                }, 1)
+            })
+        },
 
         successUpload(){
             this.$vs.notify({color:'success',title:'Upload Success',text:'Lorem ipsum dolor sit amet, consectetur'})
@@ -583,7 +604,7 @@ export default {
                 this.form.packing_weight = data.data.packing_weight
                 this.form.packing_length = data.data.packing_length
                 this.form.packing_height = data.data.packing_height
-
+                
                 this.money_active = true
 
             })

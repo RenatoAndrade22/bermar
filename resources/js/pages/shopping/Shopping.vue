@@ -3,11 +3,11 @@
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
-                    <span style="color:#EE1B21">({{ sales.length }})</span> Vendas
+                    <span style="color:#EE1B21">({{ sales.length }})</span> Compras
                 </vs-navbar-title>
             </div>
             <vs-button type="relief" @click="popup_new = true">
-                Cadastrar nova venda
+                Comprar
             </vs-button>
         </vs-navbar>
 
@@ -43,6 +43,10 @@
 
                 <vs-th>
                     Garantia
+                </vs-th>
+
+                <vs-th>
+                    Status
                 </vs-th>
                 
                 
@@ -89,6 +93,11 @@
                         <vs-button type="relief" @click="warrantyProducts(data[indextr].sale_order_items)">
                             <span>Solicitar</span>
                         </vs-button>
+                    </vs-td>
+
+                    <vs-td :data="data[indextr].status">
+                        <vs-button color="primary" v-if="data[indextr].status == 1" type="flat">Aprovada</vs-button>
+                        <vs-button color="danger" v-if="data[indextr].status == 2" type="flat">Pendente</vs-button>
                     </vs-td>
 
                 </vs-tr>
@@ -151,6 +160,17 @@
 
             </vs-row>
         </vs-popup>
+
+        <vs-popup fullscreen title="Cadastrar nova venda" :active.sync="popup_new">
+            <SaleComponent 
+                :companies="companies" 
+                :products="products" 
+                :payment_methods="payment_methods" 
+                :table_prices="table_prices"
+                @products_sale="addSale"
+                v-if="popup_new"
+            />
+        </vs-popup>
         
     </div>
 </template>
@@ -160,11 +180,12 @@
 import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill } from '@iconscout/vue-unicons'
 import { UploadMedia, UpdateMedia } from 'vue-media-upload';
 import axios from "axios";
+import SaleComponent from '../../components/sale/SaleComponent'
 
 export default {
     name: "Sales",
     components:{
-        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill
+        UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill, SaleComponent
     },
     data(){
         return{
@@ -322,7 +343,9 @@ export default {
             return quantity ? (parseFloat(quantity) * price) : 0
         },
 
-        addSale(){
+
+        addSale(data){
+
             //loading
             this.$vs.loading({
                 container: '#cadastro_venda',
@@ -331,14 +354,26 @@ export default {
 
             // payload
             let sale = {
+
+                // VENDEDOR
                 "user_id": this.$user.id,
-                "enterprise_id": this.form.company,
-                "payment_method_id": this.form.payment_method,
-                "products": this.cart.products
+
+                //COMPRADOR
+                "enterprise_id": data.form.company.id,
+
+                "payment_method_id": data.form.payment_method,
+
+                "shipping_type": data.form.frete,
+                "observation": data.form.observation,
+                "phone": data.form.phone,
+                "status": 2,
+                "shipping_company": data.form.shipping,
+
+                "products": data.products
             }
 
             axios.post('/api/sale', sale).then((response)=>{
-                 
+                
                 //close loading
                 setTimeout(() => {
                     this.$vs.loading.close("#cadastro_venda > .con-vs-loading");
@@ -350,10 +385,19 @@ export default {
 
                 this.$vs.notify({
                     color:'success',
-                    title:'Venda cadastrada!',
+                    title:'Compra cadastrada!',
                     text:''
                 })
-              
+
+                this.products = this.$c(this.products).map((item)=>{
+                    item.discount = 0
+                    item.price = 0
+                    item.quantity = 0
+                    item.total_discount = 0
+                    item.total = 0
+                    return item
+                }).all()
+            
             })
         },
 
@@ -402,9 +446,7 @@ export default {
         },
 
         getCompanies(){
-            axios.get('/api/enterprises-type/2').then((data)=>{
-                this.companies = data.data
-            })
+            this.companies = [this.$user.enterprise]
         },
 
         getPaymentMethods(){
@@ -416,11 +458,15 @@ export default {
         getProductsBermar() {
             
             axios.get("/api/products-bermar").then((data) => { 
-                this.products = this.$c(data.data).map((product)=>{
-                    product.quantity = 0
-                    return product
-                })
-                this.products = this.products.items
+                this.products = this.$c(data.data).map((item)=>{
+                    item.discount = 0
+                    item.price = 0
+                    item.quantity = 0
+                    item.total_discount = 0
+                    item.total = 0
+                    return item
+                }).all()
+      
              })
         
         },
@@ -431,34 +477,6 @@ export default {
                 this.table_prices = result.data
              })
         
-        },
-
-        addProducts(){
-
-            if(this.form.company && this.form.payment_method){
-
-                 /* reset cart */
-                this.cart.products = []
-
-                let products = this.$c(this.list_products).filter((product)=>{
-                    return product.total && product.total > 0 ? true : false
-                })
-
-                this.cart.products = products.items
-                this.step = 1
-
-            }else{
-
-                if(this.form.company){
-                    this.error_company = 'Selecione uma empresa'
-                }
-                
-                if(this.form.payment_method){
-                    this.error_payment = 'Selecione uma empresa'
-                }
-            }
-           
-
         },
 
         getText(id, items){
@@ -495,8 +513,8 @@ export default {
                 this.sales = this.$c(resp.data).map((sale)=>{
 
                     this.$c(sale.sale_order_items).each((s)=>{
-                        let value = s.quantity ? (parseFloat(s.quantity) * parseFloat(s.price)) : 0
-                        sale.total = (sale.total ? sale.total : 0) + value
+                        sale.total = sale.total ? sale.total : 0
+                        sale.total = (parseFloat(sale.total) + parseFloat(s.total))
                     })
                     return sale
                 })
