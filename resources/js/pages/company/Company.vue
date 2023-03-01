@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="company-record">
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
@@ -67,7 +67,13 @@
             </template>
         </vs-table>
         <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
-            <vs-row vs-w="12" style="width: 100% !important; display: block;" id="company_new">
+
+            <vs-button style="margin-top: -15px;float: right;" @click="active_upload = !active_upload" type="line">
+                <span v-if="!active_upload">Cadastrar por excel</span>
+                <span v-if="active_upload">Voltar</span>
+            </vs-button>
+
+            <vs-row v-if="!active_upload" vs-w="12" style="width: 100% !important; display: block;" id="company_new">
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
@@ -279,13 +285,25 @@
                     </vs-col>
 
                 </template>
-
+            </vs-row>
+            <vs-row v-if="active_upload" vs-w="12" style="width: 100% !important; display: block;" id="company_new">
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <input type="file" v-if="file_upload" @change="onFileChange" />
+                </vs-col>
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <div v-if="errors_upload.length > 0" style="width: 100%;float: left;text-align: center;padding: 10px;">
+                        <p v-for="(e, i) in errors_upload" :key="i" style="background: mistyrose;color: red !important;padding: 5px;margin-bottom: 2px;">
+                            {{ e.error }}
+                        </p>
+                    </div>
+                </vs-col>
             </vs-row>
         </vs-popup>
     </div>
 </template>
 
 <script>
+import readXlsxFile from 'read-excel-file'
 import { BRow, BCol, BTable, BButton, BFormInput, BFormGroup } from 'bootstrap-vue'
 import { UilEye, UilEdit, UilTrashAlt } from '@iconscout/vue-unicons'
 import Form from '../../components/Form'
@@ -302,11 +320,13 @@ export default {
 
     data(){
         return{
+            file_upload: true,
             search: null,
             delete_provider: null,
             edit_company: false,
             providers:[],
             popupActivo:false,
+            active_upload: false,
             form: {
                 id: null,
 
@@ -398,10 +418,168 @@ export default {
                 },
                 
             ],
-            representatives: []
+            representatives: [],
+            errors_upload: []
         }
     },
     methods:{
+
+        onFileChange(event) {
+            this.file_upload = false
+            //loading
+            this.$vs.loading({
+                container: '#company-record',
+                scale: 0.6
+            })
+
+            const schema = {
+                'Categoria': {
+                    prop: 'categoria',
+                    type: String,
+                    required: true
+                },
+                'CNPJ': {
+                    prop: 'cnpj',
+                    type: String,
+                    required: true
+                },
+                'Status': {
+                    prop: 'status',
+                    type: String,
+                    required: true
+                },
+                'Razão Social': {
+                    prop: 'razao_social',
+                    type: String,
+                    required: true
+                },
+           
+                'E-mail': {
+                    prop: 'email',
+                    type: String,
+                    required: true
+                },
+                'Telefone': {
+                    prop: 'telefone',
+                    type: String,
+                    required: true
+                },
+                'CEP': {
+                    prop: 'cep',
+                    type: String,
+                    required: true
+                },
+                'Rua': {
+                    prop: 'rua',
+                    type: String,
+                    required: true
+                },
+                'Bairro': {
+                    prop: 'bairro',
+                    type: String,
+                    required: true
+                },
+                'Complemento': {
+                    prop: 'Complemento',
+                    type: String
+                },
+                'Número': {
+                    prop: 'numero',
+                    type: String,
+                    required: true,
+                },
+                'Cidade': {
+                    prop: 'cidade',
+                    type: String,
+                    required: true
+                },
+                'Estado': {
+                    prop: 'estado',
+                    type: String,
+                    required: true,
+                    validate(value){
+                        if(value.length != 2){
+                            throw new Error('A coluna Estado deve ter 2 caracteres.') 
+                        }
+                    }
+                },
+                'Região': {
+                    prop: 'regiao',
+                    type: String,
+                    required: true
+                }
+            }
+
+            let xlsxfile = event.target.files ? event.target.files[0] : null;
+            readXlsxFile(xlsxfile, {schema}).then((data) => {
+                
+                setTimeout(() => {
+                    this.$vs.loading.close("#company-record > .con-vs-loading");
+                }, 1)
+
+                this.errors_upload = this.$c(data.errors).unique('column').map((e)=>{
+                    if(e.error == "required"){
+                        e.error = "O campo "+e.column+" é obrigatório."
+                    }
+                    return e
+                }).all()
+                
+                this.file_upload = true
+
+                if(this.errors_upload.length == 0){
+
+                    for (var i = 0; i < data.rows.length; i++){
+                        
+                        let desc_categ = data.rows[i].categoria.toLowerCase()
+                        desc_categ = desc_categ[0].toUpperCase() + desc_categ.substring(1)
+
+                        let category = this.$c(this.categories).where('name', desc_categ).first()
+                      
+                        if(category){
+                            axios.post('/api/enterprise', 
+                            {
+                                name: data.rows[i].razao_social,
+                                enterprise_type_id: category.id,
+                                email: data.rows[i].email,
+                                cnpj: data.rows[i].cnpj,
+                                phone: data.rows[i].telefone,
+                                status: data.rows[i].status.toLowerCase() == 'ativo',
+                                address:{
+                                    number: data.rows[i].numero,
+                                    street: data.rows[i].rua,
+                                    district: data.rows[i].bairro,
+                                    zipcode: data.rows[i].cep,
+                                    city: data.rows[i].cidade,
+                                    state: data.rows[i].estado,
+                                    complement: data.rows[i].complemento === undefined ? null : data.rows[i].complemento,
+                                    region: data.rows[i].regiao,
+                                    
+                                }
+                            }).then((data)=>{
+
+                            }).catch(error => {
+                                console.log(error.response.data.message || error.message)
+                            });
+                        }
+
+                        if(i == (data.rows.length - 1)){
+                            this.popupActivo = false
+                            this.$toast.open({
+                                message: 'Empresas cadastradas!',
+                                type: 'success',
+                            });
+                        }
+                        
+                    }
+
+                    setTimeout(() => {
+                            this.$vs.loading.close("#company-record > .con-vs-loading");
+                    }, 1)
+
+                }
+            })
+
+        },
         
         resertAddress(){
             this.address.city_id = null

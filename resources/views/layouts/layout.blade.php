@@ -183,28 +183,28 @@
                     <ul class="footer_wthree_gridf_list">
                         <p><h4>INSTITUCIONAL</h4></p>
                         <li>
-                            <a href="representantes.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Representantes</a>
+                            <a href="{{ url('representantes') }}"><span class="fa fa-angle-right" aria-hidden="true"></span> Representantes</a>
                         </li>
                         <li>
-                            <a href="revendas.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Revendas</a>
+                            <a href="{{ url('revendas') }}"><span class="fa fa-angle-right" aria-hidden="true"></span> Revendas</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="garantia.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Termos de Garantia</a>
-                        </li>
+                        </li> -->
                     </ul>
                 </div>
                 <div class="col-lg-3 footer_wthree_gridf mt-md-0 mt-sm-4 mt-3">
                     <ul class="footer_wthree_gridf_list">
                         <p><h4>VEJA TAMBÉM</h4></p>
-                        <li>
+                        <!-- <li>
                             <a href="boleto.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Solicitar Boleto</a>
-                        </li>
+                        </li> -->
 
                         <li>
-                            <a href="assistencia.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Assistência Técnica</a>
+                            <a href="{{ url('assistencia') }}"><span class="fa fa-angle-right" aria-hidden="true"></span> Assistência Técnica</a>
                         </li>
                         <li>
-                            <a href="loja.html"><span class="fa fa-angle-right" aria-hidden="true"></span> Produtos</a>
+                            <a href="{{ url('produtos') }}"><span class="fa fa-angle-right" aria-hidden="true"></span> Produtos</a>
                         </li>
                     </ul>
                 </div>

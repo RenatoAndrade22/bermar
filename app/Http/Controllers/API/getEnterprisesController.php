@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Enterprise;
 
+
 class getEnterprisesController extends Controller
 {
     public function getRepresentatives($type, $uf)
     {
+
         $type_id = 0;
 
         if($type == 'revendas'){
@@ -24,21 +26,10 @@ class getEnterprisesController extends Controller
             $type_id = 4;
         }
 
-        $enterprises = Enterprise::query()->with(['address'])->where('enterprise_type_id', $type_id)->get();
-
-        $enterprises = collect($enterprises)->filter(function ($item) use ($uf){
-
-            if(count($item['address']) == 0){
-                return false;
-            }
-
-            if($item['address'][0]['state'] != $uf){
-                return false;
-            }
-
-            return true;
-        });
-
-        return $enterprises;
+        return Enterprise::query()
+              ->join('addresses', 'enterprises.id', '=', 'addresses.enterprise_id')
+              ->where('enterprises.enterprise_type_id', '=', $type_id)
+              ->where('addresses.state', '=', $uf)
+              ->get();
     }
 }

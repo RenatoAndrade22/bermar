@@ -2,16 +2,16 @@
     <div class="new_table_price">
 
         <h1 v-if="!categ_edit">
-            Selecione para qual Estado a tabela será cadastrada.
+            Selecione para qual região a tabela será cadastrada.
         </h1>
         <vs-row class="mb-4">
             <vs-col vs-w="12">
                 <vs-select
                     class="selectExample"
-                    label="Estado"
-                    v-model="uf"
+                    label="Região"
+                    v-model="region"
                 >
-                    <vs-select-item :key="index" :value="item.uf" :text="item.uf" v-for="item,index in ufs" />
+                    <vs-select-item :key="index" :value="item.name" :text="item.name" v-for="item,index in regions" />
                 </vs-select>
             </vs-col>
         </vs-row>
@@ -68,139 +68,34 @@ export default {
             categ_edit: false,
             money_active: false,
             products:[],
-            uf: null,
-            ufs: [
+            region: null,
+            regions: [
                 {
                     id: 1,
-                    name: 'Acre',
-                    uf: 'AC'
+                    name: 'Sul',
                 },
                 {
                     id: 2,
-                    name: 'Alagoas',
-                    uf: 'AL'
+                    name: 'Sudeste',
                 },
                 {
                     id: 3,
-                    name: 'Amapá',
-                    uf: 'AP'
+                    name: 'Norte',
                 },
                 {
                     id: 4,
-                    name: 'Amazonas',
-                    uf: 'AM'
+                    name: 'Nordeste',
                 },
                 {
                     id: 5,
-                    name: 'Bahia',
-                    uf: 'BA'
+                    name: 'Centro-Oeste',
                 },
                 {
                     id: 6,
-                    name: 'Ceará',
-                    uf: 'CE'
-                },
-                {
-                    id: 7,
-                    name: 'Espírito Santo',
-                    uf: 'ES'
-                },
-                {
-                    id: 8,
-                    name: 'Goiás',
-                    uf: 'GO'
-                },
-                {
-                    id: 9,
-                    name: 'Maranhão',
-                    uf: 'MA'
-                },
-                {
-                    id: 10,
-                    name: 'Mato Grosso',
-                    uf: 'MT'
-                },
-                {
-                    id: 11,
-                    name: 'Mato Grosso do Sul',
-                    uf: 'MS'
-                },
-                {
-                    id: 12,
-                    name: 'Minas Gerais',
-                    uf: 'MG'
-                },
-                {
-                    id: 13,
-                    name: 'Pará',
-                    uf: 'PA'
-                },
-                {
-                    id: 14,
-                    name: 'Paraíba',
-                    uf: 'PB'
-                },
-                {
-                    id: 15,
-                    name: 'Paraná',
-                    uf: 'PR'
-                },
-                {
-                    id: 16,
-                    name: 'Pernambuco',
-                    uf: 'PE'
-                },
-                {
-                    id: 17,
-                    name: 'Piauí',
-                    uf: 'PI'
-                },
-                {
-                    id: 18,
-                    name: 'Rio de Janeiro',
-                    uf: 'RJ'
-                },
-                {
-                    id: 19,
-                    name: 'Rio Grande do Norte',
-                    uf: 'RN'
-                },
-                {
-                    id: 20,
-                    name: 'Rio Grande do Sul',
-                    uf: 'RS'
-                },
-                {
-                    id: 21,
-                    name: 'Rondônia',
-                    uf: 'RO'
-                },
-                {
-                    id: 22,
-                    name: 'Roraima',
-                    uf: 'RR'
-                },
-                {
-                    id: 23,
-                    name: 'Santa Catarina',
-                    uf: 'SC'
-                },
-                {
-                    id: 24,
-                    name: 'São Paulo',
-                    uf: 'SP'
-                },
-                {
-                    id: 25,
-                    name: 'Sergipe',
-                    uf: 'SE'
-                },
-                {
-                    id: 26,
-                    name: 'Tocantins',
-                    uf: 'TO'
+                    name: 'Exportação',
                 },
             ],
+
             error: false,
             money: {
                 decimal: ',',
@@ -224,7 +119,7 @@ export default {
             this.button_inative = true
             if(this.validation()){
 
-                axios.post("/api/price_table",{name: this.uf, products: this.products}).then((data) => {
+                axios.post("/api/price_table",{name: this.region, products: this.products}).then((data) => {
                     
                     this.$vs.notify({
                         color:'success',
@@ -245,7 +140,7 @@ export default {
         validation(){
             let i = false
 
-            if(this.uf){
+            if(this.region){
                 i = true
             }
 

@@ -10,6 +10,7 @@ use App\Models\SaleOrderItems;
 use App\Models\Enterprise;
 use App\Models\PriceTable;
 use App\Models\Price;
+
 use Illuminate\Support\Facades\Auth;
 
 class SaleOrderController extends Controller

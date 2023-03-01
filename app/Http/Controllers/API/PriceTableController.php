@@ -16,7 +16,7 @@ class PriceTableController extends Controller
 
     public function store(Request $request)
     {
-        $table = new PriceTable();
+        $table = PriceTable::query()->where('name', $request->name)->firstOrNew();
         $table->name = $request->name;
         $table->saveOrFail();
 
@@ -32,8 +32,7 @@ class PriceTableController extends Controller
             $product['price'] = str_replace(".","", $product['price']);
             $product['price'] = str_replace(",",".", $product['price']);
 
-            echo $product['price'];
-            $price = new Price();
+            $price = Price::query()->where('price_table_id', $table_id)->where('product_id', $product['id'])->firstOrNew();
             $price->price_table_id = $table_id;
             $price->product_id     = $product['id'];
             $price->price          = $product['price'];

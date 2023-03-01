@@ -95,30 +95,24 @@
                     <!-- product right -->
                     <div class="left-ads-display wthree">
                         @if ($product['video'])
-                            <iframe width="1120" height="630" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="1120" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         @endif
+
+                        @if ($product['datasheet'])
                         <div class="row">
                             <div class="desc1-left col-md-6 mt-3">
+                                <h4>Ficha Técnica</h4>
                                 {!! nl2br($product['datasheet']) !!}
                             </div>
-                            <div class="desc1-right col-md-6 pl-lg-3">
-                                
-                                
-                                <div class="share-desc mt-5">
-                                    <div class="share text-left">
-                                       
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
                         </div>
+                        @endif
                     </div>
                 </div>
         
                 
                 @if(count($products_related) > 0)
                 <!--/row-->
-                <h3 class="title-wthree-single my-lg-5 my-4 text-left">CONHEÇA TAMBÉM</h3>
+                <h4 style="margin-bottom: 0;margin-left: 15px;border-top: 1px solid #ddd;padding-top: 39px;font-weight: 900;">CONHEÇA TAMBÉM</h4>
                 <div class="row shop-wthree-info text-center">
                     
                         @foreach ($products_related as $related)

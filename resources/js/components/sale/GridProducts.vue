@@ -129,7 +129,125 @@ export default {
         return{
             search: null,
             total: 0,
-            confirm: false
+            confirm: false,
+            states:[
+                {
+                    state: 'AC',
+                    region: 'Norte'
+                },
+                {
+                    state: 'AP',
+                    region: 'Norte'
+                },
+                {
+                    state: 'AM',
+                    region: 'Norte'
+                },
+                {
+                    state: 'PA',
+                    region: 'Norte'
+                },
+                {
+                    state: 'RO',
+                    region: 'Norte'
+                },
+                {
+                    state: 'RR',
+                    region: 'Norte'
+                },
+                {
+                    state: 'TO',
+                    region: 'Norte'
+                },
+
+
+                {
+                    state: 'AL',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'BA',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'CE',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'MA',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'PB',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'PE',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'PI',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'RN',
+                    region: 'Nordeste'
+                },
+                {
+                    state: 'SE',
+                    region: 'Nordeste'
+                },
+
+
+                {
+                    state: 'DF',
+                    region: 'Centro-Oeste'
+                },
+                {
+                    state: 'GO',
+                    region: 'Centro-Oeste'
+                },
+                {
+                    state: 'MT',
+                    region: 'Centro-Oeste'
+                },
+                {
+                    state: 'MS',
+                    region: 'Centro-Oeste'
+                },
+
+
+
+                {
+                    state: 'ES',
+                    region: 'Sudeste'
+                },
+                {
+                    state: 'MG',
+                    region: 'Sudeste'
+                },
+                {
+                    state: 'RJ',
+                    region: 'Sudeste'
+                },
+                {
+                    state: 'SP',
+                    region: 'Sudeste'
+                },
+
+                {
+                    state: 'PR',
+                    region: 'Sul'
+                },
+                {
+                    state: 'SC',
+                    region: 'Sul'
+                },
+                {
+                    state: 'RS',
+                    region: 'Sul'
+                },
+            ],
         }
     },
 
@@ -194,9 +312,11 @@ export default {
             let products = this.$c(this.products)
 
             if(this.company){
-                
+
+                let region = this.$c(this.states).where('state', this.company.address[0]['state']).all()
+                console.log('region',region[0].region)
                 // tabela referente ao Estado da empresa
-                let table_price = this.$c(this.table_prices).where('name', this.company.address[0]['state']) 
+                let table_price = this.$c(this.table_prices).where('name', region[0].region) 
                 
                 table_price = table_price.items[0].prices
 

@@ -14,7 +14,7 @@ class UpdateAddress extends Migration
     public function up()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->integer('city_id');
+            $table->integer('city_id')->nullable()->default(null);;
         });
     }
 

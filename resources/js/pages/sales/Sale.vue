@@ -29,6 +29,7 @@
                 <vs-th>
                     Revenda
                 </vs-th>
+                
                 <!-- <vs-th>
                     Representante
                 </vs-th> -->
@@ -252,6 +253,9 @@ export default {
             total: 0,
             table_prices: [],
             payment_methods:[],
+
+            
+
             filters:{
                 status_sale: null,
                 status_payment: null,
@@ -441,7 +445,6 @@ export default {
         },
 
         viewProducts(items){
-            console.log('items', items)
             this.sale_products = items
             this.view_products = true
         },
@@ -649,7 +652,9 @@ export default {
 
                 //empresa selecionada
                 let company = this.$c(this.companies).where('id', this.form.company)
-                
+
+               
+
                 // tabela referente ao Estado da empresa
                 let table_price = this.$c(this.table_prices).where('name', company.items[0]['address']['state'])
                 table_price = table_price.items[0].prices

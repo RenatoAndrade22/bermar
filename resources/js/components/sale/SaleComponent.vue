@@ -90,6 +90,7 @@ export default {
     methods:{
 
         nextStep(e){
+            console.log('ebtrou aq')
             this.form = e
             this.step = 1
         },

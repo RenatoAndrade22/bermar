@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EnterpriseRequest;
 use App\Models\Enterprise;
+use App\Models\Address;
+use Illuminate\Support\Facades\Auth;
 
 class EnterpriseController extends Controller
 {
@@ -20,9 +22,29 @@ class EnterpriseController extends Controller
 
     public function store(EnterpriseRequest $request){
         $enterprise = new Enterprise();
-        $enterprise->enterprise_id = $request->get('enterprise_representative');
+        $enterprise->enterprise_id = $request->has('enterprise_representative') ? $request->get('enterprise_representative') : Auth::user()->enterprise_id;
         $enterprise->fill($request->all());
+
+        $enterprise->cnpj =  preg_replace("/[^0-9]/", "", $request->get('cnpj'));
+        $enterprise->phone = preg_replace("/[^0-9]/", "", $request->get('phone'));
+
         $enterprise->saveOrFail();
+
+        if($request->has('address'))
+        {
+            $address = new Address();
+            $address->number = $request->get('address')['number'];
+            $address->street = $request->get('address')['street'];
+            $address->district = $request->get('address')['district'];
+            $address->zipcode = $request->get('address')['zipcode'];
+            $address->city = $request->get('address')['city'];
+            $address->state = $request->get('address')['state'];
+            $address->complement = $request->get('address')['complement'];
+            $address->region = $request->get('address')['region'];
+            $address->enterprise_id = $enterprise->id;
+            $address->saveOrFail();
+        }
+
         return $enterprise;
     }
 

@@ -31,6 +31,7 @@
         "collect.js": "^4.31.3",
         "material-icons": "^1.10.8",
         "pusher-js": "^7.2.0",
+        "read-excel-file": "^5.6.1",
         "v-money": "^0.8.1",
         "vue-chartjs": "^3.4.0",
         "vue-js-modal": "^2.0.1",
@@ -38,6 +39,7 @@
         "vue-router": "^3.5.3",
         "vue-the-mask": "^0.11.1",
         "vue-toast-notification": "^0.6.2",
+        "vue-xlsx": "^0.2.1",
         "vue2-editor": "^2.10.3",
         "vuesax": "^3.12.2",
         "vuex": "^3.1.2"

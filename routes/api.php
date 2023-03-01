@@ -92,7 +92,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'catalog' => CatalogController::class
     ]);
     
-    
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
 
     Route::post('update-catalog/{id}', [CatalogController::class, 'updateCatalog']);
