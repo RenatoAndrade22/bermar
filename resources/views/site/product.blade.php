@@ -154,6 +154,13 @@
         
     </script>
     <style>
+        .product{
+            margin-top: -24px;
+        }
+        .ql-align-justify{
+            margin-bottom: 0px;
+            line-height: inherit !important;
+        }
         .links{
             display: none;
         }

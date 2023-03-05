@@ -87,6 +87,7 @@
                         <vs-select
                             v-model="form.enterprise_id"
                         >
+                            <vs-select-item key="1000" value="user_site" text="Usuário do site" />
                             <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in companies" />
                         </vs-select>
                     </div>
@@ -321,6 +322,8 @@ export default {
             
 
             if(this.validate()){
+
+                this.form.enterprise_id  = this.form.enterprise_id == 'user_site' ? null : this.form.enterprise_id ;
 
                 if(!this.edit_company){
                     axios.post('/api/user', this.form).then((data)=>{
