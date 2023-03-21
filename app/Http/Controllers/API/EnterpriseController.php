@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 class EnterpriseController extends Controller
 {
     public function index(){
-        return Enterprise::query()->with('address')->get();
+        return Enterprise::query()->with('address')->orderBy('id','desc')->get();
     }
 
     public function getEnterpriseType($type){

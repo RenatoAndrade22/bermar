@@ -6,11 +6,69 @@
                     <span style="color:#EE1B21">({{ sales.length }})</span> Vendas
                 </vs-navbar-title>
             </div>
+            <vs-input
+                icon="search"
+                class="search"
+                placeholder="Buscar por cnpj"
+                v-model="search_cnpj"
+                v-mask="'##.###.###/####-##'"
+            />
             <vs-button type="relief" @click="popup_new = true">
                 Cadastrar nova venda
             </vs-button>
+            
         </vs-navbar>
+        
+        <VueHtml2pdf
+                :show-layout="false"
+                :float-layout="true"
+                :enable-download="true"
+                :preview-modal="true"
+                :paginate-elements-by-height="1400"
+                filename="myPDF"
+                :pdf-quality="2"
+                :manual-pagination="false"
+                pdf-format="a4"
+                pdf-orientation="landscape"
+                pdf-content-width="100%"
+                ref="html2Pdf"
+            >
+            
+                <section slot="pdf-content">
+                    
+                    <div class="pdf_sale" v-if="sale_pdf">
+                        <h1>Venda</h1>
+                        <vs-row class="header_pdf">
+                            <vs-col vs-w="6" >
+                                <p>Número Pedido: <span>{{ sale_pdf.id }}</span></p>
+                                <p>Data emissão: <span>{{ dateFormat(sale_pdf.created_at) }}</span></p>
+                                <p>Razão Social: <span>{{ sale_pdf.enterprise.name }}</span></p>
+                                <p>CNPJ: <span>{{ sale_pdf.enterprise.cnpj }}</span></p>
+                                <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}, {{ sale_pdf.enterprise.address[0].district }}, {{ sale_pdf.enterprise.address[0].city }} - {{ sale_pdf.enterprise.address[0].state }}</span></p>
+                            </vs-col>
+                            <vs-col vs-w="6" >
+                                <p>Condição de Pagamento: <span>{{ sale_pdf.payment_method.name }}</span></p>
+                                <p>Transportadora: <span>{{ sale_pdf.payment_method.shipping_company }}</span></p>
+                                <p>Observação: <span>{{ sale_pdf.payment_method.observation }}</span></p>
+                            </vs-col>
+                        </vs-row>
+                        <vs-row class="mt-2 mb-5">
+                            <vs-col vs-w="12" >
+                                <div class="product_pdf" v-for="(p, i) in sale_pdf.sale_order_items">
+                                    <p>Produto: <span>{{p.product.name}}</span></p>
+                                    <p>Código do produto: <span>{{ p.id }}</span>   |   Quantidade: <span>{{p.quantity}}</span>  |   Total sem desconto: <span>{{ formatCurrency(calcPriceProduct(p.quantity, p.discount_percentage, p.total)) }}</span>  |   Porcentagem de desconto: <span>{{p.discount_percentage}}</span>   |    Total com desconto: <span>{{ formatCurrency(p.total) }}</span></p>
+                                </div>
+                            </vs-col>
+                        </vs-row>
+                        <vs-row>
+                            <vs-col vs-w="12" >
+                                <h1 @click="generateReport">Total do pedido: {{ formatCurrency(sale_pdf.total) }}</h1>
+                            </vs-col>
+                        </vs-row>
+                    </div>
+                </section>
 
+            </VueHtml2pdf>
         <vs-table
             stripe
             :data="list_sales"
@@ -59,6 +117,10 @@
 
                 <vs-th>
                     Status
+                </vs-th>
+
+                <vs-th>
+                    PDF
                 </vs-th>
                 
             </template>
@@ -122,6 +184,10 @@
                         <vs-button @click="statusOpen(data[indextr].status, data[indextr].id)" color="danger" v-if="data[indextr].status == 2" type="flat">Pendente</vs-button>
                     </vs-td>
 
+                    <vs-button type="relief" @click="pdfGenerate(data[indextr])">
+                            <span>Baixar</span>
+                    </vs-button>
+
                 </vs-tr>
             </template>
         </vs-table>
@@ -147,7 +213,7 @@
             <ul class="sale_products">
                 <li v-for="(p, i) in sale_products">
                     <p>{{ p.product.name }}</p>
-                    <span>{{ p.quantity }} x {{ p.price }} | {{ p.discount_percentage }}% de desconto</span>
+                    <span>{{ p.quantity }} x {{ p.price }} | {{ p.discount_percentage }}% de desconto | Código do produto: {{ p.id }}</span>
                 </li>
             </ul>
         </vs-popup>
@@ -223,16 +289,20 @@ import { UploadMedia, UpdateMedia } from 'vue-media-upload'
 import axios from "axios"
 import SaleComponent from '../../components/sale/SaleComponent'
 import ButtonComponent from '../../components/ButtonLoadding'
-
+import {mask} from "vue-the-mask";
+import VueHtml2pdf from 'vue-html2pdf'
 
 export default {
     name: "Sales",
     components:{
         UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill,
-        SaleComponent, ButtonComponent
+        SaleComponent, ButtonComponent, VueHtml2pdf
     },
+    directives: {mask},
     data(){
         return{
+            sale_pdf: null,
+            search_cnpj: null,
             active_load: false,
             update_status_value: null,
             update_status_id: null,
@@ -342,6 +412,38 @@ export default {
         }
     },
     methods:{
+
+        calcPriceProduct(quantidade, desconto, precoFinal){
+            return (precoFinal / (1 - desconto / 100) / quantidade) * quantidade // preço original por unidade
+        },
+
+        dateFormat(data){
+            let dataObj = new Date(data);
+            let dia = dataObj.getDate();
+            let mes = dataObj.getMonth() + 1;
+            let ano = dataObj.getFullYear();
+
+            // adiciona zero à esquerda se o dia ou mês tiver apenas um dígito
+            if (dia < 10) {
+            dia = "0" + dia;
+            }
+            if (mes < 10) {
+            mes = "0" + mes;
+            }
+
+            let dataFormatada = dia + "/" + mes + "/" + ano;
+
+            return dataFormatada
+        },
+
+        generateReport () {
+            this.$refs.html2Pdf.generatePdf()
+        },
+
+        pdfGenerate(s){
+            this.sale_pdf = s
+            this.generateReport()
+        },
 
         statusOpen(status, sale_order_id){
             this.update_status_id = sale_order_id
@@ -478,7 +580,8 @@ export default {
                 "status": 1,
                 "shipping_company": data.form.shipping,
 
-                "products": data.products
+                "products": data.products,
+                "table_price_id": data.table_price_id
             }
 
             axios.post('/api/sale', sale).then((response)=>{
@@ -566,8 +669,6 @@ export default {
              })
         
         },
-
-        
 
         getText(id, items){
             let text = this.$c(items).where('value', id).first()
@@ -700,6 +801,12 @@ export default {
                 if(this.filters.invoice === 2)
                     sales = sales.where('invoices', null)
             }
+            
+            if(this.search_cnpj){
+                sales = this.$c(sales.all()).filter((item)=>{
+                    return item.enterprise.cnpj.search(this.search_cnpj) >= 0 || item.user.enterprise.cnpj.search(this.search_cnpj) >= 0
+                })
+            }
 
             return sales.all()
         }
@@ -763,7 +870,24 @@ export default {
     }
 </style>
 <style>
-    
+    .pdf_sale{
+        width: 100%;
+        padding: 60px;
+        z-index: 99999;
+        margin: 0 auto;
+        background: #fff;
+    }
+    .pdf_sale p{
+        font-weight: 600 !important;
+        font-size: 16px !important;
+    }
+    .pdf_sale p span{
+        font-weight: 300;
+    }
+    .product_pdf{
+        border: 1px solid #efeeee;
+        padding: 20px;
+    }
     .icons{
         float: left;
     }

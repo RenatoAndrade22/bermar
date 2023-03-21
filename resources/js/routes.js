@@ -30,6 +30,9 @@ import WarrantyProduct from "./pages/warranty-products/WarrantyProduct"
 import PriceTable from "./pages/price_table/PriceTable"
 import PriceTableNew from "./pages/price_table/New"
 
+import MethodPayment from "./pages/paymentMethod/paymentMethod"
+import MethodPaymentNew from "./pages/paymentMethod/New"
+
 export default {
     mode: 'history',
     linkActiveClass:'active-menu',
@@ -122,6 +125,18 @@ export default {
                     path:'/painel/tabela-de-precos/nova',
                     name: 'PriceTableNew',
                     component: PriceTableNew
+                },
+
+                {
+                    path:'/painel/motodo-de-pagamento',
+                    name: 'MetodoPagamento',
+                    component: MethodPayment
+                },
+
+                {
+                    path:'/painel/motodo-de-pagamento/nova',
+                    name: 'NovoMetodoPagamento',
+                    component: MethodPaymentNew
                 },
                 
                 {

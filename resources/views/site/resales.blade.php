@@ -64,7 +64,6 @@
             success: function(resp){
                 document.getElementById("loading").style.display = "none";
 
-
                 if(resp.length > 0){
 
                     var html = '<ul>';

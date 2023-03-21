@@ -20,7 +20,7 @@ class SaleOrderController extends Controller
 
         // encontra a tabela de preços pelo Estado do cliente.
         $enterprise = Enterprise::query()->where('id', $request->get('enterprise_id'))->first();
-        $table_price = PriceTable::query()->with('prices')->where('name', $enterprise->address[0]['state'])->first();
+        $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
 
         $sale = new SaleOrder();
         $sale->fill($request->all());
@@ -51,12 +51,12 @@ class SaleOrderController extends Controller
         }
 
         return $sale;
-        
+    
     }
 
     public function index()
     {
-        $enterprises = Enterprise::select('id')->where('enterprise_id', Auth::user()->enterprise_id)->get();
+        $enterprises = Enterprise::select('id')->with('paymentMethod')->where('enterprise_id', Auth::user()->enterprise_id)->get();
 
         $enterprises = collect($enterprises)->map(function ($e) {
             return $e['id'];
@@ -77,7 +77,7 @@ class SaleOrderController extends Controller
 
     public function allSales()
     {
-        $saleOrders = SaleOrder::query()->with('boletos')->orderByDesc('id')->get();
+        $saleOrders = SaleOrder::query()->with(['boletos', 'paymentMethod'])->orderByDesc('id')->get();
         return $saleOrders;
     }
 

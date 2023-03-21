@@ -31,12 +31,27 @@
                                             <img src="{{ asset($image['url']) }}" alt="" class="img-thumbnail col-md-3" />
                                         @endforeach
                                       </div>
+                                        
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
+                          @if ($product['video'])
+
+                            <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal">Assista o vídeo do produto</button>
+
+                            <div class="modal-background" id="modal-background">
+                                <div class="modal">
+                                    <div>
+                                        <button id="close-modal" type="button" class="btn btn-light mb-3">Fechar</button>
+                                    </div>
+                                    <iframe width="700" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+
+                          @endif
                     </div>
                     <div class="desc1-right col-md-6 pl-lg-3">
                         <h2>{{ $product['name'] }}</h2>
@@ -75,12 +90,13 @@
                                     @foreach ($product['links'] as $link)
                                     <div style="margin-bottom: 0; margin-bottom: 0;border-bottom: 2px solid #9999;padding: 10px 0px;">
                                         <p style="margin-bottom: 0;">{{ $link['enterprise']['name'] }} | {{ $link['enterprise']['phone'] }}</p>
-                                        <p style="margin-bottom: 0;color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" >Comprar</a></p>
+                                        <!-- <p style="margin-bottom: 0;color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" ></a></p> -->
+                                        <button style="margin: 8px 8px 8px 0px;background: forestgreen;" type="button" onclick="openManual('{{$link['link']}}')" class="btn submit">Loja Virtual</button>
                                     </div>
                                     @endforeach
 
                                     @if(count($product['links']) == 0)
-                                        <p><a href="{{ asset('revendas') }}">Clique aqui para buscar a revenda mais próxima</a></p>
+                                        <p><a href="/revendas">Clique aqui para buscar a revenda mais próxima</a></p>
                                     @endif
                                 </div>
                                 
@@ -94,13 +110,10 @@
                 <div class="container py-md-5">
                     <!-- product right -->
                     <div class="left-ads-display wthree">
-                        @if ($product['video'])
-                            <iframe width="1120" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                        @endif
 
                         @if ($product['datasheet'])
                         <div class="row">
-                            <div class="desc1-left col-md-6 mt-3">
+                            <div class="desc1-left col-md-12 mt-2">
                                 <h4>Ficha Técnica</h4>
                                 {!! nl2br($product['datasheet']) !!}
                             </div>
@@ -151,6 +164,19 @@
         function openManual(url){
             window.open(url, '_blank').focus()
         }
+
+        const openModalButton = document.getElementById("open-modal");
+        const closeModalButton = document.getElementById("close-modal");
+        const modalBackground = document.getElementById("modal-background");
+
+        openModalButton.addEventListener("click", function() {
+            modalBackground.style.display = "block";
+        });
+
+        closeModalButton.addEventListener("click", function() {
+            modalBackground.style.display = "none";
+        });
+
         
     </script>
     <style>
@@ -164,6 +190,37 @@
         .links{
             display: none;
         }
+        .modal-background {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal {
+            text-align: center;
+            top: 61%;
+            display: block !important;
+            position: fixed;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .modal h2 {
+            margin-top: 0;
+        }
+
+        .modal p {
+            margin-bottom: 20px;
+        }
+
     </style>
     <!-- /banner-bottom -->
     <!--/newsletter -->

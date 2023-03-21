@@ -89,7 +89,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'budget' => BudgetController::class,
         'price_table' => PriceTableController::class,
         'links' => LinkController::class,
-        'catalog' => CatalogController::class
+        'catalog' => CatalogController::class,
+        'payment-methods' => PaymentMethodController::class
     ]);
     
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
@@ -102,7 +103,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('upload-file-chat/{id}', [ChatMessageController::class, 'uploadFile']);
     
     Route::get('total-sales', [SaleOrderController::class, 'getTotalSales']);
-    Route::get('payment-methods', [PaymentMethodController::class, 'index']);
 
     Route::get('all-sale-orders', [SaleOrderController::class, 'allSales']);
 

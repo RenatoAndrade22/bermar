@@ -54,4 +54,9 @@ class SaleOrder extends Model
         return $this->hasMany(Boleto::class);
     }
 
+    public function paymentMethod(): BelongsTo
+    {
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
 }

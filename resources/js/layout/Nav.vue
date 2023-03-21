@@ -41,6 +41,12 @@
                 Vendas
             </router-link>
 
+            <router-link to="/painel/motodo-de-pagamento" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilTagAlt size="20px" class="icon_route" />
+                Metodos de pagamento
+            </router-link>
+
             <router-link to="/painel/empresas" v-if="[1].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShop size="20px" class="icon_route" />

@@ -90,13 +90,12 @@ export default {
     methods:{
 
         nextStep(e){
-            console.log('ebtrou aq')
             this.form = e
             this.step = 1
         },
 
         record(e){
-            this.$emit('products_sale', {products: e, form: this.form})
+            this.$emit('products_sale', {products: e.products, form: this.form, table_price_id: e.table_price_id})
         }
     },
 }

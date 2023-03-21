@@ -28,6 +28,8 @@ if (localStorage.token) {
 } else {
     axios.defaults.headers.common['Authorization'] = null;
 }
+axios.defaults.maxContentLength = Infinity;
+axios.defaults.maxBodyLength = Infinity;
 
 // Import Bootstrap an BootstrapVue CSS files (order is important)
 import 'bootstrap/dist/css/bootstrap.css'

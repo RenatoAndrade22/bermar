@@ -63,8 +63,10 @@
                 
                 <vs-col vs-w="2" class="p-2">
                     <vs-input
-                        disabled
                         :value="formatCurrency(product.total_discount)"
+                        min="0"
+                        v-model="product.total_discount"
+                        @input="updateTotal(product)"
                     />
                 </vs-col>
             </vs-col>
@@ -130,6 +132,8 @@ export default {
             search: null,
             total: 0,
             confirm: false,
+            table_price: null,
+            table_price_id: null,
             states:[
                 {
                     state: 'AC',
@@ -268,6 +272,16 @@ export default {
             this.withDiscount(product)
         },
 
+        updateTotal(p){
+            this.list_products = this.$c(this.list_products).map((item) => {
+                if(item.id == p.id){
+                    item.discount = ((parseFloat(item.total) - parseFloat(item.total_discount)) / parseFloat(item.total)) * 100
+                }
+                return item
+            }).all()
+        },
+        // const porcentagemDesconto = ((valorOriginal - valorComDesconto) / valorOriginal) * 100;
+
         withDiscount(product){
 
             this.list_products = this.$c(this.list_products).map((item) => {
@@ -300,7 +314,7 @@ export default {
                 return item.total_discount > 0
             }).all()
 
-            this.$emit('products_sale', products)
+            this.$emit('products_sale', {products: products , table_price_id: this.table_price_id})
         }
 
     },
@@ -314,14 +328,17 @@ export default {
             if(this.company){
 
                 let region = this.$c(this.states).where('state', this.company.address[0]['state']).all()
-                console.log('region',region[0].region)
+
                 // tabela referente ao Estado da empresa
-                let table_price = this.$c(this.table_prices).where('name', region[0].region) 
+                this.table_price = this.$c(this.table_prices).where('name', region[0].region) 
                 
-                table_price = table_price.items[0].prices
+                this.table_price_id = this.table_price.items[0].id
+
+                this.table_price = this.table_price.items[0].prices
+
 
                 products = this.$c(this.products).map((p)=>{
-                    let price = this.$c(table_price).where('product_id', p.id)
+                    let price = this.$c(this.table_price).where('product_id', p.id)
                     if(price.items.length > 0){
                         p.price = price.items[0].price 
                     }else{

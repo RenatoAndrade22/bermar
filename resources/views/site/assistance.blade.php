@@ -71,7 +71,7 @@
 
                     for (let i = 0; i < resp.length; i++) {
 
-                        html = html+'<li><h5>'+resp[i].address[0].city+' - '+resp[i].address[0].state+'</h5><p>Endereço<br>'+resp[i].address[0].street+', '+resp[i].address[0].number+', '+resp[i].address[0].district+', '+resp[i].address[0].complement+'<br>(17) 98122-5539</p></li>';
+                        html = html+'<li><h5>'+resp[i].city+' - '+resp[i].state+'</h5><p>Endereço<br>'+resp[i].street+', '+resp[i].number+', '+resp[i].district+', '+resp[i].complement+'<br>(17) 98122-5539</p></li>';
                     }
                     
                     html = html+'</ul>';

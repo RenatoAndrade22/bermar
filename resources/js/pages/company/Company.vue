@@ -6,6 +6,7 @@
                     <span style="color:#EE1B21">({{ list_providers.length }})</span> Empresas
                 </vs-navbar-title>
             </div>
+   
             <vs-input icon="search" class="search" placeholder="Buscar empresa" v-model="search"/>
             <vs-button type="relief" @click="[popupActivo=true, edit_company=false, resertAddress()]"
                 >Cadastrar novo</vs-button
@@ -320,6 +321,7 @@ export default {
 
     data(){
         return{
+            search_cnpj: null,
             file_upload: true,
             search: null,
             delete_provider: null,
@@ -737,7 +739,7 @@ export default {
             axios.get('/api/enterprise').then((data)=>{
                 this.providers = data.data
                 this.representatives = this.$c(data.data).filter((item)=>{
-                    return item.enterprise_type_id == 2
+                    return item.enterprise_type_id == 3
                 }).all()
             })
         },
@@ -812,7 +814,7 @@ export default {
 
             if (this.search){
                 providers = this.$c(providers).filter((providers)=>{
-                    return providers.name.toLowerCase().search(this.search) >= 0
+                    return providers.name.toLowerCase().search(this.search) >= 0 || providers.cnpj.toLowerCase().search(this.search) >= 0
                 })
                 providers = providers.items
             }

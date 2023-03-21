@@ -15,7 +15,8 @@
 
         <vs-col vs-w="6" >
             <div class="form_item">
-                <p class="text-label"><span class="required">*</span> Metodo de pagamento</p>
+                <p class="text-label"><span class="required">*</span> Metodo de pagamento <span @click="active_record_payment = true" style="color:red;float: right;">Cadastrar</span></p>
+
                 <vs-select
                     v-model="form.payment_method"
                 >
@@ -37,7 +38,7 @@
 
         <vs-col vs-w="4" >
             <div class="form_item">
-                <p class="text-label"><span class="required">*</span> Transportadora</p>
+                <p class="text-label">Transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
                     placeholder="Transportadora"
@@ -48,7 +49,7 @@
 
         <vs-col vs-w="4" >
             <div class="form_item">
-                <p class="text-label"><span class="required">*</span> Telefone</p>
+                <p class="text-label">Telefone transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
                     placeholder="Telefone"
@@ -77,7 +78,7 @@
             />
 
         </vs-col>
-        
+
     </div>
 </template>
 
@@ -125,7 +126,7 @@ export default {
 
     data(){
         return{
-            testando: 'Ola mundo',
+            active_record_payment: false,
             active: false,
             error_company: false,
             error_payment: false,
@@ -167,12 +168,12 @@ export default {
         validation(){
 
             if(
-                !this.form.company || !this.form.phone || !this.form.frete 
-                || !this.form.payment_method || !this.form.shipping 
+                !this.form.company || !this.form.frete || !this.form.payment_method 
             ){
                 this.filds = true
                 return false
             }
+            
             return true
         }
     }
