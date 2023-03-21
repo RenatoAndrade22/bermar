@@ -37,6 +37,9 @@
                 <section slot="pdf-content">
                     
                     <div class="pdf_sale" v-if="sale_pdf">
+                        <vs-row style="margin-bottom: 50px;">
+                            <img src="/images/logo.png" width="200">
+                        </vs-row >
                         <h1>Venda</h1>
                         <vs-row class="header_pdf">
                             <vs-col vs-w="6" >
