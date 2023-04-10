@@ -24,13 +24,143 @@ class ProductSiteController extends Controller
     public function show($slug){
 
 
+
         $categories = new CategoryController();
 
-        $product = Product::query()->where('slug', $slug)->first();
+        $product = Product::query()->with('links')->where('slug', $slug)->first();
+        $products_related = Product::query()->where('category_id', $product->category_id)->get();
 
-        $products_related = Product::query()->with('links')->where('category_id', $product->category_id)->get();
+        $links = collect($product['links'])->map(function($link){
+            $link['region'] = $this->region($link['enterprise']['address'][0]['state']);
+            return $link;
+        })->groupBy('region')->toArray();
+        
+        // dd($links);
 
-        return view('site.product', ['product' => $product, 'categories' => $categories->index(), 'products_related' => $products_related ]);
+        return view('site.product', ['links' => $links, 'product' => $product, 'categories' => $categories->index(), 'products_related' => $products_related ]);
 
     }
+
+    public function region($state){
+
+        $regions = 
+        [
+            [
+                'state' => 'AC',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'AP',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'AM',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'PA',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'RO',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'RR',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'TO',
+                'region' => 'Norte',
+            ],
+            [
+                'state' => 'AL',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'BA',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'CE',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'MA',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'PB',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'PE',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'PI',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'RN',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'SE',
+                'region' => 'Nordeste',
+            ],
+            [
+                'state' => 'DF',
+                'region' => 'Centro-Oeste',
+            ],
+            [
+                'state' => 'GO',
+                'region' => 'Centro-Oeste',
+            ],
+            [
+                'state' => 'MT',
+                'region' => 'Centro-Oeste',
+            ],
+            [
+                'state' => 'MS',
+                'region' => 'Centro-Oeste',
+            ],
+            [
+                'state' => 'ES',
+                'region' => 'Sudeste',
+            ],
+            [
+                'state' => 'MG',
+                'region' => 'Sudeste',
+            ],
+            [
+                'state' => 'RJ',
+                'region' => 'Sudeste',
+            ],
+            [
+                'state' => 'SP',
+                'region' => 'Sudeste',
+            ],
+            [
+                'state' => 'PR',
+                'region' => 'Sul',
+            ],
+            [
+                'state' => 'SC',
+                'region' => 'Sul',
+            ],
+            [
+                'state' => 'RS',
+                'region' => 'Sul',
+            ]
+        ];
+        $region = collect($regions)->where('state', $state)->first();
+        return isset($region['region']) ? $region['region'] : null;
+    }
 }
+
+
+
+
+
+

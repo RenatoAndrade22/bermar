@@ -7,6 +7,7 @@ use App\Http\Controllers\RepresentativesSiteController;
 use App\Http\Controllers\AssistanceSiteController;
 use App\Http\Controllers\ResalesSiteController;
 use App\Http\Controllers\ContactSiteController;
+use App\Http\Controllers\ExportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +39,8 @@ Route::get('/assistencia', [AssistanceSiteController::class, 'index']);
 Route::get('/revendas', [ResalesSiteController::class, 'index']);
 
 Route::get('/contato', [ContactSiteController::class, 'index']);
+
+Route::get('/exportacao', [ExportController::class, 'index']);
 
 
 Route::get('/{any}', function () {

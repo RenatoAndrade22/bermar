@@ -35,6 +35,7 @@
     <!-- //font-awesome-icons -->
     <!-- /Fonts -->
     <link href="//fonts.googleapis.com/css?family=Hind:300,400,500,600,700" rel="stylesheet">
+
 </head>
 
 <body>
@@ -115,6 +116,7 @@
                             <li class="{{ (request()-> is('representantes')) ? 'active' : '' }}"><a href="{{ url('representantes') }}">Representantes</a></li>
                             <li class="{{ (request()-> is('assistencia')) ? 'active' : '' }}"><a href="{{ url('assistencia') }}">Assistência</a></li>
                             <li class="{{ (request()-> is('revendas')) ? 'active' : '' }}"><a href="{{ url('revendas') }}">Revendas</a></li>
+                            <li class="{{ (request()-> is('exportacao')) ? 'active' : '' }}"><a href="{{ url('exportacao') }}">exportação</a></li>
                             <li class="{{ (request()-> is('contato')) ? 'active' : '' }}"><a href="{{ url('contato') }}">Contato</a></li>
                         </ul>
                     </nav>

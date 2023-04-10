@@ -50,9 +50,8 @@
         <div class="row" id="list-representatives">
         </div>
     </section>
-@endsection
 
-<script>
+    <script>
     function selectState() {
 
         var uf = document.getElementById("select_state").value;
@@ -89,76 +88,7 @@
 
 </script>
 
-<style>
+@endsection
 
-    #list-representatives{
-  
-    }
 
-    #list-representatives ul{
-        width: 100%;
-        float: left;
-    }
 
-    #list-representatives ul li{
-        width: 410px;
-        margin: 20px;
-        float: left;
-        border: 1px solid #efeeee;
-        border-radius: 15px;
-        -webkit-box-shadow: 0px 0px 22px 0px rgb(239 238 238);
-        -moz-box-shadow: 0px 0px 22px 0px rgba(239,238,238,1);
-        box-shadow: 0px 0px 22px 0px rgb(239 238 238);
-    }
-
-    #list-representatives p{
-        text-align: center;
-        font-size: 13px;
-    }
-    
-    #list-representatives h5{
-        padding: 13px 0px;
-        text-align: center !important;
-        font-weight: 700 !important;
-        border-bottom: 1px solid #c1c1c1;
-    }
-
-    #loading {
-        text-align: center;
-        display: none;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 100;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(192, 192, 192, 0.5);
-        background-repeat: no-repeat;
-        background-position: center;
-    }
-    #loading img{
-        height: 66px;
-        margin-top: 128px;
-    }
-    .borderStyle {
-        border-radius: 13px;
-        border-color: #ec1c24;
-    }
-
-    .colorRed{
-        color: #ec1c24;
-    }
-
-    .borderBotton{
-        border-bottom: 1px solid #c1c1c1;
-    }
-
-    .boxStyle{
-        border: 1px solid #efeeee;
-        border-radius: 15px;
-        -webkit-box-shadow: 0px 0px 22px 0px rgb(239 238 238);
-        -moz-box-shadow: 0px 0px 22px 0px rgba(239,238,238,1);
-        box-shadow: 0px 0px 22px 0px rgb(239 238 238);
-    }
-
-</style>

@@ -10,6 +10,7 @@ use App\Models\SaleOrderItems;
 use App\Models\Enterprise;
 use App\Models\PriceTable;
 use App\Models\Price;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -22,8 +23,15 @@ class SaleOrderController extends Controller
         $enterprise = Enterprise::query()->where('id', $request->get('enterprise_id'))->first();
         $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
 
+        $deliveryDate = null;
+        if($request->has('delivery_date')){
+            $date = Carbon::createFromFormat('d/m/Y', $request->get('delivery_date'));
+            $deliveryDate = $date->toDateString();
+        }
+
         $sale = new SaleOrder();
         $sale->fill($request->all());
+        $sale->delivery_date = $deliveryDate;
         $sale->user_id = $request->get('user_id');
         $sale->status = $request->get('status');
         $sale->status_payment = 1;
@@ -56,7 +64,11 @@ class SaleOrderController extends Controller
 
     public function index()
     {
-        $enterprises = Enterprise::select('id')->with('paymentMethod')->where('enterprise_id', Auth::user()->enterprise_id)->get();
+        $enterprises = Enterprise::select('id')->with('paymentMethod')
+        ->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
+        ->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
+        ->where('enterprise_id', Auth::user()->enterprise_id)
+        ->orderByDesc('id')->get(['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']);
 
         $enterprises = collect($enterprises)->map(function ($e) {
             return $e['id'];
@@ -71,13 +83,19 @@ class SaleOrderController extends Controller
 
         $saleOrders = SaleOrder::query()
             ->with('boletos')
-            ->where('enterprise_id', Auth::user()->enterprise_id)->orderByDesc('id')->get();
+            ->where('enterprise_id', Auth::user()->enterprise_id)
+            ->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
+            ->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
+            ->orderByDesc('id')->get(['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']);
         return $saleOrders;
     }
 
     public function allSales()
     {
-        $saleOrders = SaleOrder::query()->with(['boletos', 'paymentMethod'])->orderByDesc('id')->get();
+        $saleOrders = SaleOrder::query()->with(['boletos', 'paymentMethod'])
+        ->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
+        ->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
+        ->orderByDesc('id')->get(['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']);
         return $saleOrders;
     }
 

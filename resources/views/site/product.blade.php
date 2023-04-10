@@ -9,9 +9,11 @@
     <!--/banner-bottom -->
     <section class="banner-bottom py-5">
         <div class="container">
+            <p style="    padding: 0;margin: 0;margin-top: -37px;margin-bottom: 16px;margin-left: 18px;"><a href="{{ url('/') }}">Home</a> - <a href="{{ url('produtos') }}">Produtos</a> - {{ $product['name'] }}</p>
             <!-- product right -->
             <div class="left-ads-display wthree">
                 <div class="row">
+                    
                     <div class="desc1-left col-md-6">
                         <div class="wrapper">
                             <div class="container">
@@ -38,10 +40,17 @@
                               </div>
                             </div>
                           </div>
-                          @if ($product['video'])
 
-                            <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal">Assista o vídeo do produto</button>
+                          @if($product['manual'])
+                            <button type="button" style="margin: 25px 10px;" onclick="openManual('{{$product['manual']}}')" class="btn btn-danger">Manual</button>
+                          @endif
 
+                            
+                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal-text">Ficha Técnica</button>
+                        
+                        @if ($product['video'])
+                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal">Assista o vídeo do produto</button>
+                        @endif
                             <div class="modal-background" id="modal-background">
                                 <div class="modal">
                                     <div>
@@ -51,7 +60,20 @@
                                 </div>
                             </div>
 
-                          @endif
+                            <div class="modal-background-text" id="modal-background-text">
+                                <div class="modal-text">
+                                    <div>
+                                        <button id="close-modal-text" type="button" class="btn btn-light mb-3">Fechar</button>
+                                    </div>
+                                    <div class="text">
+                                        <p>{!! nl2br($product['datasheet']) !!}</p>
+                                        
+                                    </div>
+
+                                </div>
+                            </div>
+
+                          
                     </div>
                     <div class="desc1-right col-md-6 pl-lg-3">
                         <h2>{{ $product['name'] }}</h2>
@@ -78,22 +100,26 @@
                             <div class="available mt-3">
                                 <form action="#" method="post" class="w3pvt-newsletter subscribe-sec">
                                    
-                                <button type="button" onclick="btnlinks()" class="btn submit">Comprar</button>
+                                <button type="button" onclick="btnlinks()" class="btn submit mb-4">Comprar</button>
                                 
-                                @if($product['manual'])
-                                <button type="button" onclick="openManual('{{$product['manual']}}')" class="btn submit">Manual</button>
-                                @endif
+                                
                                 </form>
 
                                 <div class="links mt-4">
                                     <h6>Links para compra</h6>
-                                    @foreach ($product['links'] as $link)
-                                    <div style="margin-bottom: 0; margin-bottom: 0;border-bottom: 2px solid #9999;padding: 10px 0px;">
-                                        <p style="margin-bottom: 0;">{{ $link['enterprise']['name'] }} | {{ $link['enterprise']['phone'] }}</p>
-                                        <!-- <p style="margin-bottom: 0;color: cornflowerblue;"><a target=”_blank” href="{{ $link['link'] }}" ></a></p> -->
-                                        <button style="margin: 8px 8px 8px 0px;background: forestgreen;" type="button" onclick="openManual('{{$link['link']}}')" class="btn submit">Loja Virtual</button>
-                                    </div>
+
+                                    @foreach ($links as $key => $link)
+                                       <h4 style=margin-bottom: 0;margin-top: 18px;>{{ $key }} </h4>
+                                       @foreach ($link as $l)
+                                        <div style="margin-bottom: 0; margin-bottom: 0;border-bottom: 2px solid #9999;padding: 10px 0px;">
+                                            <p style="margin-bottom: 0;">{{ $l['enterprise']['name'] }} | {{ $l['enterprise']['phone'] }} <br /> {{ $l['enterprise']['address'][0]['city']}} - {{ $l['enterprise']['address'][0]['state']}} </p>
+                                            <button style="margin: 8px 8px 8px 0px;background: forestgreen;" type="button" onclick="openManual('{{$l['link']}}')" class="btn submit">Loja Virtual</button>
+                                        </div>
+                                       @endforeach
+
                                     @endforeach
+
+                                   
 
                                     @if(count($product['links']) == 0)
                                         <p><a href="/revendas">Clique aqui para buscar a revenda mais próxima</a></p>
@@ -103,22 +129,6 @@
                             </div>
                             <div class="clearfix"></div>
                         </div>
-                    </div>
-                    
-
-                </div>
-                <div class="container py-md-5">
-                    <!-- product right -->
-                    <div class="left-ads-display wthree">
-
-                        @if ($product['datasheet'])
-                        <div class="row">
-                            <div class="desc1-left col-md-12 mt-2">
-                                <h4>Ficha Técnica</h4>
-                                {!! nl2br($product['datasheet']) !!}
-                            </div>
-                        </div>
-                        @endif
                     </div>
                 </div>
         
@@ -177,6 +187,24 @@
             modalBackground.style.display = "none";
         });
 
+
+
+
+
+
+
+        const openModalButtonText = document.getElementById("open-modal-text");
+        const closeModalButtonText = document.getElementById("close-modal-text");
+        const modalBackgroundText = document.getElementById("modal-background-text");
+
+        openModalButtonText.addEventListener("click", function() {
+            modalBackgroundText.style.display = "block";
+        });
+
+        closeModalButtonText.addEventListener("click", function() {
+            modalBackgroundText.style.display = "none";
+        });
+
         
     </script>
     <style>
@@ -220,6 +248,42 @@
         .modal p {
             margin-bottom: 20px;
         }
+
+        .modal-background-text {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-text {
+            text-align: center;
+            top: 52%;
+            display: block !important;
+            position: fixed;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        .modal-text h2 {
+            margin-top: 0;
+        }
+
+        .modal-text .text {
+            margin-bottom: 20px;
+            background: #fff;
+            overflow: auto;
+            padding: 35px;
+            height: 350px;
+        }
+
 
     </style>
     <!-- /banner-bottom -->

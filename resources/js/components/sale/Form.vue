@@ -6,6 +6,7 @@
                 <p class="text-label"><span class="required">*</span> Empresa</p>
                 <vs-select
                     v-model="form.company"
+                    autocomplete
                 >
                     <vs-select-item :key="index" :value="item" :text="item.name" v-for="item,index in companies" />
                 </vs-select>
@@ -25,7 +26,7 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="4" >
+        <vs-col vs-w="3" >
             <div class="form_item">
                 <p class="text-label"><span class="required">*</span> Tipo de frete</p>
                 <vs-select
@@ -36,7 +37,7 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="4" >
+        <vs-col vs-w="3" >
             <div class="form_item">
                 <p class="text-label">Transportadora</p>
                 <vs-input
@@ -47,16 +48,31 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="4" >
+        <vs-col vs-w="3" >
             <div class="form_item">
                 <p class="text-label">Telefone transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
                     placeholder="Telefone"
                     v-model="form.phone"
+                    v-mask="'(##) #####-####'"
+
                 />
             </div>
         </vs-col>
+
+        <vs-col vs-w="3" >
+            <div class="form_item">
+                <p class="text-label">Previsão de Entrega</p>
+                <vs-input
+                    class="mb-3 mt-2"
+                    placeholder="Data da previsão de entrega "
+                    v-model="form.delivery_date"
+                    v-mask="'##/##/####'"
+                />
+            </div>
+        </vs-col>
+        
 
         <vs-col vs-w="12" >
             <div>
@@ -86,11 +102,13 @@
 <script>
 
 import Button from '../../components/ButtonLoadding'
+import {mask} from 'vue-the-mask'
 
 export default {
 
     components: { Button },
-    
+    directives: {mask},
+
     name: "SaleComponent",
     props:{
 
@@ -137,7 +155,8 @@ export default {
                 frete: null,
                 payment_method: null,
                 shipping: null,
-                observation: null
+                observation: null,
+                delivery_date: null
             },
 
             frete: [

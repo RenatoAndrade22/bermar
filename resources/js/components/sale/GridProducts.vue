@@ -35,7 +35,7 @@
 
             <vs-col vs-w="12" v-for="(product, index) in list_products" v-if="product.price" :key="index">
                 <vs-col vs-w="4" class="p-2">
-                    <p>{{ product.name }}</p>
+                    <p>{{ product.id }} - {{ product.name }}</p>
                 </vs-col>
                 <vs-col vs-w="2" class="p-2">
                     <vs-input
@@ -163,8 +163,6 @@ export default {
                     state: 'TO',
                     region: 'Norte'
                 },
-
-
                 {
                     state: 'AL',
                     region: 'Nordeste'

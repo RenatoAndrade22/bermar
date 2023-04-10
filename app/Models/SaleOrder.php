@@ -20,6 +20,7 @@ class SaleOrder extends Model
         'shipping_company',
         'phone',
         'observation',
+        'delivery_date',
     ];
 
     protected $with = [

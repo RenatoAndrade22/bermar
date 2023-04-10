@@ -33,12 +33,11 @@
                 pdf-content-width="100%"
                 ref="html2Pdf"
             >
-            
                 <section slot="pdf-content">
                     
                     <div class="pdf_sale" v-if="sale_pdf">
                         <vs-row style="margin-bottom: 50px;">
-                            <img src="/images/logo.png" width="200">
+                            <img src="/images/logo.png" width="160">
                         </vs-row >
                         <h1>Venda</h1>
                         <vs-row class="header_pdf">
@@ -48,11 +47,15 @@
                                 <p>Razão Social: <span>{{ sale_pdf.enterprise.name }}</span></p>
                                 <p>CNPJ: <span>{{ sale_pdf.enterprise.cnpj }}</span></p>
                                 <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}, {{ sale_pdf.enterprise.address[0].district }}, {{ sale_pdf.enterprise.address[0].city }} - {{ sale_pdf.enterprise.address[0].state }}</span></p>
+                                <p>Representante: <span>{{ sale_pdf.creator_name }}</span></p>
                             </vs-col>
                             <vs-col vs-w="6" >
                                 <p>Condição de Pagamento: <span>{{ sale_pdf.payment_method.name }}</span></p>
                                 <p>Transportadora: <span>{{ sale_pdf.payment_method.shipping_company }}</span></p>
-                                <p>Observação: <span>{{ sale_pdf.payment_method.observation }}</span></p>
+                                <p>Tipo de Frete : <span>{{ sale_pdf.shipping_type }}</span></p>
+                                <p>Data de emissão: <span>{{ sale_pdf.delivery_date }}</span></p>
+                                <p>Previsão de entrega: <span>{{ sale_pdf.created_at }}</span></p>
+                                <p>Observação: <span>{{ sale_pdf.observation }}</span></p>
                             </vs-col>
                         </vs-row>
                         <vs-row class="mt-2 mb-5">
@@ -444,6 +447,7 @@ export default {
         },
 
         pdfGenerate(s){
+            console.log('s', s)
             this.sale_pdf = s
             this.generateReport()
         },
@@ -578,6 +582,7 @@ export default {
                 "payment_method_id": data.form.payment_method,
 
                 "shipping_type": data.form.frete,
+                "delivery_date": data.form.delivery_date,
                 "observation": data.form.observation,
                 "phone": data.form.phone,
                 "status": 1,
@@ -875,14 +880,14 @@ export default {
 <style>
     .pdf_sale{
         width: 100%;
-        padding: 60px;
+        padding: 50px;
         z-index: 99999;
         margin: 0 auto;
         background: #fff;
     }
     .pdf_sale p{
         font-weight: 600 !important;
-        font-size: 16px !important;
+        font-size: 12px !important;
     }
     .pdf_sale p span{
         font-weight: 300;

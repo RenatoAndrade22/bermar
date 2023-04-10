@@ -167,7 +167,7 @@
                     <hr class="divisor" />
                 </vs-col>
 
-                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" v-if="form.enterprise_type_id != 5">
                     <div class="form_item">
                         <p class="text-label">CEP</p>
                         <vs-input
@@ -180,15 +180,17 @@
                     </div>
                 </vs-col>
 
-                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
-                    <div class="form_item">
-                        <vs-button type="relief" @click="searchCity" class="mt-4">
-                            Buscar endereço
-                        </vs-button>
-                    </div>
-                </vs-col>
+                <template v-if="form.enterprise_type_id != 5">
+                    <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                        <div class="form_item">
+                            <vs-button type="relief" @click="searchCity" class="mt-4">
+                                Buscar endereço
+                            </vs-button>
+                        </div>
+                    </vs-col>
+                </template>
 
-                <template v-if="this.address.city_id">
+                <template v-if="this.address.city_id || form.enterprise_type_id == 5">
 
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                         <div class="form_item">
@@ -243,7 +245,7 @@
                         <div class="form_item">
                             <p class="text-label">Cidade</p>
                             <vs-input
-                                disabled
+                                :disabled="form.enterprise_type_id != 5"
                                 :danger="address.city_validate"
                                 danger-text="Campo obrigatório"
                                 placeholder="Cidade"
@@ -256,7 +258,7 @@
                         <div class="form_item">
                             <p class="text-label">Estado</p>
                             <vs-input
-                                disabled
+                                :disabled="form.enterprise_type_id != 5"
                                 :danger="address.state_validate"
                                 danger-text="Campo obrigatório"
                                 placeholder="Bairro"
@@ -417,6 +419,10 @@ export default {
                 {
                     id: 4,
                     name: 'Assistência'
+                },
+                {
+                    id: 5,
+                    name: 'Exportação'
                 },
                 
             ],
@@ -706,10 +712,12 @@ export default {
             if(!this.form.phone)                
                 i = false
 
-            this.address.zipcode_validate = !this.address.zipcode ? true : false
-            if(!this.address.zipcode)                
-                i = false
-
+            if(this.form.enterprise_type_id != 5){
+                this.address.zipcode_validate = !this.address.zipcode ? true : false
+                if(!this.address.zipcode)                
+                    i = false
+            }
+            
             this.address.city_validate = !this.address.city ? true : false
             if(!this.address.city)                
                 i = false
