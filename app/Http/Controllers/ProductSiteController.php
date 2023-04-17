@@ -23,12 +23,34 @@ class ProductSiteController extends Controller
 
     public function show($slug){
 
-
-
         $categories = new CategoryController();
 
         $product = Product::query()->with('links')->where('slug', $slug)->first();
+
+
+        $product->productImages = collect($product->productImages)->map(function($p){
+
+            if($p['url']){
+                $url = explode('upload', $p['url']);
+                $p['url'] = $url[0].'upload/w_500'.$url[1];
+            }
+            
+            return $p;
+        });
+
+
         $products_related = Product::query()->where('category_id', $product->category_id)->get();
+
+        $products_related = collect($products_related)->map(function($p){
+
+            if(isset($p['productImages'][0]['url']) && $p['productImages'][0]['url']){
+                $url = explode('upload', $p['productImages'][0]['url']);
+                $p['productImages'][0]['url'] = $url[0].'upload/w_200'.$url[1];
+            }
+            
+            return $p;
+        });
+
 
         $links = collect($product['links'])->map(function($link){
             $link['region'] = $this->region($link['enterprise']['address'][0]['state']);

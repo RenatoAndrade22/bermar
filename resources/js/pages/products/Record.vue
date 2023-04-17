@@ -579,8 +579,16 @@ export default {
         },
 
         getProduct(){
+            
+            setTimeout(() => {
+                    this.$vs.loading({
+                    container: '#product-record',
+                    scale: 0.6
+                })
+            }, 1)
+            
             axios.get('/api/product/'+this.$route.params.id).then((data)=>{
-                console.log('data', data.data)
+
                 this.form.id = data.data.id
                 this.form.name = data.data.name
                 this.form.manual = data.data.manual
@@ -606,6 +614,10 @@ export default {
                 this.form.packing_height = data.data.packing_height
                 
                 this.money_active = true
+
+                setTimeout(() => {
+                    this.$vs.loading.close("#product-record > .con-vs-loading");
+                }, 1)
 
             })
         },

@@ -23,6 +23,16 @@ class CategorySiteController extends Controller
         $categories = Category::query()->orderBy('name')->get();
         $products = Product::query()->where('status', 1)->get();
 
+        $products = collect($products)->map(function($p){
+
+            if(isset($p['productImages'][0]['url']) && $p['productImages'][0]['url']){
+                $url = explode('upload', $p['productImages'][0]['url']);
+                $p['productImages'][0]['url'] = $url[0].'upload/w_200'.$url[1];
+            }
+            
+            return $p;
+        });
+
         return view('site.category', ['categories' => $categories, 'products' => $products]);
     }
 
@@ -33,6 +43,16 @@ class CategorySiteController extends Controller
             ->where('status', 1)
             ->where('name', 'LIKE', '%'.$slug.'%')
             ->get();
+
+        $products = collect($products)->map(function($p){
+
+            if(isset($p['productImages'][0]['url']) && $p['productImages'][0]['url']){
+                $url = explode('upload', $p['productImages'][0]['url']);
+                $p['productImages'][0]['url'] = $url[0].'upload/w_200'.$url[1];
+            }
+                
+            return $p;
+        });
 
         return view('site.category', ['categories' => $categories, 'products' => $products]);
     }

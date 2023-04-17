@@ -64,7 +64,19 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        return Product::find($id);
+        $product = Product::find($id);
+
+        $product->productImages = collect($product->productImages)->map(function($p){
+
+            if($p['url']){
+                $url = explode('upload', $p['url']);
+                $p['url'] = $url[0].'upload/w_200'.$url[1];
+            }
+            
+            return $p;
+        });
+
+        return $product;
     }
 
     /**

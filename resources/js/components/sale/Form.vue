@@ -1,8 +1,8 @@
 <template>
     <div style="padding: 13px 20px;">
         
-        <vs-col vs-w="6" >
-            <div class="form_item">
+        <vs-col vs-w="12" >
+            <div class="form_item mb-3" style="width:100% !important;">
                 <p class="text-label"><span class="required">*</span> Empresa</p>
                 <vs-select
                     v-model="form.company"
@@ -15,7 +15,7 @@
 
 
         <vs-col vs-w="6" >
-            <div class="form_item">
+            <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Metodo de pagamento <span @click="active_record_payment = true" style="color:red;float: right;">Cadastrar</span></p>
 
                 <vs-select
@@ -27,7 +27,7 @@
         </vs-col>
 
         <vs-col vs-w="3" >
-            <div class="form_item">
+            <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Tipo de frete</p>
                 <vs-select
                     v-model="form.frete"
@@ -38,7 +38,7 @@
         </vs-col>
 
         <vs-col vs-w="3" >
-            <div class="form_item">
+            <div class="form_item width_90">
                 <p class="text-label">Transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
@@ -49,7 +49,7 @@
         </vs-col>
 
         <vs-col vs-w="3" >
-            <div class="form_item">
+            <div class="form_item width_90">
                 <p class="text-label">Telefone transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
@@ -62,7 +62,7 @@
         </vs-col>
 
         <vs-col vs-w="3" >
-            <div class="form_item">
+            <div class="form_item width_90">
                 <p class="text-label">Previsão de Entrega</p>
                 <vs-input
                     class="mb-3 mt-2"
@@ -176,6 +176,13 @@ export default {
         }
     },
 
+    created(){
+        this.companies = this.$c(this.companies).map((c)=>{
+            c.name = c.name+' | '+c.cnpj
+            return c
+        }).all()
+    },
+
     methods:{
         nextStep(){
             if(this.validation()){
@@ -206,5 +213,8 @@ export default {
 }
 .required{
     color:red;
+}
+.width_90{
+    width: 90% !important;
 }
 </style>

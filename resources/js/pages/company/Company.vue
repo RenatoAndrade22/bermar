@@ -832,8 +832,13 @@ export default {
     }
 }
 </script>
-
 <style>
+    .form_item{
+        width: 90%;
+        height: 74px;
+    }
+</style>
+<style scoped>
     .divisor{
         height: 1px;
         background: black;

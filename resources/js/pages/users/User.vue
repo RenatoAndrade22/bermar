@@ -503,7 +503,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
     .divisor{
         height: 1px;
         background: black;
