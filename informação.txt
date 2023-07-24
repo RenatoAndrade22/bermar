@@ -1,5 +1,15 @@
-erro do pdf
-src/Smalot/PdfParser/Object.php
-line 275
-comente esta linha
-//$text .= ' ';
+Qual é a ideia, importar os produtos ou cadastrar os produto e popular a tabela de "de para" após.
+ 
+ 
+ 
+Nosso sistema a tabela é por estado e uma tabela exterior..
+
+
+Não tem como criar login para os usuários importados.
+
+
+====================
+
+Verificar se é possível um vendedor cpf vim com o ID da empresa que ele pertence.
+
+Terminar cadastros pelo sistema bermar, importar só o básico da API.

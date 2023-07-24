@@ -24,7 +24,7 @@ class SaleOrderController extends Controller
         $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
 
         $deliveryDate = null;
-        if($request->has('delivery_date')){
+        if($request->has('delivery_date') && $request->get('delivery_date')){
             $date = Carbon::createFromFormat('d/m/Y', $request->get('delivery_date'));
             $deliveryDate = $date->toDateString();
         }
@@ -42,13 +42,13 @@ class SaleOrderController extends Controller
         foreach ($request->get('products') as $p) {
 
             $price = Price::query()
-                        ->where('product_id', $p['id'])
+                        ->where('product_id', $p['product_id'])
                         ->where('price_table_id', $table_price->id)
                         ->first();
 
             $item = new SaleOrderItems();
             $item->sale_order_id = $sale->id;
-            $item->product_id = $p['id'];
+            $item->product_id = $p['product_id'];
             $item->quantity = $p['quantity'];
 
             $item->discount_percentage = $p['discount'];
@@ -64,18 +64,8 @@ class SaleOrderController extends Controller
 
     public function index()
     {
-        $enterprises = Enterprise::select('id')->with('paymentMethod')
-        ->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
-        ->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
-        ->where('enterprise_id', Auth::user()->enterprise_id)
-        ->orderByDesc('id')->get(['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']);
-
-        $enterprises = collect($enterprises)->map(function ($e) {
-            return $e['id'];
-        });
-
         $saleOrders = SaleOrder::query()
-            ->whereIn('enterprise_id', $enterprises)->get();
+            ->where('user_id', Auth::user()->id)->get();
         return $saleOrders;
     }
 

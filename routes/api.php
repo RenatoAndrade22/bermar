@@ -22,6 +22,8 @@ use \App\Http\Controllers\API\getEnterprisesController;
 use \App\Http\Controllers\API\LinkController;
 use \App\Http\Controllers\API\PaymentMethodController;
 use \App\Http\Controllers\API\CatalogController;
+use \App\Http\Controllers\API\MappingController;
+use \App\Http\Controllers\API\ExternalApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -105,6 +107,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('total-sales', [SaleOrderController::class, 'getTotalSales']);
 
     Route::get('all-sale-orders', [SaleOrderController::class, 'allSales']);
+
+    Route::get('products-api-external', [ExternalApiController::class, 'allProducts']);
+    Route::get('table-price-api-external', [ExternalApiController::class, 'allTablePrice']);
 
 });
 

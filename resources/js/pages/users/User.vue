@@ -170,6 +170,16 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <div class="form_item">
+                        <p class="text-label">Código de integração.</p>
+                        <vs-input
+                            placeholder="Campo obrigatório"
+                            v-model="form.code_integration"
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <div class="form_item">
                         <vs-button type="relief" @click="record" class="mt-4">
                             <span v-if="!edit_company">Cadastrar</span>
                             <span v-if="edit_company">Editar</span>
@@ -212,6 +222,8 @@ export default {
 
                 name: null,
                 name_validate: false,
+
+                code_integration: null,
 
                 email: null,
                 email_validate: false,
@@ -443,6 +455,7 @@ export default {
             this.form.name = company.name
             this.form.phone = company.phone
             this.form.status = company.status
+            this.form.code_integration = company.code_integration
 
             this.address = company.address
 

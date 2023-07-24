@@ -15,13 +15,19 @@ class CategorySiteController extends Controller
 
         $catalog = Catalog::first();
 
-        return view('site.index', ['categories' => $categories, 'catalog' => $catalog->url]);
+        $url_catalog = "";
+
+        if(isset($catalog->url)){
+            $url_catalog = $catalog->url;
+        }
+
+        return view('site.index', ['categories' => $categories, 'catalog' => $url_catalog]);
     }
 
     public function pageCategory(){
 
         $categories = Category::query()->orderBy('name')->get();
-        $products = Product::query()->where('status', 1)->get();
+        $products = Product::query()->where('status', 1)->where('site_appear', 1)->get();
 
         $products = collect($products)->map(function($p){
 

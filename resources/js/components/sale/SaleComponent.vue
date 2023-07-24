@@ -4,6 +4,7 @@
 
             <Form
                 :companies="companies"
+                :table_prices="table_prices"
                 :payment_methods="payment_methods"
                 v-if="step == 0"
                 @send="nextStep"
@@ -13,7 +14,7 @@
                 :companies="companies"
                 :products="products"
                 :company="form.company"
-                :table_prices="table_prices"
+                :table_prices="this.prices"
                 v-if="step == 1" 
                 @products_sale="record"
              />
@@ -75,6 +76,8 @@ export default {
             error_payment: false,
             
             total: 0,
+
+            prices: [],
             
             form:{
                 company: null,
@@ -92,6 +95,13 @@ export default {
         nextStep(e){
             this.form = e
             this.step = 1
+
+            this.selectTabePrice()
+        },
+
+        selectTabePrice(){
+            this.table_prices = this.$c(this.table_prices).where('id', this.form.table_price).all()
+            this.prices = this.table_prices[0].prices
         },
 
         record(e){
@@ -101,3 +111,9 @@ export default {
 }
 
 </script>
+
+<style>
+    #cadastro_venda{
+        display: block !important;
+    }
+</style>

@@ -26,6 +26,17 @@
             </div>
         </vs-col>
 
+        <vs-col vs-w="6" >
+            <div class="form_item width_90">
+                <p class="text-label"><span class="required">*</span> Tabela de preços</p>
+                <vs-select
+                    v-model="form.table_price"
+                >
+                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in table_prices" />
+                </vs-select>
+            </div>
+        </vs-col>
+
         <vs-col vs-w="3" >
             <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Tipo de frete</p>
@@ -154,6 +165,7 @@ export default {
                 phone: null,
                 frete: null,
                 payment_method: null,
+                table_price: null,
                 shipping: null,
                 observation: null,
                 delivery_date: null
@@ -194,7 +206,7 @@ export default {
         validation(){
 
             if(
-                !this.form.company || !this.form.frete || !this.form.payment_method 
+                !this.form.company || !this.form.frete || !this.form.payment_method  || !this.form.table_price
             ){
                 this.filds = true
                 return false

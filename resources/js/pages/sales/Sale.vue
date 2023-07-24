@@ -40,6 +40,8 @@
                             <img src="/images/logo.png" width="160">
                         </vs-row >
                         <h1>Venda</h1>
+
+                
                         <vs-row class="header_pdf">
                             <vs-col vs-w="6" >
                                 <p>Número Pedido: <span>{{ sale_pdf.id }}</span></p>
@@ -50,14 +52,16 @@
                                 <p>Representante: <span>{{ sale_pdf.creator_name }}</span></p>
                             </vs-col>
                             <vs-col vs-w="6" >
-                                <p>Condição de Pagamento: <span>{{ sale_pdf.payment_method.name }}</span></p>
-                                <p>Transportadora: <span>{{ sale_pdf.payment_method.shipping_company }}</span></p>
+                                <p>Condição de Pagamento: <span>{{ sale_pdf.name }}</span></p>
+                                <p>Transportadora: <span>{{ sale_pdf.shipping_company }}</span></p>
                                 <p>Tipo de Frete : <span>{{ sale_pdf.shipping_type }}</span></p>
                                 <p>Data de emissão: <span>{{ sale_pdf.delivery_date }}</span></p>
                                 <p>Previsão de entrega: <span>{{ sale_pdf.created_at }}</span></p>
                                 <p>Observação: <span>{{ sale_pdf.observation }}</span></p>
                             </vs-col>
                         </vs-row>
+              
+                        
                         <vs-row class="mt-2 mb-5">
                             <vs-col vs-w="12" >
                                 <div class="product_pdf" v-for="(p, i) in sale_pdf.sale_order_items">
@@ -225,6 +229,7 @@
         </vs-popup>
 
         <vs-popup fullscreen title="Cadastrar nova venda" :active.sync="popup_new">
+            
             <SaleComponent 
                 :companies="companies" 
                 :products="products" 
@@ -563,7 +568,7 @@ export default {
         },
 
         addSale(data){
-
+            console.log('data', data)
             //loading
             this.$vs.loading({
                 container: '#cadastro_venda',
@@ -592,6 +597,8 @@ export default {
                 "table_price_id": data.table_price_id
             }
 
+            console.log('sale', sale)
+
             axios.post('/api/sale', sale).then((response)=>{
                  
                  //close loading
@@ -619,6 +626,7 @@ export default {
                 }).all()
               
             })
+
         },
 
         getCompanies(){
@@ -674,6 +682,7 @@ export default {
             
             axios.get("/api/price_table").then((result) => { 
                 this.table_prices = result.data
+                console.log('table', this.table_prices)
              })
         
         },
@@ -732,7 +741,9 @@ export default {
         },
 
         downloadInvoice(sale_order_id){
+            console.log('sale_order_id', sale_order_id)
             axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
+                console.log('entrou')
                 window.open(resp.data.name, '_blank').focus();
             })
         },

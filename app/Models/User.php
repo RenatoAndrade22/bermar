@@ -23,9 +23,9 @@ class User extends Authenticatable
         'email',
         'phone',
         'cpf',
-        'password',
         'enterprise_id',
-        'status'
+        'status',
+        'code_integration'
     ];
     protected $with = [
         'enterprise'

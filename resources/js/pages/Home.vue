@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="home_dashboard">
         <b-row>
             <template v-if="[3].includes(user_type)">
                 <b-col>
@@ -17,20 +17,27 @@
             </template>
 
             <template v-if="[1].includes(user_type)">
-                <b-col>
-                    <div class="card_column">
-                        <h1>Catalogo</h1>
-
-                        <p style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
-                       
-                        <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="onFileChange" hidden>
-                        <iframe :src="url_pdf" height="200" width="200" />
-
-                        <p style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="active_send">Enviar</p>
-
-                    </div>
-                </b-col>
-                
+                <div class="card_column">
+                    <b-row class="text-center">
+                        <b-col md="6">
+                            <h1>Catalogo</h1>
+    
+                            <p style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
+                            
+                            <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="onFileChange" hidden>
+                            <iframe :src="url_pdf" height="200" width="200" />
+    
+                            <p style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="active_send">Enviar</p>
+                        </b-col>
+                        <b-col md="6">
+                            <h1>Atualizar banco de dados</h1>
+                            <vs-button size="small" @click="getDataApi">
+                                Buscar dados na API
+                            </vs-button>
+                            <h3 class="mt-3" v-if="message_external_import">{{ message_external_import }}</h3>
+                        </b-col>
+                    </b-row>
+                </div>
             </template>
             
         </b-row>
@@ -52,6 +59,7 @@ export default {
             form:{
                 url_catalog: null
             },
+            message_external_import: null,
             active_send: false,
             total_sales: 0,
             financial_total: 0,
@@ -61,6 +69,30 @@ export default {
         }
     },
     methods:{
+
+        getDataApi(){
+
+            this.$vs.loading({
+                container: '#home_dashboard',
+                scale: 0.6
+            })
+            this.getApiProducts()
+        },
+
+        getApiProducts(){
+            this.message_external_import = 'Importando produtos';
+            axios.get('/api/products-api-external').then((resp)=>{
+                this.getApiTablePrice()
+            })
+        },
+
+        getApiTablePrice(){
+            this.message_external_import = 'Importando tabela de preços';
+            axios.get('/api/table-price-api-external').then((resp)=>{
+                this.message_external_import = null;
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading");
+            })
+        },
 
         getTotal(){
             axios.get('/api/total-sales').then((resp)=>{

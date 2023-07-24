@@ -2,12 +2,15 @@
     <div>
         <vs-row class="list_products_grid">
             <vs-col vs-w="12">
-                <vs-input
-                    class="mb-3 mt-2"
-                    placeholder="Buscar produto"
+                <vue-simple-suggest
                     v-model="search"
-                    danger-text="Esse campo é obrigatório"
-                />
+                    :list="table_prices"
+                    display-attribute="name_product"
+                    value-attribute="id"
+                    @select="selectName"
+                    :filter-by-query="true">
+                <!-- Filter by input text to only show the matching results -->
+                </vue-simple-suggest>
             </vs-col>
 
             <!-- LISTAGEM DOS PRODUTOS -->
@@ -35,7 +38,7 @@
 
             <vs-col vs-w="12" v-for="(product, index) in list_products" v-if="product.price" :key="index">
                 <vs-col vs-w="4" class="p-2">
-                    <p>{{ product.id }} - {{ product.name }}</p>
+                    <p>{{ product.product_id }} - {{ product.name_product }}</p>
                 </vs-col>
                 <vs-col vs-w="2" class="p-2">
                     <vs-input
@@ -96,10 +99,15 @@
 
 <script>
 
+import VueSimpleSuggest from 'vue-simple-suggest'
+import 'vue-simple-suggest/dist/styles.css' // Optional CSS
 
 export default {
 
     name: "GridProducts",
+
+    components:{VueSimpleSuggest},
+
     props:{
         products:{
             type: Array,
@@ -134,138 +142,37 @@ export default {
             confirm: false,
             table_price: null,
             table_price_id: null,
-            states:[
-                {
-                    state: 'AC',
-                    region: 'Norte'
-                },
-                {
-                    state: 'AP',
-                    region: 'Norte'
-                },
-                {
-                    state: 'AM',
-                    region: 'Norte'
-                },
-                {
-                    state: 'PA',
-                    region: 'Norte'
-                },
-                {
-                    state: 'RO',
-                    region: 'Norte'
-                },
-                {
-                    state: 'RR',
-                    region: 'Norte'
-                },
-                {
-                    state: 'TO',
-                    region: 'Norte'
-                },
-                {
-                    state: 'AL',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'BA',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'CE',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'MA',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'PB',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'PE',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'PI',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'RN',
-                    region: 'Nordeste'
-                },
-                {
-                    state: 'SE',
-                    region: 'Nordeste'
-                },
-
-
-                {
-                    state: 'DF',
-                    region: 'Centro-Oeste'
-                },
-                {
-                    state: 'GO',
-                    region: 'Centro-Oeste'
-                },
-                {
-                    state: 'MT',
-                    region: 'Centro-Oeste'
-                },
-                {
-                    state: 'MS',
-                    region: 'Centro-Oeste'
-                },
-
-
-
-                {
-                    state: 'ES',
-                    region: 'Sudeste'
-                },
-                {
-                    state: 'MG',
-                    region: 'Sudeste'
-                },
-                {
-                    state: 'RJ',
-                    region: 'Sudeste'
-                },
-                {
-                    state: 'SP',
-                    region: 'Sudeste'
-                },
-
-                {
-                    state: 'PR',
-                    region: 'Sul'
-                },
-                {
-                    state: 'SC',
-                    region: 'Sul'
-                },
-                {
-                    state: 'RS',
-                    region: 'Sul'
-                },
-            ],
+            list_products: [],
         }
     },
 
     methods:{
+
+        selectName(product) {
+            
+            let p = this.$c(this.table_prices).where('id', product.id).first()
+            
+            p.quantity = 0
+            p.total = 0
+            p.discount = 0
+            p.total_discount = 0
+
+            this.list_products.unshift(p)
+
+        },
 
         formatCurrency(value){
             return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
         },
 
         noDiscount(product){
+
             this.list_products = this.$c(this.list_products).map((item) => {
-                if(item.id == product.id){
+                if(item.product_id == product.product_id){
                     product.total = (parseFloat(item.quantity) * parseFloat(item.price))
                 }
-                return product
-            })
+                return item
+            }).all()
 
             this.withDiscount(product)
         },
@@ -283,7 +190,7 @@ export default {
         withDiscount(product){
 
             this.list_products = this.$c(this.list_products).map((item) => {
-                if(item.id == product.id && product.total > 0){
+                if(item.product_id == product.product_id && product.total > 0){
 
                     // retirando a porcentagem do valor total
                     let valor_total = product.total
@@ -301,62 +208,21 @@ export default {
                 }
 
                 
-                return product
-            })
+                return item
+            }).all()
 
             this.total = this.$c(this.list_products).sum('total_discount')
         },
 
         record(){
-            let products = this.$c(this.products).filter((item)=>{
-                return item.total_discount > 0
+            let products = this.$c(this.list_products).filter((item)=>{
+                return item.quantity > 0
             }).all()
 
-            this.$emit('products_sale', {products: products , table_price_id: this.table_price_id})
+            this.$emit('products_sale', {products: products , table_price_id: this.table_prices[0].price_table_id})
         }
 
     },
-
-    computed:{
-
-        list_products() {
-
-            let products = this.$c(this.products)
-
-            if(this.company){
-
-                let region = this.$c(this.states).where('state', this.company.address[0]['state']).all()
-
-                // tabela referente ao Estado da empresa
-                this.table_price = this.$c(this.table_prices).where('name', region[0].region) 
-                
-                this.table_price_id = this.table_price.items[0].id
-
-                this.table_price = this.table_price.items[0].prices
-
-
-                products = this.$c(this.products).map((p)=>{
-                    let price = this.$c(this.table_price).where('product_id', p.id)
-                    if(price.items.length > 0){
-                        p.price = price.items[0].price 
-                    }else{
-                        p.price = null
-                    }
-
-                    return p
-                })
-            }
-
-            if (this.search) {
-                products = this.$c(products).filter((product) => {
-                    return product.name.toLowerCase().search(this.search) >= 0;
-                });
-            }
-
-            return products.all()
-
-        },
-    }
 
 }
 
@@ -366,6 +232,7 @@ export default {
 
     .list_products_grid{
         height: 417px;
+        display: block !important;
     }
     .bottom_grid_products{
         width: 94%;

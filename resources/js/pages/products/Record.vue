@@ -45,6 +45,17 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
+                        <p class="text-label">Aparecer no site</p>
+                        <vs-select
+                            v-model="form.site_appear"
+                        >
+                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in site_appear" />
+                        </vs-select>
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
                         <p class="text-label">Família</p>
                         <vs-select
                             v-model="form.category_id"
@@ -317,7 +328,21 @@ export default {
             money_active: false,
             image: false,
             categories: [],
+            site_appear: [
+                {
+                    id: 1,
+                    name: 'Aparecer'
+                },
+                {
+                    id: 0,
+                    name: 'Não aparecer'
+                },
+            ],
             status:[
+                {
+                    id: 2,
+                    name: 'Inativo - Produto externo'
+                },
                 {
                     id: 1,
                     name: 'Ativo'
@@ -604,6 +629,7 @@ export default {
                 this.form.height = data.data.height
                 this.form.video = data.data.video
                 this.form.images = data.data.product_images
+                this.form.site_appear = data.data.site_appear
 
                 this.form.power = data.data.power
                 this.form.voltage = data.data.voltage
