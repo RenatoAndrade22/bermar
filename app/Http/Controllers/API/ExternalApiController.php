@@ -16,7 +16,7 @@ class ExternalApiController extends Controller
         $data = $this->getDataAPI('tabelavenda');
 
         foreach($data['tabela_venda'] as $table){
-
+           
             $mapping = Mapping::
                            where('external_id', $table['id'])
                            ->where('model', 'table_price')
@@ -24,7 +24,7 @@ class ExternalApiController extends Controller
 
             // se não existir mapping, cadastra a nova tabela na base.
             if($mapping){
-                $table_price = PriceTable::find($mapping['internal_id']);
+                $table_price = PriceTable::find($mapping->internal_id);
             }else{
                 $table_price = new PriceTable();
                 $table_price->name = $table['descricao'];
@@ -51,13 +51,13 @@ class ExternalApiController extends Controller
                     continue;
                 
                 // varifica se já existe um preço para esse produto com essa tabela, caso exista atualiza, caso não exista cadastra.
-                $price = Price::where('price_table_id', $table_price->id)
-                                ->where('product_id', $product_mapping['internal_id'])
+                $price = Price::where('price_table_id', $table_price['id'])
+                                ->where('product_id', $product_mapping->internal_id)
                                 ->firstOrNew();
                 
                 $price->price          =  $product['preco'];
-                $price->price_table_id =  $table_price->id;
-                $price->product_id     =  $product_mapping['internal_id'];
+                $price->price_table_id =  $table_price['id'];
+                $price->product_id     =  $product_mapping->internal_id;
                 $price->save();
                 
             }
