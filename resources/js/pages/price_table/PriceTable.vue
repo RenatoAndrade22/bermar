@@ -210,11 +210,9 @@ export default {
         },
 
         editItem(id){
-            console.log('categ', this.list_categories, id)
             this.categ_edit = this.$c(this.list_categories).where('id', id).first()
             this.popup_new = true
             this.form.name = this.categ_edit.name
-
         },
 
         deleteItem(id){

@@ -100,12 +100,14 @@ export default {
         },
 
         selectTabePrice(){
-            this.table_prices = this.$c(this.table_prices).where('id', this.form.table_price).all()
-            this.prices = this.table_prices[0].prices
+            axios.get("/api/prices-by-table/"+this.form.table_price).then((result) => { 
+                this.prices = result.data
+             })
+
         },
 
         record(e){
-            this.$emit('products_sale', {products: e.products, form: this.form, table_price_id: e.table_price_id})
+            this.$emit('products_sale', {products: e.products, form: this.form})
         }
     },
 }

@@ -24,6 +24,7 @@ use \App\Http\Controllers\API\PaymentMethodController;
 use \App\Http\Controllers\API\CatalogController;
 use \App\Http\Controllers\API\MappingController;
 use \App\Http\Controllers\API\ExternalApiController;
+use \App\Http\Controllers\API\PriceController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -110,6 +111,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('products-api-external', [ExternalApiController::class, 'allProducts']);
     Route::get('table-price-api-external', [ExternalApiController::class, 'allTablePrice']);
+
+    Route::get('prices-by-table/{id}', [PriceController::class, 'allPricesByTable']);
 
 });
 

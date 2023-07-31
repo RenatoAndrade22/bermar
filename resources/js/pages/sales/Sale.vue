@@ -452,7 +452,6 @@ export default {
         },
 
         pdfGenerate(s){
-            console.log('s', s)
             this.sale_pdf = s
             this.generateReport()
         },
@@ -568,7 +567,7 @@ export default {
         },
 
         addSale(data){
-            console.log('data', data)
+
             //loading
             this.$vs.loading({
                 container: '#cadastro_venda',
@@ -594,10 +593,8 @@ export default {
                 "shipping_company": data.form.shipping,
 
                 "products": data.products,
-                "table_price_id": data.table_price_id
+                "table_price_id": data.form.table_price
             }
-
-            console.log('sale', sale)
 
             axios.post('/api/sale', sale).then((response)=>{
                  
@@ -682,7 +679,6 @@ export default {
             
             axios.get("/api/price_table").then((result) => { 
                 this.table_prices = result.data
-                console.log('table', this.table_prices)
              })
         
         },
@@ -710,7 +706,6 @@ export default {
         },
 
         doubleSelection(tr) {
-            console.log('double', tr)
         },
 
         getSaleOrders(){
@@ -741,9 +736,7 @@ export default {
         },
 
         downloadInvoice(sale_order_id){
-            console.log('sale_order_id', sale_order_id)
             axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
-                console.log('entrou')
                 window.open(resp.data.name, '_blank').focus();
             })
         },

@@ -11,7 +11,7 @@ class PriceTableController extends Controller
 {
     public function index()
     {
-        return PriceTable::with('prices')->get();
+        return PriceTable::select('id', 'name')->get();
     }
 
     public function store(Request $request)

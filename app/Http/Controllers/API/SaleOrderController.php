@@ -19,11 +19,14 @@ class SaleOrderController extends Controller
     public function store(Request $request)
     {
 
-        // encontra a tabela de preços pelo Estado do cliente.
-        $enterprise = Enterprise::query()->where('id', $request->get('enterprise_id'))->first();
         $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
 
         $deliveryDate = null;
+/*
+        $data_sale = array();
+        $data_sale['cliente_id'] = $request->get('enterprise_id');
+        $data_sale['vendedor_id'] = Auth::user()->id;
+*/
         if($request->has('delivery_date') && $request->get('delivery_date')){
             $date = Carbon::createFromFormat('d/m/Y', $request->get('delivery_date'));
             $deliveryDate = $date->toDateString();
@@ -58,9 +61,14 @@ class SaleOrderController extends Controller
             $item->saveOrFail();
         }
 
+        //ExternalApiController::saveSaleAPI();
+        //$externalController = new ExternalApiController();
+        //$externalController->saveSaleAPI();
+
         return $sale;
     
     }
+
 
     public function index()
     {

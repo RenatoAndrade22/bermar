@@ -6,7 +6,7 @@
                     v-model="search"
                     :list="table_prices"
                     display-attribute="name_product"
-                    value-attribute="id"
+                    value-attribute="product_id"
                     @select="selectName"
                     :filter-by-query="true">
                 <!-- Filter by input text to only show the matching results -->
@@ -150,7 +150,7 @@ export default {
 
         selectName(product) {
             
-            let p = this.$c(this.table_prices).where('id', product.id).first()
+            let p = this.$c(this.table_prices).where('product_id', product.product_id).first()
             
             p.quantity = 0
             p.total = 0
@@ -219,7 +219,7 @@ export default {
                 return item.quantity > 0
             }).all()
 
-            this.$emit('products_sale', {products: products , table_price_id: this.table_prices[0].price_table_id})
+            this.$emit('products_sale', {products: products})
         }
 
     },
