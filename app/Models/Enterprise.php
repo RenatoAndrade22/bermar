@@ -15,8 +15,7 @@ class Enterprise extends Model
     protected $table = 'enterprises';
 
     protected $with = [
-        'enterpriseType',
-        'address',
+        'address'
     ];
 
     protected $fillable = [

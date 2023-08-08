@@ -1,15 +1,35 @@
 <template>
-    <div style="padding: 13px 20px;">
+    <div style="padding: 13px 20px;" id="form-sale">
         
         <vs-col vs-w="12" >
             <div class="form_item mb-3" style="width:100% !important;">
                 <p class="text-label"><span class="required">*</span> Empresa</p>
-                <vs-select
-                    v-model="form.company"
-                    autocomplete
-                >
-                    <vs-select-item :key="index" :value="item" :text="item.name" v-for="item,index in companies" />
-                </vs-select>
+                <!--
+                    <vs-select
+                        v-model="form.company"
+                        autocomplete
+                    >
+                        <vs-select-item :key="index" :value="item" :text="item.name" v-for="item,index in companies" />
+                    </vs-select>
+                -->
+
+                <vs-input
+                    class="mb-3 mt-2"
+                    placeholder="Buscar por nome ou CNPJ"
+                    v-model="form.company_name"
+                    @input="searcEnterprise"
+                />
+
+                
+                <div v-if="companies.length > 0 && list_products_search" class="list_companie_suggest">
+                    <p 
+                        v-for="(c, i) in companies" 
+                        :key="i" 
+                        @click="[form.company = c.id, list_products_search = false, form.company_name = c.name]"
+                    >
+                        {{ c.name }}
+                    </p>
+                </div>
             </div>
         </vs-col>
 
@@ -43,7 +63,7 @@
                 <vs-select
                     v-model="form.frete"
                 >
-                    <vs-select-item :key="index" :value="item.name" :text="item.name" v-for="item,index in frete" />
+                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in frete" />
                 </vs-select>
             </div>
         </vs-col>
@@ -123,13 +143,6 @@ export default {
     name: "SaleComponent",
     props:{
 
-        companies:{
-            type: Array,
-            default(rawProps) {
-                return []
-            }
-        },
-
         products:{
             type: Array,
             default(rawProps) {
@@ -155,12 +168,19 @@ export default {
 
     data(){
         return{
+            
             active_record_payment: false,
+            first_search: true,
+            count_search: 0,
+            list_products_search: false,
+            
             active: false,
             error_company: false,
             error_payment: false,
             filds: false,
+            companies: [],
             form:{
+                company_name: null,
                 company: null,
                 phone: null,
                 frete: null,
@@ -173,29 +193,71 @@ export default {
 
             frete: [
                 {
-                    id: 1,
+                    id: 'C',
                     name: 'CIF'
                 },
                 {
-                    id: 2,
+                    id: 'F',
                     name: 'FOB'
                 },
                 {
-                    id: 3,
+                    id: 'R',
                     name: 'Redespacho'
                 },
             ]
         }
     },
 
-    created(){
-        this.companies = this.$c(this.companies).map((c)=>{
-            c.name = c.name+' | '+c.cnpj
-            return c
-        }).all()
-    },
-
     methods:{
+
+        searcEnterprise(){
+
+            this.list_products_search = true
+
+            if(this.form.company_name.length == 0){
+                this.count_search = 0
+                return true
+            }
+
+            if(!this.first_search && this.form.company_name.length <= 3){
+                this.getEnterprise(this.form.company_name)
+                return true
+            }
+
+            if(this.form.company_name.length < 3){
+                this.count_search = 0
+                return false
+            }
+
+            if(this.first_search){
+                this.count_search = this.form.company_name.length 
+
+                this.getEnterprise(this.form.company_name)
+                this.first_search = false
+
+                return true
+            }
+
+            if(this.form.company_name.length > 5 && (this.form.company_name.length > (this.count_search + 3) || this.form.company_name.length < (this.count_search - 3))){
+                this.count_search = this.form.company_name.length 
+                this.getEnterprise(this.form.company_name)
+                return true
+            }
+
+        },
+
+        getEnterprise(name_cnpj){
+            //loading
+            this.$vs.loading({
+                container: '#form-sale',
+                scale: 0.6
+            })
+            axios.get('/api/search-enterprise-name/'+name_cnpj).then((resp)=>{
+                this.companies = resp.data
+                this.$vs.loading.close("#form-sale > .con-vs-loading");
+            })
+        },
+
         nextStep(){
             if(this.validation()){
                 this.filds = false
@@ -228,5 +290,23 @@ export default {
 }
 .width_90{
     width: 90% !important;
+}
+.list_companie_suggest{
+    background: #fff;
+    position: relative;
+    z-index: 999999 !important;
+    height: 318px;
+    overflow: auto;
+}
+.list_companie_suggest p{
+    margin: 0;
+    border: 1px solid #efeeee;
+    padding: 14px;
+    background: #fff;
+    color: #000 !important;
+    cursor: pointer;
+}
+.list_companie_suggest p:hover{
+    background: #efeeee;
 }
 </style>

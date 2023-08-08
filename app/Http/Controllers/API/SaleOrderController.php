@@ -8,6 +8,7 @@ use App\Models\SaleOrder;
 use App\Models\Product;
 use App\Models\SaleOrderItems;
 use App\Models\Enterprise;
+use App\Models\PaymentMethod;
 use App\Models\PriceTable;
 use App\Models\Price;
 use Carbon\Carbon;
@@ -18,19 +19,18 @@ class SaleOrderController extends Controller
 {
     public function store(Request $request)
     {
+     
+        $externalApiController = new ExternalApiController();
 
         $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
 
         $deliveryDate = null;
-/*
-        $data_sale = array();
-        $data_sale['cliente_id'] = $request->get('enterprise_id');
-        $data_sale['vendedor_id'] = Auth::user()->id;
-*/
+
         if($request->has('delivery_date') && $request->get('delivery_date')){
             $date = Carbon::createFromFormat('d/m/Y', $request->get('delivery_date'));
             $deliveryDate = $date->toDateString();
         }
+        
 
         $sale = new SaleOrder();
         $sale->fill($request->all());
@@ -43,12 +43,14 @@ class SaleOrderController extends Controller
         $sale->saveOrFail();
 
         foreach ($request->get('products') as $p) {
-
             $price = Price::query()
                         ->where('product_id', $p['product_id'])
                         ->where('price_table_id', $table_price->id)
                         ->first();
 
+
+            $externalApiController->setProduct($price->product_id, $p['discount'], $p['quantity'], $price->price);
+                        
             $item = new SaleOrderItems();
             $item->sale_order_id = $sale->id;
             $item->product_id = $p['product_id'];
@@ -61,11 +63,16 @@ class SaleOrderController extends Controller
             $item->saveOrFail();
         }
 
-        //ExternalApiController::saveSaleAPI();
-        //$externalController = new ExternalApiController();
-        //$externalController->saveSaleAPI();
+        $payment_method = PaymentMethod::find($request->get('payment_method_id'));
 
-        return $sale;
+        $externalApiController->setReceiptForm($payment_method->code_integration);
+
+        $external = $externalApiController->saveSaleAPI();
+
+        $sale->code_integration = $external['pedido_de_venda']['id_pedido_venda'];
+        $sale->saveOrFail();
+
+        return true;
     
     }
 
@@ -91,10 +98,12 @@ class SaleOrderController extends Controller
     public function allSales()
     {
         $saleOrders = SaleOrder::query()->with(['boletos', 'paymentMethod'])
-        ->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
-        ->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
-        ->orderByDesc('id')->get(['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']);
+        ->orderByDesc('id')
+        ->get();
         return $saleOrders;
+        //->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
+        //->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
+        //['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']
     }
 
     public function getSaleOrderByUser()

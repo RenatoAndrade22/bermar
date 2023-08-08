@@ -76,23 +76,49 @@ export default {
                 container: '#home_dashboard',
                 scale: 0.6
             })
-            this.getApiProducts()
+
+            this.getApiClients()
+ 
+        },
+
+        getApiClients(){
+            this.message_external_import = 'Importando clientes'
+            axios.get('/api/clients-api-external').then((resp)=>{
+                this.getApiProducts()
+            })
         },
 
         getApiProducts(){
-            this.message_external_import = 'Importando produtos';
+            this.message_external_import = 'Importando produtos'
             axios.get('/api/products-api-external').then((resp)=>{
                 this.getApiTablePrice()
             })
         },
 
         getApiTablePrice(){
-            this.message_external_import = 'Importando tabela de preços';
+            this.message_external_import = 'Importando tabela de preços'
             axios.get('/api/table-price-api-external').then((resp)=>{
                 this.message_external_import = null;
-                this.$vs.loading.close("#home_dashboard > .con-vs-loading");
+                this.getApiPaymentMethod()
             })
         },
+
+        getApiPaymentMethod(){
+            this.message_external_import = 'Importando metodos de pagamento'
+            axios.get('/api/payment-method-api-external').then((resp)=>{
+                this.getApiPaymentTerms()
+            })
+        },
+
+        getApiPaymentTerms(){
+            this.message_external_import = 'Importando tipos de pagamento'
+            axios.get('/api/payment-terms-api-external').then((resp)=>{
+                this.message_external_import = null
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+            })
+        },
+
+        
 
         getTotal(){
             axios.get('/api/total-sales').then((resp)=>{

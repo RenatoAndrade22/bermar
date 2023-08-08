@@ -6,12 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PriceTable;
 use App\Models\Price;
+use Illuminate\Support\Facades\Auth;
 
 class PriceTableController extends Controller
 {
     public function index()
     {
-        return PriceTable::select('id', 'name')->get();
+        return PriceTable::query()
+                ->join('table_seller', 'table_seller.price_table_id', '=', 'price_tables.id')
+                ->where('table_seller.user_id', Auth::user()->id)
+                ->select('price_tables.id', 'price_tables.name')
+                ->get();
     }
 
     public function store(Request $request)

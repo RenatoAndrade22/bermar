@@ -3,7 +3,6 @@
         <vs-row id="cadastro_venda">
 
             <Form
-                :companies="companies"
                 :table_prices="table_prices"
                 :payment_methods="payment_methods"
                 v-if="step == 0"
@@ -11,7 +10,6 @@
              />
 
             <Grid
-                :companies="companies"
                 :products="products"
                 :company="form.company"
                 :table_prices="this.prices"
@@ -39,13 +37,6 @@ export default {
         step:{
             type: Number,
             default: 0
-        },
-        
-        companies:{
-            type: Array,
-            default(rawProps) {
-                return []
-            }
         },
 
         payment_methods:{

@@ -58,12 +58,12 @@ class ProductController extends Controller
 
     public function saveImportedProduct($product_external)
     {
-        $product = new Product();
+        $product = Product::query()->where('integration_code', $product_external['id'])->firstOrNew();
         $product->name = $product_external['nome'];
         $product->status = 2;
         $product->slug = $this->sanitizeString($product_external['nome']);
         $product->description = $product_external['nome'];
-        $product->price = 0;
+        $product->price = $product_external['preco'];
         $product->integration_code = $product_external['id'];
         $product->site_appear = false;
         $product->save();

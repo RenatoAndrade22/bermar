@@ -93,9 +93,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'price_table' => PriceTableController::class,
         'links' => LinkController::class,
         'catalog' => CatalogController::class,
-        'payment-methods' => PaymentMethodController::class
+        'payment-methods' => PaymentMethodController::class,
+        'sale' => SaleOrderController::class
     ]);
-    
+
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
 
     Route::post('update-catalog/{id}', [CatalogController::class, 'updateCatalog']);
@@ -111,18 +112,23 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('products-api-external', [ExternalApiController::class, 'allProducts']);
     Route::get('table-price-api-external', [ExternalApiController::class, 'allTablePrice']);
-
+    Route::get('clients-api-external', [ExternalApiController::class, 'allClients']);
+    Route::get('payment-method-api-external', [ExternalApiController::class, 'allPaymentMethod']);
+    Route::get('payment-terms-api-external', [ExternalApiController::class, 'allPaymentTerms']);
+    
+    
     Route::get('prices-by-table/{id}', [PriceController::class, 'allPricesByTable']);
+
+    Route::get('search-enterprise-name/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpj']);
+    
+    Route::get('enterprise-search/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpjMoreInfo']);
+    
 
 });
 
 //test
 Route::get('test', [EnterpriseController::class, 'test']);
 
-// SITE
-Route::resources([
-    'sale' => SaleOrderController::class,
-]);
 
 // DELIVERY
 Route::get('get-city/{zipcode}', [\App\Http\Controllers\API\DeliveryController::class, 'getCity']);

@@ -12,8 +12,39 @@ use Illuminate\Support\Facades\Auth;
 
 class EnterpriseController extends Controller
 {
+
+    public function getByNameCnpj($name_cnpj)
+    {
+        $name_cnpj = str_replace(array('.', '-', '/'), '', $name_cnpj);
+
+        $enterprises = Enterprise::query()
+                        ->selectRaw("CONCAT(name, ' / ', cnpj) as name, enterprises.id")
+                        ->join('client_seller', 'client_seller.enterprise_id', '=', 'enterprises.id')
+                        ->where('client_seller.user_id', Auth::user()->id)
+                        ->where('enterprise_type_id', 2)
+                        ->where('name', 'LIKE', '%'.$name_cnpj.'%')
+                        ->orWhere('cnpj', 'LIKE', '%'.$name_cnpj.'%')
+                        ->get();
+
+        return $enterprises;
+
+    }
+
+    public function getByNameCnpjMoreInfo($name_cnpj)
+    {
+        $name_cnpj = str_replace(array('.', '-', '/'), '', $name_cnpj);
+
+        $enterprises = Enterprise::query()
+                        ->with('enterpriseType')
+                        ->where('name', 'LIKE', '%'.$name_cnpj.'%')
+                        ->orWhere('cnpj', 'LIKE', '%'.$name_cnpj.'%')
+                        ->get();
+
+        return $enterprises;
+    }
+
     public function index(){
-        return Enterprise::query()->with('address')->orderBy('id','desc')->get();
+        return Enterprise::query()->with('address', 'enterpriseType')->orderBy('id','desc')->take(30)->get();
     }
 
     public function getEnterpriseType($type){

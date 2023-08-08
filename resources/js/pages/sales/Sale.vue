@@ -48,8 +48,8 @@
                                 <p>Data emissão: <span>{{ dateFormat(sale_pdf.created_at) }}</span></p>
                                 <p>Razão Social: <span>{{ sale_pdf.enterprise.name }}</span></p>
                                 <p>CNPJ: <span>{{ sale_pdf.enterprise.cnpj }}</span></p>
-                                <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}, {{ sale_pdf.enterprise.address[0].district }}, {{ sale_pdf.enterprise.address[0].city }} - {{ sale_pdf.enterprise.address[0].state }}</span></p>
-                                <p>Representante: <span>{{ sale_pdf.creator_name }}</span></p>
+                                <p v-if="sale_pdf.enterprise.address.length > 0">Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}, {{ sale_pdf.enterprise.address[0].district }}, {{ sale_pdf.enterprise.address[0].city }} - {{ sale_pdf.enterprise.address[0].state }}</span></p>
+                                <p>Representante: <span>{{ sale_pdf.user.name }}</span></p>
                             </vs-col>
                             <vs-col vs-w="6" >
                                 <p>Condição de Pagamento: <span>{{ sale_pdf.name }}</span></p>
@@ -231,7 +231,6 @@
         <vs-popup fullscreen title="Cadastrar nova venda" :active.sync="popup_new">
             
             <SaleComponent 
-                :companies="companies" 
                 :products="products" 
                 :payment_methods="payment_methods" 
                 :table_prices="table_prices"
@@ -448,6 +447,7 @@ export default {
         },
 
         generateReport () {
+            console.log('ss', this.sale_pdf)
             this.$refs.html2Pdf.generatePdf()
         },
 
@@ -581,7 +581,7 @@ export default {
                 "user_id": this.$user.id,
 
                 //COMPRADOR
-                "enterprise_id": data.form.company.id,
+                "enterprise_id": data.form.company,
 
                 "payment_method_id": data.form.payment_method,
 
@@ -594,6 +594,7 @@ export default {
 
                 "products": data.products,
                 "table_price_id": data.form.table_price
+
             }
 
             axios.post('/api/sale', sale).then((response)=>{
@@ -626,6 +627,7 @@ export default {
 
         },
 
+        /*
         getCompanies(){
             axios.get('/api/enterprises-type/2').then((resp)=>{
 
@@ -653,28 +655,13 @@ export default {
                 this.companies = data
             })
         },
-
+        */
         getPaymentMethods(){
             axios.get('/api/payment-methods').then((data)=>{
                 this.payment_methods = data.data
             })
         },
-        
-        getProductsBermar() {
-            
-            axios.get("/api/products-bermar").then((data) => { 
-                this.products = this.$c(data.data).map((product)=>{
-                    product.quantity = 0
-                    product.discount = 0
-                    product.total = 0
-                    product.total_discount = 0
-                    return product
-                })
-                this.products = this.products.items
-             })
-        
-        },
-
+  
         getTablePrices() {
             
             axios.get("/api/price_table").then((result) => { 
@@ -747,8 +734,7 @@ export default {
     },
     created() {
         this.getSaleOrders()
-        this.getCompanies()
-        this.getProductsBermar()
+
         this.getTablePrices()
         this.getPaymentMethods()
         this.getAssitences()
@@ -756,7 +742,7 @@ export default {
     },
    
     computed:{
-
+/*
         list_products() {
 
             let products = this.$c(this.products)
@@ -793,7 +779,7 @@ export default {
             return products
 
         },
-
+*/
         list_sales(){
             let sales = this.$c(this.sales)
 

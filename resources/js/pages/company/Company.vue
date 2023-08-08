@@ -3,11 +3,15 @@
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
-                    <span style="color:#EE1B21">({{ list_providers.length }})</span> Empresas
+                    Empresas
                 </vs-navbar-title>
             </div>
    
-            <vs-input icon="search" class="search" placeholder="Buscar empresa" v-model="search"/>
+            <div style="margin-right: 50px;">
+                <vs-input class="search" placeholder="Buscar por nome ou CNPJ" v-model="search"/>
+                <vs-button type="relief" @click="searchEnterprise" icon="search" style="float:left;" />
+            </div>
+
             <vs-button type="relief" @click="[popupActivo=true, edit_company=false, resertAddress()]"
                 >Cadastrar novo</vs-button
             >
@@ -27,7 +31,7 @@
                     Telefone
                 </vs-th>
                 <vs-th>
-                    Status
+                    Tipo
                 </vs-th>
                 <vs-th>
                     Ações
@@ -52,8 +56,8 @@
                         {{data[indextr].phone}}
                     </vs-td>
 
-                    <vs-td :data="data[indextr].status">
-                        {{data[indextr].status}}
+                    <vs-td :data="data[indextr].enterprise_type.name">
+                        {{data[indextr].enterprise_type.name}}
                     </vs-td>
 
                     <vs-td :data="data[indextr].id" style="width: 195px">
@@ -431,6 +435,12 @@ export default {
         }
     },
     methods:{
+
+        searchEnterprise(){
+            axios.get('/api/enterprise-search/'+this.search).then((data)=>{
+                this.providers = data.data
+            })
+        },
 
         onFileChange(event) {
             this.file_upload = false
@@ -819,14 +829,6 @@ export default {
 
         list_providers(){
             let providers = this.providers
-
-            if (this.search){
-                providers = this.$c(providers).filter((providers)=>{
-                    return providers.name.toLowerCase().search(this.search) >= 0 || providers.cnpj.toLowerCase().search(this.search) >= 0
-                })
-                providers = providers.items
-            }
-
             return providers
         }
     }
@@ -884,6 +886,8 @@ export default {
         font-weight: 600;
     }
     .search{
-        margin-right: 20px;
+        width: 221px !important;
+        margin-right: 12px;
+        float: left;
     }
 </style>
