@@ -21,6 +21,12 @@ class SaleOrder extends Model
         'phone',
         'observation',
         'delivery_date',
+
+        'carrier_id',
+        'phone_redispatch',
+        'shipping_type_redispatch',
+        'carrier_id_redispatch',
+        'payment_term_id'
     ];
 
     protected $with = [

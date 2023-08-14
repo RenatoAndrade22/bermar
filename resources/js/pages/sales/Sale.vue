@@ -231,9 +231,11 @@
         <vs-popup fullscreen title="Cadastrar nova venda" :active.sync="popup_new">
             
             <SaleComponent 
+                :payment_terms="payment_terms"
                 :products="products" 
                 :payment_methods="payment_methods" 
                 :table_prices="table_prices"
+                :carriers="carriers"
                 @products_sale="addSale"
                 v-if="popup_new"
             />
@@ -356,47 +358,7 @@ export default {
                 value: 0,
                 products: []
             },
-            sales:[
-                // {
-                //     id: 265,
-                //     value: '1.550,00',
-                //     buyer: 'Fernando',
-                //     status_sale: 1,
-                //     status_payment: 1,
-                //     status_delivery: 1,
-                //     invoice: ''
-                // },
-                //
-                // {
-                //     id: 295,
-                //     value: '3.550,00',
-                //     buyer: 'Fernando',
-                //     status_sale: 1,
-                //     status_payment: 1,
-                //     status_delivery: 1,
-                //     invoice: ''
-                // },
-                //
-                // {
-                //     id: 665,
-                //     value: '550,00',
-                //     buyer: 'Fernando',
-                //     status_sale: 1,
-                //     status_payment: 2,
-                //     status_delivery: 3,
-                //     invoice: 'link_do_arquivo'
-                // },
-                //
-                // {
-                //     id: 765,
-                //     value: '1.550,00',
-                //     buyer: 'Fernando',
-                //     status_sale: 2,
-                //     status_payment: 1,
-                //     status_delivery: 2,
-                //     invoice: ''
-                // },
-            ],
+            sales:[],
             status_delivery:[
                 {text:'Preparando entrega',value:1},
                 {text:'Em transito',value:2},
@@ -419,8 +381,11 @@ export default {
             list_products_warranty: [],
             assistances: [],
             users: [],
+            payment_terms: [],
+            carriers: []
         }
     },
+
     methods:{
 
         calcPriceProduct(quantidade, desconto, precoFinal){
@@ -585,18 +550,26 @@ export default {
 
                 "payment_method_id": data.form.payment_method,
 
-                "shipping_type": data.form.frete,
                 "delivery_date": data.form.delivery_date,
                 "observation": data.form.observation,
-                "phone": data.form.phone,
                 "status": 1,
-                "shipping_company": data.form.shipping,
+                "payment_term": data.form.payment_term,
+
+
+                "shipping_type": data.form.frete,
+                "carrier": data.form.carrier,
+                "phone": data.form.phone,
+
+                "shipping_type_redispatch": data.form.frete_redispatch,
+                "carrier_redispatch": data.form.carrier_redispatch,
+                "phone_redispatch": data.form.phone_redispatch,
 
                 "products": data.products,
                 "table_price_id": data.form.table_price
 
             }
 
+           
             axios.post('/api/sale', sale).then((response)=>{
                  
                  //close loading
@@ -624,6 +597,7 @@ export default {
                 }).all()
               
             })
+            
 
         },
 
@@ -730,11 +704,24 @@ export default {
 
         formatCurrency(value){
             return Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(value)
+        },
+
+        getPaymentTerms(){
+            axios.get('/api/payment-terms').then((resp)=>{
+                this.payment_terms = resp.data
+            })
+        },
+
+        getCarriers(){
+            axios.get('/api/carriers').then((resp)=>{
+                this.carriers = resp.data
+            })
         }
     },
     created() {
         this.getSaleOrders()
-
+        this.getPaymentTerms()
+        this.getCarriers()
         this.getTablePrices()
         this.getPaymentMethods()
         this.getAssitences()
@@ -742,6 +729,7 @@ export default {
     },
    
     computed:{
+        
 /*
         list_products() {
 

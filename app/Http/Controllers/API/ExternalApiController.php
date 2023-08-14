@@ -8,12 +8,15 @@ use App\Models\Mapping;
 use App\Models\PriceTable;
 use App\Models\Price;
 use App\Models\Enterprise;
+use App\Models\IntegrationProduct;
 use App\Models\PaymentMethod;
 use App\Models\PaymentTerm;
 use App\Models\TableSeller;
 use App\Models\ClientSeller;
+use App\Models\Carrier;
+use DateTime;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ExternalApiController extends Controller
@@ -21,10 +24,22 @@ class ExternalApiController extends Controller
 
     public $products = '';
     public $receipt_form = '';
+    public $payment_term = '';
+    public $table_price = '';
+
+    public $client = '';
+
+    public $carrier = '';
+    public $type_transport= '';
+
+    public $carrier_redispatch = '';
+    public $type_transport_redispatch= '';
+    public $obs = '';
+    public $delivery_date = '';
 
     public function allPaymentMethod()
     {
-        $data = $this->getDataAPI('formarecebimento?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor=11');
+        $data = $this->getDataAPI('formarecebimento?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.env('EXTERNAL_API_ID_BERMAR'));
 
         foreach($data['forma_recebimento'] as $method)
         {
@@ -39,7 +54,7 @@ class ExternalApiController extends Controller
 
     public function allPaymentTerms()
     {
-        $data = $this->getDataAPI('condicaopagamento?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor=11');
+        $data = $this->getDataAPI('condicaopagamento?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.env('EXTERNAL_API_ID_BERMAR'));
 
         foreach($data['condicao_pagamento'] as $term)
         {
@@ -65,7 +80,7 @@ class ExternalApiController extends Controller
         
         foreach($sellers as $seller){
 
-            $data = $this->getDataAPI('cliente?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor='.$seller['code_integration']);
+            $data = $this->getDataAPI('cliente?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['cliente'] as $client){
                 if(isset($client['documento']['numero']) && $client['documento']['numero']){
@@ -116,7 +131,7 @@ class ExternalApiController extends Controller
         foreach ($sellers as $seller) {
             
             // usar o codigo de integração para buscar a tabela de venda de cada codigo integração.
-            $data = $this->getDataAPI('tabelavenda?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor='.$seller['code_integration']);
+            $data = $this->getDataAPI('tabelavenda?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['tabela_venda'] as $table){
             
@@ -164,6 +179,24 @@ class ExternalApiController extends Controller
 
     }
 
+    public function allCarriers()
+    {
+        $data = $this->getDataAPI('transportador?bascod='.env('EXTERNAL_API_BASCOD'));
+
+        foreach($data['transportador'] as $carrierApi){
+            
+            if($carrierApi['nome'] && $carrierApi['id']){
+                $carrier = Carrier::query()->where('name', $carrierApi['nome'])->where('code_integration', $carrierApi['id'])->firstOrNew();
+                $carrier->name = $carrierApi['nome'];
+                $carrier->code_integration = $carrierApi['id'];
+                $carrier->save();
+            }
+            
+        }
+
+        return true;
+    }
+
     public function allProducts()
     {
 
@@ -174,15 +207,19 @@ class ExternalApiController extends Controller
                     ->select('users.code_integration', 'users.id')
                     ->get();
 
+        $groups_integration = IntegrationProduct::query()->select('code_integration')->get();
+        $colecao = Collection::make($groups_integration);
+
         foreach($sellers as $seller){
 
-            $data = $this->getDataAPI('produto?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor='.$seller['code_integration']);
+            $data = $this->getDataAPI('produto?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['produto'] as $product){
-
-                $product_controller = new ProductController();
-                $product_controller->saveImportedProduct($product);
-
+                
+                if ($colecao->contains('code_integration', $product['grupo']['id'])) {
+                    $product_controller = new ProductController();
+                    $product_controller->saveImportedProduct($product);
+                }
             }
 
         }
@@ -202,21 +239,13 @@ class ExternalApiController extends Controller
 
     public function saveSaleAPI()
     {
-        /*
-        $response = Http::withHeaders([
-            'Authorization' => env('EXTERNAL_API_TOKEN'),
-            'Content-Type' => 'application/json', 
-        ])->post(env('EXTERNAL_API_URL').'/pedido?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor=11', $data);
-        dd($response->json());
-        return $response->json();
-        */
 
         $headers = [
             'Authorization: ' . env('EXTERNAL_API_TOKEN'),
             'Content-Type: application/json',
         ];
     
-        $url = env('EXTERNAL_API_URL').'/pedido?bascod='.env('EXTERNAL_API_BASCOD').'&empresa=0101&filial=1&vendedor='.Auth::user()->code_integration;
+        $url = env('EXTERNAL_API_URL').'/pedido?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.Auth::user()->code_integration;
 
         $payload = $this->payload();
 
@@ -254,7 +283,7 @@ class ExternalApiController extends Controller
         return json_decode($response, true);
     }
 
-    public function setProduct($product_id, $discount_percentage, $qnt, $unit_value)
+    public function setProduct($product_id, $discount_percentage, $qnt, $total_discount)
     {
 
         if($this->products)
@@ -263,9 +292,9 @@ class ExternalApiController extends Controller
 
         $this->products = $this->products.'
             {
-                "numero_item_pedido_compra": "32",
-                "numero_pedido_compra": "PD1234",
-                "observacao": "Observção do item 01",
+                "numero_item_pedido_compra": "",
+                "numero_pedido_compra": "",
+                "observacao": "",
                 "percentual_desconto": '.$discount_percentage.',
                 "produto": {
                     "id": '.$product_id.'
@@ -274,9 +303,14 @@ class ExternalApiController extends Controller
                 "tabela_venda": {
                 },
                 "tipo": "0",
-                "valor_unitario": '.$unit_value.'
+                "valor_unitario": '.$total_discount / $qnt.'
             }
         ';
+    }
+
+    public function setTablePrice($table_price)
+    {
+        $this->table_price = $table_price;
     }
 
     public function setReceiptForm($receipt_form)
@@ -284,61 +318,92 @@ class ExternalApiController extends Controller
         $this->receipt_form = $receipt_form;
     }
 
+    public function setPaymentTerm($payment_term)
+    {
+        $this->payment_term = $payment_term;
+    }
+
+    public function setCarrier($carrier)
+    {
+        $this->carrier = $carrier;
+    }
+
+    public function setCarrierRedispatch($carrier, $type_transport)
+    {
+        $this->carrier_redispatch = $carrier;
+        $this->type_transport_redispatch = $type_transport;
+    }
+
+    public function setClient($client)
+    {
+        $this->client = $client;
+    }
+
+    public function setObs($obs)
+    {
+        $this->obs = $obs;
+    }
+
+    public function setTypeTransport($type_transport)
+    {
+        $this->type_transport = $type_transport;
+    }
+
+    public function setDeliveryDate($delivery_date)
+    {
+        $date = DateTime::createFromFormat('d/m/Y', $delivery_date);
+        if($date){
+            $this->delivery_date = '"data_previsao_entrega": "'.$date->format('Y-m-d').'",';
+        }
+    }
+    
     public function payload()
     {
-        
+        //"valor_desconto": 23.56,
+        //"tipo_frete_transportador": "'.$this->type_transport.'",
+
         $payload = '
         {
             "integracao": {
-                "bascod": "bermar_homologacao"
+                "bascod": "'.env('EXTERNAL_API_BASCOD').'"
             },
             "empresa_filial": {
                 "empresa": {
-                    "id": "0101"
+                    "id": "'.env('EXTERNAL_API_EMPRESA').'"
                 },
                 "filial": {
-                    "id": 1
+                    "id": "'.env('EXTERNAL_API_FILIAL').'"
                 }
             },
             "cliente": {
-                "id": 1
+                "id": '.$this->client.'
             },
             "vendedor": {
-                "id": 11
+                "id": '.Auth::user()->code_integration.'
             },
-            "data": "2023-05-05",
-            "data_base_faturamento": "2023-05-05",
-            "data_base_vencimentos": "2023-05-05",
-            "data_previsao_entrega": "2023-05-05",
+            "data": "'.date("Y-m-d").'",
+            "data_base_faturamento": "'.date("Y-m-d").'",
+            "data_base_vencimentos": "'.date("Y-m-d").'",
+            '.$this->delivery_date.'
             "natureza": "V",
-            "percentual_desconto_cascata_1": 6.0,
-            "percentual_desconto_cascata_2": 0.0,
-            "percentual_desconto_cascata_3": 0.0,
-            "percentual_desconto_cascata_4": 0.0,
-            "percentual_desconto_cascata_5": 0.0,
-            "percentual_desconto_cascata_6": 0.0,
-            "percentual_desconto_mostruario": 7.0,
-            "percentual_despesa_supervisor": 8.0,
-            "valor_desconto": 23.56,
             "condicao_pagamento": {
-                "id": 9
+                "id": '.$this->payment_term.'
             },
             "forma_recebimento": {
                 "id": '.$this->receipt_form.'
             },
             "tabela_venda": {
-        
+                "id": '.$this->table_price.'
             },
-            "quantidade_volumes": 123.65,
-            "tipo_frete_transportador": "C",
+            "tipo_frete_transportador": "'.$this->type_transport.'",
             "transportador": {
-                "id": 1
+                "id": '.$this->carrier.'
             },
-            "tipo_frete_transportador_redespacho": "F",
+            "tipo_frete_transportador_redespacho": "'.$this->type_transport_redispatch.'",
             "transportador_redespacho": {
-                
+                "id": '.$this->carrier_redispatch.'
             },
-            "observacao": "observações do pedido",
+            "observacao": "'.$this->obs.'",
             "itens": [
                 '.$this->products.'
             ]

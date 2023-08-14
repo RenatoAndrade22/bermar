@@ -36,7 +36,7 @@
 
         <vs-col vs-w="6" >
             <div class="form_item width_90">
-                <p class="text-label"><span class="required">*</span> Metodo de pagamento <span @click="active_record_payment = true" style="color:red;float: right;">Cadastrar</span></p>
+                <p class="text-label"><span class="required">*</span> Metodo de pagamento</p>
 
                 <vs-select
                     v-model="form.payment_method"
@@ -57,7 +57,34 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="3" >
+
+
+        <vs-col vs-w="6" >
+            <div class="form_item width_90">
+                <p class="text-label"><span class="required">*</span> Condição de pagamento</p>
+                <vs-select
+                    v-model="form.payment_term"
+                >
+                    <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in payment_terms" />
+                </vs-select>
+            </div>
+        </vs-col>
+        
+        <vs-col vs-w="6" >
+            <div class="form_item width_90">
+                <p class="text-label">Previsão de Entrega</p>
+                <vs-input
+                    class="mb-3 mt-2"
+                    placeholder="Data da previsão de entrega "
+                    v-model="form.delivery_date"
+                    v-mask="'##/##/####'"
+                />
+            </div>
+        </vs-col>
+
+
+
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Tipo de frete</p>
                 <vs-select
@@ -68,20 +95,9 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="3" >
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
-                <p class="text-label">Transportadora</p>
-                <vs-input
-                    class="mb-3 mt-2"
-                    placeholder="Transportadora"
-                    v-model="form.shipping"
-                />
-            </div>
-        </vs-col>
-
-        <vs-col vs-w="3" >
-            <div class="form_item width_90">
-                <p class="text-label">Telefone transportadora</p>
+                <p class="text-label"><span class="required">*</span>Telefone transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
                     placeholder="Telefone"
@@ -92,15 +108,52 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="3" >
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
-                <p class="text-label">Previsão de Entrega</p>
+                <p class="text-label"><span class="required">*</span> Transportadora</p>
+                <vs-select
+                    v-model="form.carrier"
+                >
+                    <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in carriers" />
+                </vs-select>
+            </div>
+        </vs-col>
+        
+
+
+
+        <vs-col vs-w="4" >
+            <div class="form_item width_90">
+                <p class="text-label">Tipo de frete redespacho</p>
+                <vs-select
+                    v-model="form.frete_redispatch"
+                >
+                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in frete" />
+                </vs-select>
+            </div>
+        </vs-col>
+
+        <vs-col vs-w="4" >
+            <div class="form_item width_90">
+                <p class="text-label">Telefone transportadora redespacho</p>
                 <vs-input
                     class="mb-3 mt-2"
-                    placeholder="Data da previsão de entrega "
-                    v-model="form.delivery_date"
-                    v-mask="'##/##/####'"
+                    placeholder="Telefone"
+                    v-model="form.phone_redispatch"
+                    v-mask="'(##) #####-####'"
+
                 />
+            </div>
+        </vs-col>
+
+        <vs-col vs-w="4" >
+            <div class="form_item width_90">
+                <p class="text-label">Transportadora redespacho</p>
+                <vs-select
+                    v-model="form.carrier_redispatch"
+                >
+                    <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in carriers" />
+                </vs-select>
             </div>
         </vs-col>
         
@@ -141,7 +194,15 @@ export default {
     directives: {mask},
 
     name: "SaleComponent",
+
     props:{
+
+        carriers:{
+            type: Array,
+            default(rawProps) {
+                return []
+            }
+        },
 
         products:{
             type: Array,
@@ -151,6 +212,13 @@ export default {
         },
 
         payment_methods:{
+            type: Array,
+            default(rawProps) {
+                return []
+            }
+        },
+
+        payment_terms:{
             type: Array,
             default(rawProps) {
                 return []
@@ -188,7 +256,9 @@ export default {
                 table_price: null,
                 shipping: null,
                 observation: null,
-                delivery_date: null
+                delivery_date: null,
+                payment_term: null,
+                carrier: null,
             },
 
             frete: [
@@ -268,7 +338,8 @@ export default {
         validation(){
 
             if(
-                !this.form.company || !this.form.frete || !this.form.payment_method  || !this.form.table_price
+                    !this.form.company || !this.form.frete || !this.form.payment_method  || !this.form.table_price
+                ||  !this.form.payment_term || !this.form.carrier
             ){
                 this.filds = true
                 return false

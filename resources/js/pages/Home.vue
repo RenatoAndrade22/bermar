@@ -35,6 +35,25 @@
                                 Buscar dados na API
                             </vs-button>
                             <h3 class="mt-3" v-if="message_external_import">{{ message_external_import }}</h3>
+
+                            <div class="product_integration">
+                                <p v-for="(p, i) in product_integration" :key="i">
+                                    Importar produtos do grupo: {{ p.code_integration }} <span @click="delelteIntegration(p.id)">x</span>
+                                </p>
+                                <vs-input
+                                    style="width: 160px !important; float:left;"
+                                    placeholder="Codigo do grupo"
+                                    v-model="group_product"
+                                />
+                                <vs-button 
+                                    size="small" 
+                                    @click="recordIntegration"
+                                    style="float: left;margin-left: 10px;margin-top: 3px;"
+                                >
+                                    Cadastrar
+                                </vs-button>
+                            </div>
+
                         </b-col>
                     </b-row>
                 </div>
@@ -65,11 +84,12 @@ export default {
             financial_total: 0,
             user_type: null,
             url_pdf: null,
-            file: null
+            file: null,
+            group_product: null,
+            product_integration: []
         }
     },
     methods:{
-
         getDataApi(){
 
             this.$vs.loading({
@@ -113,6 +133,13 @@ export default {
         getApiPaymentTerms(){
             this.message_external_import = 'Importando tipos de pagamento'
             axios.get('/api/payment-terms-api-external').then((resp)=>{
+                this.getApiCarriers()
+            })
+        },
+
+        getApiCarriers(){
+            this.message_external_import = 'Importando transportadoras'
+            axios.get('/api/carriers-api-external').then((resp)=>{
                 this.message_external_import = null
                 this.$vs.loading.close("#home_dashboard > .con-vs-loading")
             })
@@ -155,9 +182,31 @@ export default {
             })
         },
 
+        getIntegrationProduct(){
+            axios.get('/api/integration_product').then((resp)=>{
+                this.product_integration = resp.data
+            })
+        },
+
+        delelteIntegration(id){
+            axios.delete('/api/integration_product/'+id).then((data)=>{
+                this.getIntegrationProduct()
+            })
+        },
+
+        recordIntegration(){
+            if(this.group_product){
+                axios.post('/api/integration_product', {code_integration:this.group_product}).then((data)=>{
+                    this.group_product = null
+                    this.getIntegrationProduct()
+                })
+            }
+        },
+        
     },
 
     created(){
+        this.getIntegrationProduct()
         this.getTotal()
         this.getCatalog()
         if (localStorage.user) {
@@ -175,6 +224,21 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
+    .product_integration{
+        margin-top: 35px;
+    }
+    .product_integration p{
+        margin: 0;
+        border: 1px solid #efeeee;
+        margin-bottom: 5px;
+        padding: 5px 12px 5px 5px;
+    }
+
+    .product_integration p span{
+        color: red;
+        float: right;
+        cursor: pointer;
+    }
 </style>

@@ -4,7 +4,9 @@
 
             <Form
                 :table_prices="table_prices"
+                :payment_terms="payment_terms"
                 :payment_methods="payment_methods"
+                :carriers="carriers"
                 v-if="step == 0"
                 @send="nextStep"
              />
@@ -46,6 +48,13 @@ export default {
             }
         },
 
+        carriers:{
+            type: Array,
+            default(rawProps) {
+                return []
+            }
+        },
+
         table_prices:{
             type: Array,
             default(rawProps) {
@@ -59,6 +68,13 @@ export default {
                 return []
             }
         },
+
+        payment_terms:{
+            type: Array,
+            default(rawProps) {
+                return []
+            }
+        }
 
     },
     data(){

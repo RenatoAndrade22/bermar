@@ -9,5 +9,8 @@ use Illuminate\Http\Request;
 
 class PaymentTermsController extends Controller
 {
-    //
+    public function index() 
+    {
+        return PaymentTerm::select('name', 'code_integration')->get();
+    }
 }

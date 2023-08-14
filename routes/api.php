@@ -18,12 +18,13 @@ use \App\Http\Controllers\API\ChatMessageController;
 use \App\Http\Controllers\API\WarrantyProductController;
 use \App\Http\Controllers\API\BudgetController;
 use \App\Http\Controllers\API\PriceTableController;
-use \App\Http\Controllers\API\getEnterprisesController;
+use \App\Http\Controllers\API\IntegrationProductController;
 use \App\Http\Controllers\API\LinkController;
 use \App\Http\Controllers\API\PaymentMethodController;
 use \App\Http\Controllers\API\CatalogController;
-use \App\Http\Controllers\API\MappingController;
+use \App\Http\Controllers\API\PaymentTermsController;
 use \App\Http\Controllers\API\ExternalApiController;
+use \App\Http\Controllers\API\CarrierController;
 use \App\Http\Controllers\API\PriceController;
 /*
 |--------------------------------------------------------------------------
@@ -94,9 +95,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'links' => LinkController::class,
         'catalog' => CatalogController::class,
         'payment-methods' => PaymentMethodController::class,
-        'sale' => SaleOrderController::class
+        'sale' => SaleOrderController::class,
+        'payment-terms' => PaymentTermsController::class,
+        'carriers' => CarrierController::class,
+        'integration_product' => IntegrationProductController::class
     ]);
-
+    
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
 
     Route::post('update-catalog/{id}', [CatalogController::class, 'updateCatalog']);
@@ -115,6 +119,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('clients-api-external', [ExternalApiController::class, 'allClients']);
     Route::get('payment-method-api-external', [ExternalApiController::class, 'allPaymentMethod']);
     Route::get('payment-terms-api-external', [ExternalApiController::class, 'allPaymentTerms']);
+    Route::get('carriers-api-external', [ExternalApiController::class, 'allCarriers']);
     
     
     Route::get('prices-by-table/{id}', [PriceController::class, 'allPricesByTable']);

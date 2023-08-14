@@ -9,8 +9,10 @@ use App\Models\Product;
 use App\Models\SaleOrderItems;
 use App\Models\Enterprise;
 use App\Models\PaymentMethod;
+use App\Models\PaymentTerm;
 use App\Models\PriceTable;
 use App\Models\Price;
+use App\Models\Carrier;
 use Carbon\Carbon;
 
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +21,7 @@ class SaleOrderController extends Controller
 {
     public function store(Request $request)
     {
-     
+
         $externalApiController = new ExternalApiController();
 
         $table_price = PriceTable::query()->with('prices')->where('id', $request->get('table_price_id'))->first();
@@ -31,6 +33,7 @@ class SaleOrderController extends Controller
             $deliveryDate = $date->toDateString();
         }
         
+        
 
         $sale = new SaleOrder();
         $sale->fill($request->all());
@@ -40,7 +43,25 @@ class SaleOrderController extends Controller
         $sale->status_payment = 1;
         $sale->status_delivery = 1;
         $sale->enterprise_id = $request->get('enterprise_id');
+
+        if($request->get('carrier')){
+            $carrier = Carrier::query()->where('code_integration', $request->get('carrier'))->first();
+            $sale->carrier_id = $carrier->id;
+        }
+
+        if($request->get('carrier_redispatch')){
+            $carrier_redispatch = Carrier::query()->where('code_integration', $request->get('carrier_redispatch'))->first();
+            $sale->carrier_id_redispatch = $carrier_redispatch->id;
+        }
+        
+        $sale->phone_redispatch = $request->get('phone_redispatch');
+        $sale->shipping_type_redispatch = $request->get('shipping_type_redispatch');
+
+        $PaymentTerm = PaymentTerm::query()->where('code_integration', $request->get('payment_term'))->first();
+        $sale->payment_term_id = $PaymentTerm->id;
+
         $sale->saveOrFail();
+
 
         foreach ($request->get('products') as $p) {
             $price = Price::query()
@@ -48,8 +69,7 @@ class SaleOrderController extends Controller
                         ->where('price_table_id', $table_price->id)
                         ->first();
 
-
-            $externalApiController->setProduct($price->product_id, $p['discount'], $p['quantity'], $price->price);
+            $externalApiController->setProduct($price->product_id, $p['discount'], $p['quantity'], $p['total_discount']);
                         
             $item = new SaleOrderItems();
             $item->sale_order_id = $sale->id;
@@ -64,8 +84,20 @@ class SaleOrderController extends Controller
         }
 
         $payment_method = PaymentMethod::find($request->get('payment_method_id'));
+        
+        $enterprise = Enterprise::find($request->get('enterprise_id'));
 
+        $externalApiController->setClient($enterprise->code_integration);
+        $externalApiController->setTypeTransport($request->get('shipping_type'));
         $externalApiController->setReceiptForm($payment_method->code_integration);
+        $externalApiController->setCarrier($request->get('carrier'));
+        $externalApiController->setCarrierRedispatch($request->get('carrier_redispatch'), $request->get('shipping_type_redispatch'));
+        $externalApiController->setPaymentTerm($request->get('payment_term'));
+        $externalApiController->setTablePrice($table_price->code_integration);
+        $externalApiController->setObs($request->get('observation'));
+        $externalApiController->setDeliveryDate($request->get('delivery_date'));
+
+       // $table_price
 
         $external = $externalApiController->saveSaleAPI();
 

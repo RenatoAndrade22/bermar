@@ -11,11 +11,19 @@
                 Painel
             </router-link>
 
+            <!--
             <router-link to="/painel/tabela-de-precos" v-if="[1].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilCube size="20px" class="icon_route" />
                 Tabela de preço
             </router-link>
+            <router-link to="/painel/motodo-de-pagamento" v-if="[1].includes(user_type)">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilTagAlt size="20px" class="icon_route" />
+                Metodos de pagamento
+            </router-link>
+            -->
+            
 
             <router-link to="/painel/produtos" v-if="[1, 2].includes(user_type)">
                 <UilAngleRight size="12px" class="icon_angle" />
@@ -39,12 +47,6 @@
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilTagAlt size="20px" class="icon_route" />
                 Vendas
-            </router-link>
-
-            <router-link to="/painel/motodo-de-pagamento" v-if="[1].includes(user_type)">
-                <UilAngleRight size="12px" class="icon_angle" />
-                <UilTagAlt size="20px" class="icon_route" />
-                Metodos de pagamento
             </router-link>
 
             <router-link to="/painel/empresas" v-if="[1].includes(user_type)">
