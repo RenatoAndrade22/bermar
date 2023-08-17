@@ -539,6 +539,7 @@ export default {
                 scale: 0.6
             })
 
+            console.log('data.form',  data.form)
             // payload
             let sale = {
 
@@ -569,7 +570,8 @@ export default {
 
             }
 
-           
+            console.log('sale',  sale)
+
             axios.post('/api/sale', sale).then((response)=>{
                  
                  //close loading

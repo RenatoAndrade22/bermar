@@ -66,10 +66,8 @@
                 
                 <vs-col vs-w="2" class="p-2">
                     <vs-input
+                        disabled
                         :value="formatCurrency(product.total_discount)"
-                        min="0"
-                        v-model="product.total_discount"
-                        @input="updateTotal(product)"
                     />
                 </vs-col>
             </vs-col>

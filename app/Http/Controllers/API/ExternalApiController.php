@@ -330,8 +330,10 @@ class ExternalApiController extends Controller
 
     public function setCarrierRedispatch($carrier, $type_transport)
     {
-        $this->carrier_redispatch = $carrier;
-        $this->type_transport_redispatch = $type_transport;
+        if($carrier && $type_transport){
+            $this->carrier_redispatch = '"id": '.$carrier.'';
+            $this->type_transport_redispatch = $type_transport;
+        }
     }
 
     public function setClient($client)
@@ -401,7 +403,7 @@ class ExternalApiController extends Controller
             },
             "tipo_frete_transportador_redespacho": "'.$this->type_transport_redispatch.'",
             "transportador_redespacho": {
-                "id": '.$this->carrier_redispatch.'
+                '.$this->carrier_redispatch.'
             },
             "observacao": "'.$this->obs.'",
             "itens": [

@@ -259,6 +259,9 @@ export default {
                 delivery_date: null,
                 payment_term: null,
                 carrier: null,
+                carrier_redispatch: null,
+                phone_redispatch: null,
+                frete_redispatch: null
             },
 
             frete: [
