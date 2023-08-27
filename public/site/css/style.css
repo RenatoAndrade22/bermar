@@ -63,13 +63,29 @@ ul {
     margin: 0;
     padding: 0;
 }
-.menu p{
+
+
+
+.menu p.categories{
+    color: #334862;
+    text-align: left;
+    font-weight: 500;
+    padding-bottom: 4px;
+    margin: 0;
+    margin-top: 10px;
+}
+.menu p.sub_categories{
     color: #334862;
     text-align: left;
     font-weight: 300;
-    border-bottom: 1px solid #efeeee;
     padding-bottom: 4px;
+    margin-bottom: 2px;
+    margin-top: 7px;
+    border-bottom: 1px solid #efeeee;
 }
+
+
+
 .breadcrumb,
 ol {
     margin-bottom: 0 !important;

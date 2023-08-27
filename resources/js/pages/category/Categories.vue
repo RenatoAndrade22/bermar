@@ -15,6 +15,7 @@
         <vs-table stripe :data="list_categories" noDataText="Nenhuma família encontrada." class="header mt-5">
             <template slot="thead">
                 <vs-th> Nome </vs-th>
+                <vs-th> Família pai </vs-th>
                 <vs-th> Produtos </vs-th>
                 <vs-th> Ações </vs-th>
             </template>
@@ -23,6 +24,14 @@
                     <vs-td :data="data[indextr].name">
                         {{ data[indextr].name }}
                     </vs-td>
+
+                    <vs-td :data="data[indextr].category_name">
+                        <div v-if="data[indextr].category_name">
+                            {{ data[indextr].category_name }}
+                        </div>
+                        
+                    </vs-td>
+                   
                     <vs-td :data="data[indextr].products">
                         {{ data[indextr].products.length }}
                     </vs-td>
@@ -55,10 +64,12 @@
                 <span v-if="categ_edit">Editar família</span>    
                 <span v-if="!categ_edit">Cadastrar família</span>
             </h4>
+            
              <vs-row>
                     <vs-col vs-w="12">
+                        <p class="text-label">Nome</p>
+
                         <vs-input
-                            label="Nome"
                             class="mb-3 mt-2"
                             placeholder="Nome da família"
                             v-model="form.name"
@@ -66,12 +77,23 @@
                             danger-text="Esse campo é obrigatório"
                         />
                     </vs-col>
+
+                    <p class="text-label">Família pai</p>
+                    <vs-select
+                        v-model="form.category_id"
+                        autocomplete
+                    >
+                        <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in list_categories" v-if="item.id != categ_edit_id" />
+                    </vs-select>
+
+
                     <vs-col vs-w="12">
-                        <vs-button type="relief" @click="record">
+                        <vs-button type="relief" @click="record" class="mt-4">
                             <span v-if="!categ_edit">Cadastrar</span>
                             <span v-if="categ_edit">Editar</span>
                         </vs-button>
                     </vs-col>
+
              </vs-row>
         </vs-popup>
     </div>
@@ -91,8 +113,10 @@ export default {
             categ_edit : null,
             delete_categ: null,
             list_categories: [],
+            categ_edit_id: null,
             form: {
                 name: null,
+                category_id:null,
                 name_validation: false
             }
         }
@@ -104,13 +128,13 @@ export default {
         },
 
         editItem(id){
-            console.log('categ', this.list_categories, id)
             this.categ_edit = this.$c(this.list_categories).where('id', id).first()
+            this.categ_edit_id = this.categ_edit.id
             this.popup_new = true
             this.form.name = this.categ_edit.name
-
+            this.form.category_id = this.categ_edit.category_id
         },
-
+        
         deleteItem(id){
             this.delete_categ = this.$c(this.list_categories).where('id', id).first()
             if (this.delete_categ.products.length > 0) {
@@ -156,6 +180,7 @@ export default {
           });
         });
         },
+
         record(){
             
             if (this.validation()) {
@@ -166,11 +191,14 @@ export default {
                     this.list_categories = this.$c(this.list_categories).map((item)=>{
                         if (item.id == this.categ_edit.id) {
                             item.name = resp.data.name
+                            item.category_name = resp.data.category_name
+                            item.cetegory = resp.data.cetegory
                         }
                         return item
                     })
                     this.categ_edit = null
                     this.form.name = null
+                    this.form.category_id = null
                     this.list_categories = this.list_categories.items
                     this.popup_new = false
                     this.$vs.notify({
@@ -181,9 +209,11 @@ export default {
                     })
                 }else{
                     axios.post('/api/category', this.form).then((item)=>{
-                    this.list_categories.push({id: item.data.id ,name: item.data.name, products: []})
+                    this.list_categories.push({id: item.data.id ,name: item.data.name,cetegory: item.data.cetegory,category_name: item.data.category_name, products: []})
                     this.popup_new = false
                     this.form.name = null
+                    this.form.category_id = null
+
                     this.$vs.notify({
                             color:'success',
                             title:'Família cadastrada!',
@@ -236,5 +266,12 @@ export default {
 .header_page h3 {
   font-size: 20px;
   font-weight: 600;
+}
+
+.text-label {
+    margin-bottom: 3px;
+    font-weight: 600 !important;
+    color: #000 !important;
+    font-size: 15px !important;
 }
 </style>

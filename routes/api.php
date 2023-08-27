@@ -74,6 +74,8 @@ Route::get('get-companies-state/{type}/{uf}', [\App\Http\Controllers\API\getEnte
 Route::post('login', [\App\Http\Controllers\LoginController::class, 'login']);
 Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);
 
+Route::post('validate-tables', [PriceController::class, 'validateTables']);
+
 
 // PAINEL
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -122,13 +124,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('carriers-api-external', [ExternalApiController::class, 'allCarriers']);
     
     
-    Route::get('prices-by-table/{id}', [PriceController::class, 'allPricesByTable']);
+    Route::post('prices-by-table', [PriceController::class, 'allPricesByTable']);
 
     Route::get('search-enterprise-name/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpj']);
     
     Route::get('enterprise-search/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpjMoreInfo']);
-    
 
+    Route::get('sub-categories', [CategoryController::class, 'subCategories']);
+
+    
 });
 
 //test

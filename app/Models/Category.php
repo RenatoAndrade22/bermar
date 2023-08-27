@@ -12,15 +12,30 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
+        'category_id'
     ];
 
-    protected $with = [
-    ];
+    protected $appends = ['category_name'];
 
     public function products() :HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function cetegory() :BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function categories() :HasMany
+    {
+        return $this->hasMany(Category::class, 'category_id');
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return isset($this->cetegory->name) ? $this->cetegory->name : null;
     }
 
 }

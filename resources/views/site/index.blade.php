@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('content')
-
+ 
 <!--/banner-bottom -->
 
 {{--    <section class="banner-bottom py-5">--}}

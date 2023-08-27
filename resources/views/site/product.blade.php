@@ -102,6 +102,7 @@
                                    
                                 <button type="button" onclick="btnlinks()" class="btn submit mb-4">Comprar</button>
                                 
+                                <p style="color: #000;">* Preço, venda e a entrega é de responsabilidade da Revenda.</p>
                                 
                                 </form>
 

@@ -1,6 +1,6 @@
 <template>
     <div id="product-record">
-        <h1>Cadastrar novo produto</h1>
+        <h1 class="m-4">Cadastrar novo produto</h1>
         <vs-row vs-w="12" style="width: 100% !important; display: block;">
 
             <template v-if="!image">
@@ -649,7 +649,7 @@ export default {
         },
 
         getCategories(){
-            axios.get('/api/category').then((resp)=>{
+            axios.get('/api/sub-categories').then((resp)=>{
                 this.categories = resp.data
             })
         }

@@ -18,6 +18,14 @@ class CategoryController extends Controller
         return Category::query()->with('products')->get();
     }
 
+    public function categoriesSite(){
+        return Category::query()->where('category_id', null)->orderBy('name')->with('categories')->get();
+    }
+
+    public function subCategories(){
+        return Category::query()->where('category_id', '!=', null)->orderBy('name')->with('products')->get();
+    }
+
     /**
      * Show the form for creating a new resource.
      *

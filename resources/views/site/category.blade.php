@@ -22,16 +22,22 @@
         @endif
             <!--/row-->
             <div class="row shop-wthree-info text-center">
-                <div class="col-xl-2 categories">
+                <div class="col-xl-3 categories">
           
                     <div class='menu'>
-                        <p style="font-weight: 600;">Categorias</p>
+                        <p style="font-weight: 600; font-size: 16px; text-align:left;">Categorias</p>
                         @foreach ($categories as $category)
-                            <a href="{{ url('categoria/'.$category['slug']) }}"><p>{{ $category['name'] }}</p></a>
+                            
+                            <a href="{{ url('categoria/'.$category['slug']) }}"><p class="categories">{{ $category['name'] }}</p></a>
+                           
+                            @foreach ($category['categories'] as $sub_categ)
+                                <a href="{{ url('categoria/'.$sub_categ['slug']) }}"><p class="sub_categories">&nbsp&nbsp- {{ $sub_categ['name'] }}</p></a>
+                            @endforeach
+                           
                         @endforeach
                     </div>             
                 </div>
-                <div class="col-xl-10">
+                <div class="col-xl-9">
                     <div class="row" style="    margin-top: -27px;">
                         
                         @if(count($products) == 0)

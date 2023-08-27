@@ -107,7 +107,10 @@ export default {
         },
 
         selectTabePrice(){
-            axios.get("/api/prices-by-table/"+this.form.table_price).then((result) => { 
+
+            let ids = this.$c(this.form.tables).pluck('id').all()
+
+            axios.post("/api/prices-by-table", ids).then((result) => { 
                 this.prices = result.data
              })
 

@@ -34,7 +34,7 @@
         </vs-col>
 
 
-        <vs-col vs-w="6" >
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Metodo de pagamento</p>
 
@@ -46,20 +46,7 @@
             </div>
         </vs-col>
 
-        <vs-col vs-w="6" >
-            <div class="form_item width_90">
-                <p class="text-label"><span class="required">*</span> Tabela de preços</p>
-                <vs-select
-                    v-model="form.table_price"
-                >
-                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in table_prices" />
-                </vs-select>
-            </div>
-        </vs-col>
-
-
-
-        <vs-col vs-w="6" >
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
                 <p class="text-label"><span class="required">*</span> Condição de pagamento</p>
                 <vs-select
@@ -70,7 +57,7 @@
             </div>
         </vs-col>
         
-        <vs-col vs-w="6" >
+        <vs-col vs-w="4" >
             <div class="form_item width_90">
                 <p class="text-label">Previsão de Entrega</p>
                 <vs-input
@@ -97,7 +84,7 @@
 
         <vs-col vs-w="4" >
             <div class="form_item width_90">
-                <p class="text-label"><span class="required">*</span>Telefone transportadora</p>
+                <p class="text-label">Telefone transportadora</p>
                 <vs-input
                     class="mb-3 mt-2"
                     placeholder="Telefone"
@@ -113,6 +100,7 @@
                 <p class="text-label"><span class="required">*</span> Transportadora</p>
                 <vs-select
                     v-model="form.carrier"
+                    autocomplete
                 >
                     <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in carriers" />
                 </vs-select>
@@ -151,9 +139,27 @@
                 <p class="text-label">Transportadora redespacho</p>
                 <vs-select
                     v-model="form.carrier_redispatch"
+                    autocomplete
                 >
                     <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in carriers" />
                 </vs-select>
+            </div>
+        </vs-col>
+
+        <vs-col vs-w="12" >
+            <div class="form_item width_90">
+                <p class="text-label"><span class="required">*</span> Tabela de preços</p>
+                <vs-select
+                    @input="tableSelected"
+                    v-model="form.table_price"
+                >
+                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in table_prices" />
+                </vs-select>
+            </div>
+            <div class="tables">
+                <div class="selected" v-for="(t, i) in form.tables" :key="i">
+                    <p>{{ t.name }} <span @click="deleteItemTable(t.id)">x</span></p>
+                </div>
             </div>
         </vs-col>
         
@@ -164,10 +170,17 @@
                 <vs-textarea v-model="form.observation" style="height: 110px;" />
             </div>
         </vs-col>
-        
-        <vs-col vs-w="12" >
-            <span class="error" v-if="filds">* Preencha todos os campos obrigatórios</span>
 
+        <vs-col vs-w="12" v-if="error">
+            <span class="error" v-if="error">{{ error }}</span>
+
+            <div class="duplicate">
+                <p v-for="(p, i) in duplicate_products" :key="i" >{{ p.name_product }}</p>
+            </div>
+
+        </vs-col>
+
+        <vs-col vs-w="12" >
             <Button 
                 v-model="active" 
                 id_loadding="cadastro_venda" 
@@ -176,7 +189,6 @@
                 class="mt-3"
                 style="text-align: right;"
             />
-
         </vs-col>
 
     </div>
@@ -245,8 +257,10 @@ export default {
             active: false,
             error_company: false,
             error_payment: false,
-            filds: false,
+            error: null,
+
             companies: [],
+            duplicate_products: [],
             form:{
                 company_name: null,
                 company: null,
@@ -254,6 +268,7 @@ export default {
                 frete: null,
                 payment_method: null,
                 table_price: null,
+                tables: [],
                 shipping: null,
                 observation: null,
                 delivery_date: null,
@@ -282,6 +297,26 @@ export default {
     },
 
     methods:{
+
+        tableSelected(id){
+            let table = this.$c(this.table_prices).where('id', id).first()
+
+            if(!table)
+                return false
+
+            // Verifica se já existe um item com o mesmo id no array
+            if(this.form.tables.find(item => item.id === table.id))
+                return false
+
+            this.form.tables.push(table)
+
+        },
+
+        deleteItemTable(id){
+            this.form.tables = this.$c(this.form.tables).filter((item)=>{
+                return item.id !== id
+            }).all();
+        },
 
         searcEnterprise(){
 
@@ -331,11 +366,40 @@ export default {
             })
         },
 
-        nextStep(){
-            if(this.validation()){
-                this.filds = false
-                this.$emit('send', this.form)
-            }
+        async nextStep(){
+
+          
+
+            if(!this.validation())
+                return false
+
+            this.error = null
+
+            this.$emit('send', this.form)
+            
+        },
+
+        async validateTables(){
+
+            let i = false
+
+            let ids = this.$c(this.form.tables).pluck('id').all()
+
+            await axios.post('/api/validate-tables', ids).then((resp)=>{
+                if(resp.data.length > 0){
+                    this.error = 'Erro, não é possível selecionar mais de uma tabela que tenha o mesmo produto. Os produtos abaixo tem preço nas tabelas selecionadas.'
+                    this.duplicate_products = resp.data
+                }else{
+                    console.log('aq1')
+
+                    this.error = null
+                    this.duplicate_products = []
+                    i = true
+                }
+            })
+
+            return i
+
         },
 
         validation(){
@@ -344,7 +408,7 @@ export default {
                     !this.form.company || !this.form.frete || !this.form.payment_method  || !this.form.table_price
                 ||  !this.form.payment_term || !this.form.carrier
             ){
-                this.filds = true
+                this.error = '* Preencha todos os campos obrigatórios'
                 return false
             }
             
@@ -356,6 +420,25 @@ export default {
 </script>
 
 <style>
+.duplicate p{
+    margin-bottom: 0;
+    margin-top: 5px;
+}
+.selected p{
+    float: left;
+    margin-right: 6px;
+    background: #555;
+    color: #fff !important;
+    padding: 8px 13px;
+    border-radius: 3px;
+}
+.selected p span{
+    cursor: pointer;
+    margin-left: 15px;
+    font-size: 15px;
+}
+
+
 .error{
     color:red;
 }
@@ -382,5 +465,12 @@ export default {
 }
 .list_companie_suggest p:hover{
     background: #efeeee;
+}
+
+.text-label {
+    margin-bottom: 3px;
+    font-weight: 600 !important;
+    color: #000 !important;
+    font-size: 15px !important;
 }
 </style>
