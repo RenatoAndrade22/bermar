@@ -179,6 +179,7 @@ class ExternalApiController extends Controller
 
     }
 
+
     public function allCarriers()
     {
         $data = $this->getDataAPI('transportador?bascod='.env('EXTERNAL_API_BASCOD'));
@@ -207,19 +208,43 @@ class ExternalApiController extends Controller
                     ->select('users.code_integration', 'users.id')
                     ->get();
 
-        $groups_integration = IntegrationProduct::query()->select('code_integration')->get();
-        $colecao = Collection::make($groups_integration);
-
         foreach($sellers as $seller){
 
             $data = $this->getDataAPI('produto?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['produto'] as $product){
-                
-                if ($colecao->contains('code_integration', $product['grupo']['id'])) {
+
                     $product_controller = new ProductController();
-                    $product_controller->saveImportedProduct($product);
-                }
+                    $product_internal = $product_controller->saveImportedProduct($product);
+
+                    if($product['grupo']['id'] == 2){ // verifica se o produto deve ser cadastrado na tabela de preço com o valor de atacado.
+                        $table_price = PriceTable::query()->where('code_integration', $product['grupo']['id'].'-ATACADO')->firstOrNew();
+                        $table_price->name = $product['grupo']['nome'].' - ATACADO';
+                        $table_price->code_integration = $product['grupo']['id'].'-ATACADO';
+                        $table_price->save(); 
+                        
+                        $table_seller = TableSeller::query()
+                                            ->where('user_id', $seller->id)
+                                            ->where('price_table_id', $table_price->id)
+                                            ->firstOrNew();
+                        
+                        $table_seller->user_id = $seller->id;
+                        $table_seller->price_table_id = $table_price->id;
+                        $table_seller->save();
+                        
+                        // salva o preço
+                        $price = Price::query()
+                            ->where('product_id', $product_internal->id)
+                            ->where('price_table_id', $table_price->id)
+                            ->firstOrNew();
+
+                        $price->price          =  $product['precoAtacado'];
+                        $price->price_table_id =  $table_price->id;
+                        $price->product_id     =  $product_internal->id;
+                        $price->save();
+
+                    }
+                
             }
 
         }
