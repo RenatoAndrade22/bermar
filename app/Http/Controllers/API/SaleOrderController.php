@@ -49,6 +49,11 @@ class SaleOrderController extends Controller
             $sale->value_NF = $value_NF;
         }
 
+        if($request->get('volume')){
+            $volume = str_replace(',', '.', $request->get('volume'));
+            $sale->volume = $volume;
+        }
+
         if($request->get('carrier')){
             $carrier = Carrier::query()->where('code_integration', $request->get('carrier'))->first();
             $sale->carrier_id = $carrier->id;

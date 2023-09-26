@@ -164,11 +164,21 @@
         </vs-col>
         
         
-        <vs-col vs-w="12" >
-            <div>
+        <vs-col vs-w="6" >
+            <div class="form_item width_90">
                 <p class="text-label">Valor da NF</p>
                 <vs-input
                     v-model="form.value_nf"
+                    v-money="money"
+                />
+            </div>
+        </vs-col>
+
+        <vs-col vs-w="6" >
+            <div class="form_item">
+                <p class="text-label">Volume de produtos</p>
+                <vs-input
+                    v-model="form.volume"
                     v-money="money"
                 />
             </div>
@@ -288,7 +298,8 @@ export default {
                 carrier_redispatch: null,
                 phone_redispatch: null,
                 frete_redispatch: null,
-                value_nf: 0
+                value_nf: 0,
+                volume: 0,
             },
 
             money: {

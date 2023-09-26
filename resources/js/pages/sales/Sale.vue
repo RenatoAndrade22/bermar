@@ -114,7 +114,7 @@
                             </vs-col>
                             <vs-col vs-w="3" >
                                 <p>&nbsp; </p>
-                                <p>Frete: <span>{{ sale_pdf.shipping_type }}</span></p>
+                                <p>Frete: <span>{{ sale_pdf.shipping_type }}</span> &nbsp; &nbsp; &nbsp; &nbsp;  Qtd. volumes: <span>{{ sale_pdf.volume }}</span></p>
                             </vs-col>
                             <vs-col vs-w="3" >
                                 <p>&nbsp; </p>
@@ -702,7 +702,8 @@ export default {
 
                 "products": data.products,
                 "table_price_id": data.form.table_price,
-                "value_NF": data.form.value_nf
+                "value_NF": data.form.value_nf,
+                "volume": data.form.volume,
 
             }
 

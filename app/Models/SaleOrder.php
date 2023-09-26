@@ -28,7 +28,8 @@ class SaleOrder extends Model
         'shipping_type_redispatch',
         'carrier_id_redispatch',
         'payment_term_id',
-        'value_NF'
+        'value_NF',
+        'volume'
     ];
 
     protected $with = [
