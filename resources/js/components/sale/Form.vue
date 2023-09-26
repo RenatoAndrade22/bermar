@@ -163,7 +163,17 @@
             </div>
         </vs-col>
         
-
+        
+        <vs-col vs-w="12" >
+            <div>
+                <p class="text-label">Valor da NF</p>
+                <vs-input
+                    v-model="form.value_nf"
+                    v-money="money"
+                />
+            </div>
+        </vs-col>
+        
         <vs-col vs-w="12" >
             <div>
                 <p class="text-label">Observação</p>
@@ -199,11 +209,12 @@
 
 import Button from '../../components/ButtonLoadding'
 import {mask} from 'vue-the-mask'
+import {VMoney} from 'v-money'
 
 export default {
 
     components: { Button },
-    directives: {mask},
+    directives: {mask, money: VMoney},
 
     name: "SaleComponent",
 
@@ -276,7 +287,15 @@ export default {
                 carrier: null,
                 carrier_redispatch: null,
                 phone_redispatch: null,
-                frete_redispatch: null
+                frete_redispatch: null,
+                value_nf: 0
+            },
+
+            money: {
+                decimal: ',',
+                thousands: '.',
+                precision: 2,
+                masked: false /* doesn't work with directive */
             },
 
             frete: [

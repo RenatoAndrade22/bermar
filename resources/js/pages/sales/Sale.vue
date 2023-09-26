@@ -18,8 +18,8 @@
             </vs-button>
             
         </vs-navbar>
-        
-        <VueHtml2pdf
+
+    <VueHtml2pdf
                 :show-layout="false"
                 :float-layout="true"
                 :enable-download="true"
@@ -33,17 +33,34 @@
                 pdf-content-width="100%"
                 ref="html2Pdf"
             >
+
+
+        
                 <section slot="pdf-content">
                     
                     <div class="pdf_sale" v-if="sale_pdf">
-                        <vs-row style="margin-bottom: 50px;">
-                            <img src="/images/logo.png" width="160">
-                        </vs-row >
-                        <h1>Venda</h1>
-
-                
                         <vs-row class="header_pdf">
-                            <vs-col vs-w="6" >
+
+                            <vs-col vs-w="2" >
+                                <img src="/images/logo.png" style="width:100%; padding-right: 25px;">
+                            </vs-col>
+
+                            <vs-col vs-w="2" >
+                                <p>N° do Pedido: <span>{{ sale_pdf.id }}</span></p>
+                            </vs-col>
+
+                            <vs-col vs-w="5" >
+                                <h4 style="font-size: 16px;margin: 0;font-weight: 600;">Pedido de venda</h4>
+                                <p style="margin: 0;">Empresa: <span>0101 BERMAR INDUSTRIA E COMERCIO LTDA</span></p>
+                                <p style="margin: 0;">Filial: <span>1 BERMAR INDUSTRIA E COMERCIO LTDA</span></p>
+                            </vs-col>
+
+                            <vs-col vs-w="3" >
+                                <p style="margin: 0;">Data: <span>{{ sale_pdf.CreatedAtBr }}</span></p>
+                                <p>Prevs. entrega: <span>{{ sale_pdf.deliveryDateBr }}</span></p>
+                            </vs-col>
+<!--
+ <vs-col vs-w="5" >
                                 <p>Número Pedido: <span>{{ sale_pdf.id }}</span></p>
                                 <p>Data emissão: <span>{{ dateFormat(sale_pdf.created_at) }}</span></p>
                                 <p>Razão Social: <span>{{ sale_pdf.enterprise.name }}</span></p>
@@ -51,7 +68,8 @@
                                 <p v-if="sale_pdf.enterprise.address.length > 0">Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}, {{ sale_pdf.enterprise.address[0].district }}, {{ sale_pdf.enterprise.address[0].city }} - {{ sale_pdf.enterprise.address[0].state }}</span></p>
                                 <p>Representante: <span>{{ sale_pdf.user.name }}</span></p>
                             </vs-col>
-                            <vs-col vs-w="6" >
+
+                            <vs-col vs-w="5" >
                                 <p>Condição de Pagamento: <span>{{ sale_pdf.name }}</span></p>
                                 <p>Transportadora: <span>{{ sale_pdf.shipping_company }}</span></p>
                                 <p>Tipo de Frete : <span>{{ sale_pdf.shipping_type }}</span></p>
@@ -59,26 +77,129 @@
                                 <p>Previsão de entrega: <span>{{ sale_pdf.created_at }}</span></p>
                                 <p>Observação: <span>{{ sale_pdf.observation }}</span></p>
                             </vs-col>
+
+--> 
+                           
                         </vs-row>
-              
-                        
-                        <vs-row class="mt-2 mb-5">
-                            <vs-col vs-w="12" >
-                                <div class="product_pdf" v-for="(p, i) in sale_pdf.sale_order_items">
-                                    <p>Produto: <span>{{p.product.name}}</span></p>
-                                    <p>Código do produto: <span>{{ p.id }}</span>   |   Quantidade: <span>{{p.quantity}}</span>  |   Total sem desconto: <span>{{ formatCurrency(calcPriceProduct(p.quantity, p.discount_percentage, p.total)) }}</span>  |   Porcentagem de desconto: <span>{{p.discount_percentage}}</span>   |    Total com desconto: <span>{{ formatCurrency(p.total) }}</span></p>
-                                </div>
+                        <vs-row class="mt-2">
+                            <vs-col vs-w="6" >
+                                <p style="margin: 0;">{{ sale_pdf.enterprise.code_integration }} {{ sale_pdf.enterprise.name }}</p>
+
+                                <template v-if="sale_pdf.enterprise.address.length > 0">
+                                    <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}</span></p>
+                                    <p>Bairro: <span>{{ sale_pdf.enterprise.address[0].district }}</span></p>
+                                </template>
+                            </vs-col>
+                            <vs-col vs-w="3" >
+
+                                <p>CNPJ: <span>{{ cnpj(sale_pdf.enterprise.cnpj) }}</span></p>
+
+                                <template v-if="sale_pdf.enterprise.address.length > 0">
+                                    <p>Complemento: <span>{{ sale_pdf.enterprise.address[0].complement }}</span></p>
+                                    <p>Cidade: <span>{{ sale_pdf.enterprise.address[0].state }}</span> | CEP: <span>{{ sale_pdf.enterprise.address[0].zipcode }}</span> </p>
+                                </template>
+                               
+                            </vs-col>
+                            <vs-col vs-w="3" >
+                                <p>Telefone: <span>{{ sale_pdf.enterprise.phone }}</span></p>
+                                <template v-if="sale_pdf.enterprise.address.length > 0">
+                                    <p>Complemento: <span>{{ sale_pdf.enterprise.address[0].complement }}</span></p>
+                                </template>
+                            </vs-col>
+
+                            <vs-col vs-w="6" >
+                                <p>Vendedor: <span>{{ sale_pdf.user.code_integration }} {{ sale_pdf.user.name }}</span></p>
+                                <p>Transportador: <span>{{ sale_pdf.carrier.code_integration }} {{ sale_pdf.carrier.name }}</span></p>
+                                <p>T. redespacho: <span>{{ sale_pdf.shipping_type_redispatch }}</span></p>
+                            </vs-col>
+                            <vs-col vs-w="3" >
+                                <p>&nbsp; </p>
+                                <p>Frete: <span>{{ sale_pdf.shipping_type }}</span></p>
+                            </vs-col>
+                            <vs-col vs-w="3" >
+                                <p>&nbsp; </p>
+                                <p>Valor cobrado na NF: <span>{{ sale_pdf.value_NF }}</span></p>
                             </vs-col>
                         </vs-row>
+
+
+
+                        <vs-table
+                        :data="sale_pdf.sale_order_items"
+                        id="list-products"
+                    >
+                        <template slot="thead">
+                            <vs-th>
+                                Produto
+                            </vs-th>
+            
+                            <vs-th>
+                                Quantidade
+                            </vs-th>
+                            
+                            <vs-th>
+                                Vl. Unitário
+                            </vs-th>
+
+                            <vs-th>
+                                Porcentagem de desconto
+                            </vs-th>
+
+                            <vs-th>
+                                Total do produto
+                            </vs-th>
+
+                        </template>
+            
+                        <template slot-scope="{data}">
+                            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" >
+
+                                <vs-td :data="data[indextr].product.name">
+                                    {{data[indextr].product.integration_code}} &nbsp;&nbsp; {{data[indextr].product.name}}
+                                </vs-td>
+
+                                <vs-td :data="data[indextr].quantity">
+                                    {{data[indextr].quantity}}
+                                </vs-td>
+
+                                <vs-td :data="data[indextr].quantity">
+                                    {{ formatCurrency(data[indextr].price) }}
+                                </vs-td>
+
+                                <vs-td :data="data[indextr].discount_percentage">
+                                    {{data[indextr].discount_percentage}}
+                                </vs-td>
+
+                                <vs-td :data="data[indextr].value">
+                                    {{ data[indextr].total }}
+                                </vs-td>
+
+                            </vs-tr>
+                        </template>
+                    </vs-table>
+
+
                         <vs-row>
+                            <vs-col vs-w="4" >
+                                <p v-if="sale_pdf.payment_term">Cond. Recebimento: <span>{{ sale_pdf.payment_term.name }}</span></p>
+                            </vs-col>
+                            <vs-col vs-w="4" >
+                                <p>R$ Desconto: <span>{{ formatCurrency(sale_pdf.valueFull - sale_pdf.value) }}</span></p>
+                            </vs-col>
+                            <vs-col vs-w="4" >
+                                <p>Total do pedido: <span>{{ formatCurrency(sale_pdf.value) }}</span></p>
+                            </vs-col>
                             <vs-col vs-w="12" >
-                                <h1 @click="generateReport">Total do pedido: {{ formatCurrency(sale_pdf.total) }}</h1>
+                                <p>Observações: {{ sale_pdf.observation }}</p>
                             </vs-col>
                         </vs-row>
                     </div>
                 </section>
 
-            </VueHtml2pdf>
+ </VueHtml2pdf> 
+
+
+            
         <vs-table
             stripe
             :data="list_sales"
@@ -142,7 +263,7 @@
                     </vs-td>
 
                     <vs-td :data="data[indextr].total">
-                        {{ formatCurrency(data[indextr].total) }}
+                        {{ formatCurrency(data[indextr].value) }}
                     </vs-td>
 
                     <vs-td :data="data[indextr].enterprise.name">
@@ -303,6 +424,7 @@ import SaleComponent from '../../components/sale/SaleComponent'
 import ButtonComponent from '../../components/ButtonLoadding'
 import {mask} from "vue-the-mask";
 import VueHtml2pdf from 'vue-html2pdf'
+import moment from 'moment';
 
 export default {
     name: "Sales",
@@ -388,8 +510,22 @@ export default {
 
     methods:{
 
-        calcPriceProduct(quantidade, desconto, precoFinal){
-            return (precoFinal / (1 - desconto / 100) / quantidade) * quantidade // preço original por unidade
+        cnpj(cnpj){
+            // Remove todos os caracteres que não são dígitos
+            cnpj = cnpj.replace(/\D/g, '')
+
+            // Verifica se o CNPJ possui 14 dígitos após a remoção dos não numéricos
+            if (cnpj.length !== 14) {
+                return false
+            }
+
+            cnpj = cnpj.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
+
+            return cnpj
+        },
+
+        calcPriceProduct(quantidade, precoFinal){
+            return precoFinal / quantidade// preço original por unidade
         },
 
         dateFormat(data){
@@ -412,7 +548,6 @@ export default {
         },
 
         generateReport () {
-            console.log('ss', this.sale_pdf)
             this.$refs.html2Pdf.generatePdf()
         },
 
@@ -566,7 +701,8 @@ export default {
                 "phone_redispatch": data.form.phone_redispatch,
 
                 "products": data.products,
-                "table_price_id": data.form.table_price
+                "table_price_id": data.form.table_price,
+                "value_NF": data.form.value_nf
 
             }
 
@@ -686,15 +822,8 @@ export default {
             }
 
             axios.get('/api/'+url).then((resp)=>{
-                this.sales = this.$c(resp.data).map((sale)=>{
-
-                    this.$c(sale.sale_order_items).each((s)=>{
-                        sale.total = sale.total ? sale.total : 0
-                        sale.total = (parseFloat(sale.total) + parseFloat(s.total))
-                    })
-                    return sale
-                })
-                this.sales = this.sales.items
+                
+                this.sales = resp.data
             })
         },
 
@@ -858,6 +987,18 @@ export default {
     }
 </style>
 <style>
+    #list-products{
+        margin: 10px 0;
+    }
+    #list-products th{
+        padding: 0px !important;
+        padding-right: 10px !important;
+    }
+    #list-products td{
+        padding: 0px !important;
+        padding-right: 10px !important;
+        border-bottom: 1px solid #777;
+    }
     .pdf_sale{
         width: 100%;
         padding: 50px;
@@ -866,10 +1007,13 @@ export default {
         background: #fff;
     }
     .pdf_sale p{
+        color: #000 !important;
+        margin: 0;
         font-weight: 600 !important;
         font-size: 12px !important;
     }
     .pdf_sale p span{
+        color: #000 !important;
         font-weight: 300;
     }
     .product_pdf{

@@ -44,6 +44,11 @@ class SaleOrderController extends Controller
         $sale->status_delivery = 1;
         $sale->enterprise_id = $request->get('enterprise_id');
 
+        if($request->get('value_NF')){
+            $value_NF = str_replace(',', '.', $request->get('value_NF'));
+            $sale->value_NF = $value_NF;
+        }
+
         if($request->get('carrier')){
             $carrier = Carrier::query()->where('code_integration', $request->get('carrier'))->first();
             $sale->carrier_id = $carrier->id;
@@ -133,9 +138,6 @@ class SaleOrderController extends Controller
         ->orderByDesc('id')
         ->get();
         return $saleOrders;
-        //->join('enterprises as e1', 'sale_orders.enterprise_id', '=', 'e1.id')
-        //->join('enterprises as e2', 'e1.enterprise_id', '=', 'e2.id')
-        //['sale_orders.*', 'e1.name as enterprise_name', 'e2.name as creator_name']
     }
 
     public function getSaleOrderByUser()

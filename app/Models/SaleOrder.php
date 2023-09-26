@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
 
 class SaleOrder extends Model
 {
@@ -26,7 +27,8 @@ class SaleOrder extends Model
         'phone_redispatch',
         'shipping_type_redispatch',
         'carrier_id_redispatch',
-        'payment_term_id'
+        'payment_term_id',
+        'value_NF'
     ];
 
     protected $with = [
@@ -34,7 +36,40 @@ class SaleOrder extends Model
         'enterprise',
         'saleOrderItems',
         'invoices',
+        'carrier',
+        'paymentTerm'
     ];
+
+    protected $appends = ['CreatedAtBr', 'deliveryDateBr', 'valueFull', 'value'];
+
+    public function getValueFullAttribute(){
+        $items = $this->saleOrderItems->sum('total');
+        return $items;
+    }
+
+    public function getValueAttribute(){
+        $items = $this->saleOrderItems->sum((function ($item) {
+            return $item->quantity * $item->price; 
+        }));
+        return $items;
+    }
+
+    public function getCreatedAtBrAttribute()
+    {
+        return $this->created_at->format('d/m/Y H:i:s'); // Formata a data no formato brasileiro
+    }
+
+    public function getDeliveryDateBrAttribute()
+    {
+        if($this->delivery_date){
+            return Carbon::parse($this->delivery_date)->format('d/m/Y');
+        }
+    }
+
+    public function carrier(): BelongsTo
+    {
+        return $this->belongsTo(Carrier::class);
+    }
 
     public function user(): BelongsTo
     {
@@ -64,6 +99,11 @@ class SaleOrder extends Model
     public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function paymentTerm(): BelongsTo
+    {
+        return $this->belongsTo(PaymentTerm::class);
     }
 
 }
