@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use App\Models\Product;
-use App\Models\Mapping;
+use App\Models\Address;
 use App\Models\PriceTable;
 use App\Models\Price;
 use App\Models\Enterprise;
@@ -95,6 +95,28 @@ class ExternalApiController extends Controller
                         $enterprise->status = 1;
                         $enterprise->code_integration = $client['id'];
                         $enterprise->save();
+
+                        $address = Address::query()->where('enterprise_id', $enterprise->id)->firstOrNew();
+
+                        $rua = '';
+                        $numero = '';
+
+                        if(isset($client['endereco']['endereco'])){
+                            $endereco = explode(',', $client['endereco']['endereco']);
+                        
+                            $rua = isset($endereco[0]) ? $endereco[0] : '';
+                            $numero = isset($endereco[1]) ? $endereco[1] : '';    
+                        }
+                      
+                        $address->enterprise_id = $enterprise->id;
+                        $address->number = $numero;
+                        $address->street = $rua;
+                        $address->district = isset($client['endereco']['bairro']) ? $client['endereco']['bairro'] : '';
+                        $address->zipcode = isset($client['endereco']['cep']) ? $client['endereco']['cep'] : '';
+                        $address->city = isset($client['endereco']['municipio']['nome']) ? $client['endereco']['municipio']['nome'] : '';
+                        $address->state = isset($client['endereco']['municipio']['estado']['uf']) ? $client['endereco']['municipio']['estado']['uf'] : '';
+
+                        $address->save();
 
                         $client_seller = ClientSeller::query()
                                             ->where('user_id', $seller->id)

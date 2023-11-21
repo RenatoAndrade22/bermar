@@ -14,7 +14,7 @@ class UpdateAddressesAddRegion extends Migration
     public function up()
     {
         Schema::table('addresses', function (Blueprint $table) {
-            $table->string('region');
+            $table->string('region')->nullable()->default(null);
         });
     }
 

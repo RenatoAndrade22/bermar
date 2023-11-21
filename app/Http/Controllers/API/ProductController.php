@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\EnterpriseProduct;
 use App\Models\Product;
+use App\Models\Certificate;
 use App\Models\ProductImage;
 use App\Models\Price;
 use Illuminate\Http\Request;
@@ -176,6 +177,20 @@ class ProductController extends Controller
         $product->saveOrFail();
 
         return $product;
+    }
+
+    public function uploadCertificate(Request $request, $id){
+
+        $name = $request->file('file')->getRealPath();
+        $upload = UploadCloudController::upload($name);
+
+        $certificate = new Certificate();
+        $certificate->url = $upload['secure_url'];
+        $certificate->public_id = $upload['public_id'];
+        $certificate->product_id = $id;
+        $certificate->saveOrFail();
+
+        return $certificate;
     }
 
 }

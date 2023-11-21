@@ -48,11 +48,11 @@
 
         <vs-col vs-w="4" >
             <div class="form_item width_90">
-                <p class="text-label"><span class="required">*</span> Condição de pagamento</p>
+                <p class="text-label"><span class="required">*</span> Condição de pagamento {{ form.payment_term }}</p>
                 <vs-select
                     v-model="form.payment_term"
                 >
-                    <vs-select-item :key="index" :value="item.code_integration" :text="item.name" v-for="item,index in payment_terms" />
+                    <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in payment_terms" />
                 </vs-select>
             </div>
         </vs-col>
@@ -264,6 +264,13 @@ export default {
                 return []
             }
         },
+
+        form_data:{
+            type: Object,
+            default(rawProps) {
+                return {}
+            }
+        },
    
     },
 
@@ -290,6 +297,7 @@ export default {
                 payment_method: null,
                 table_price: null,
                 tables: [],
+                products: [],
                 shipping: null,
                 observation: null,
                 delivery_date: null,
@@ -326,20 +334,26 @@ export default {
         }
     },
 
+    created() {
+        this.form = this.form_data
+    },
+
     methods:{
 
         tableSelected(id){
+
             let table = this.$c(this.table_prices).where('id', id).first()
 
-            if(!table)
+            if(!table){
                 return false
+            }
 
             // Verifica se já existe um item com o mesmo id no array
-            if(this.form.tables.find(item => item.id === table.id))
+            if(this.form.tables.find(item => item.id === table.id)){
                 return false
+            }
 
             this.form.tables.push(table)
-
         },
 
         deleteItemTable(id){
@@ -398,10 +412,9 @@ export default {
 
         async nextStep(){
 
-          
-
-            if(!this.validation())
+            if(!this.validation() && !this.validateTables()){
                 return false
+            }
 
             this.error = null
 

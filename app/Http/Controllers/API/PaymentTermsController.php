@@ -11,6 +11,6 @@ class PaymentTermsController extends Controller
 {
     public function index() 
     {
-        return PaymentTerm::select('name', 'code_integration')->get();
+        return PaymentTerm::select('id', 'name', 'code_integration')->get();
     }
 }

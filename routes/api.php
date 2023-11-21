@@ -51,6 +51,7 @@ Route::resources([
 
 Route::post('/upload/{id}', [ProductImageController::class, 'store']);
 Route::post('/upload-manual/{id}', [ProductController::class, 'uploadManual']);
+Route::post('/upload-certificate/{id}', [ProductController::class, 'uploadCertificate']);
 Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);
@@ -105,6 +106,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
 
+    Route::get('sale-all-info/{id}', [SaleOrderController::class, 'saleAllInfo']);
+
     Route::post('update-catalog/{id}', [CatalogController::class, 'updateCatalog']);
 
     Route::get('enterprises-type/{type}', [EnterpriseController::class, 'getEnterpriseType']);
@@ -124,6 +127,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('carriers-api-external', [ExternalApiController::class, 'allCarriers']);
     
     
+    Route::post('approve-sale/{id}', [SaleOrderController::class, 'approveSale']);
     Route::post('prices-by-table', [PriceController::class, 'allPricesByTable']);
 
     Route::get('search-enterprise-name/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpj']);

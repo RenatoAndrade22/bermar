@@ -13,7 +13,7 @@
                 v-model="search_cnpj"
                 v-mask="'##.###.###/####-##'"
             />
-            <vs-button type="relief" @click="popup_new = true">
+            <vs-button type="relief" @click="[popup_new = true, sale_edit_id = null]">
                 Cadastrar nova venda
             </vs-button>
             
@@ -86,7 +86,7 @@
                                 <p style="margin: 0;">{{ sale_pdf.enterprise.code_integration }} {{ sale_pdf.enterprise.name }}</p>
 
                                 <template v-if="sale_pdf.enterprise.address.length > 0">
-                                    <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}</span></p>
+                                    <p>Endereço: <span>{{ sale_pdf.enterprise.address[0].street }}, {{ sale_pdf.enterprise.address[0].number }}</span></p>
                                     <p>Bairro: <span>{{ sale_pdf.enterprise.address[0].district }}</span></p>
                                 </template>
                             </vs-col>
@@ -96,7 +96,7 @@
 
                                 <template v-if="sale_pdf.enterprise.address.length > 0">
                                     <p>Complemento: <span>{{ sale_pdf.enterprise.address[0].complement }}</span></p>
-                                    <p>Cidade: <span>{{ sale_pdf.enterprise.address[0].state }}</span> | CEP: <span>{{ sale_pdf.enterprise.address[0].zipcode }}</span> </p>
+                                    <p>Cidade: <span>{{ sale_pdf.enterprise.address[0].city }}</span> &nbsp;&nbsp; | &nbsp;&nbsp; CEP: <span>{{ sale_pdf.enterprise.address[0].zipcode }}</span> </p>
                                 </template>
                                
                             </vs-col>
@@ -116,6 +116,7 @@
                                 <p>&nbsp; </p>
                                 <p>Frete: <span>{{ sale_pdf.shipping_type }}</span> &nbsp; &nbsp; &nbsp; &nbsp;  Qtd. volumes: <span>{{ sale_pdf.volume }}</span></p>
                             </vs-col>
+                            
                             <vs-col vs-w="3" >
                                 <p>&nbsp; </p>
                                 <p>Valor cobrado na NF: <span>{{ sale_pdf.value_NF }}</span></p>
@@ -253,6 +254,10 @@
                 <vs-th>
                     PDF
                 </vs-th>
+
+                <vs-th>
+                    #
+                </vs-th>
                 
             </template>
 
@@ -315,9 +320,17 @@
                         <vs-button @click="statusOpen(data[indextr].status, data[indextr].id)" color="danger" v-if="data[indextr].status == 2" type="flat">Pendente</vs-button>
                     </vs-td>
 
-                    <vs-button type="relief" @click="pdfGenerate(data[indextr])">
+                    <vs-td>
+                        <vs-button type="relief" @click="pdfGenerate(data[indextr])">
                             <span>Baixar</span>
-                    </vs-button>
+                        </vs-button>
+                    </vs-td>
+                    
+                    <vs-td>
+                        <vs-button type="relief" @click="editSale(data[indextr])">
+                            <span>Editar</span>
+                        </vs-button>
+                    </vs-td>
 
                 </vs-tr>
             </template>
@@ -357,6 +370,7 @@
                 :payment_methods="payment_methods" 
                 :table_prices="table_prices"
                 :carriers="carriers"
+                :sale_edit="sale_edit"
                 @products_sale="addSale"
                 v-if="popup_new"
             />
@@ -504,11 +518,22 @@ export default {
             assistances: [],
             users: [],
             payment_terms: [],
-            carriers: []
+            carriers: [],
+            sale_edit: {},
+            sale_edit_id: null,
         }
     },
 
     methods:{
+
+        editSale(s){
+           this.sale_edit_id = s.id
+            axios.get('/api/sale-all-info/'+s.id).then((resp)=>{
+                this.sale_edit = resp.data
+                this.popup_new = true
+
+            })
+        },
 
         cnpj(cnpj){
             // Remove todos os caracteres que não são dígitos
@@ -551,6 +576,8 @@ export default {
             this.$refs.html2Pdf.generatePdf()
         },
 
+        
+
         pdfGenerate(s){
             this.sale_pdf = s
             this.generateReport()
@@ -563,12 +590,42 @@ export default {
         },
 
         updateStatus(){
+
             this.active_load = true
-            axios.put('/api/sale-order/'+this.update_status_id, {status:this.update_status_value}).then((data)=>{
-                this.update_status = false
-                this.active_load = false
-                this.getSaleOrders()
-            })
+            axios.post('/api/approve-sale/'+this.update_status_id, {
+                status: this.update_status_value,
+            }).then((data)=>{
+
+                if(data.data != "error"){
+                    this.update_status = false
+                    this.active_load = false
+                    this.$vs.notify({
+                        color:'success',
+                        title:'Venda cadastrada com sucesso!',
+                        text:''
+                    })
+                    this.getSaleOrders()
+                }else{
+                    // Erro na solicitação
+                    this.update_status = false;
+                    this.active_load = false;
+                    this.$vs.notify({
+                        color: 'danger',
+                        title: 'Erro ao cadastrar a venda.',
+                        text: '' 
+                    });
+                }
+                
+            }).catch((error) => {
+                // Erro na solicitação
+                this.update_status = false;
+                this.active_load = false;
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao cadastrar a venda.',
+                    text: '' 
+                });
+            });
         },
 
         getAssitences(){
@@ -688,7 +745,7 @@ export default {
 
                 "delivery_date": data.form.delivery_date,
                 "observation": data.form.observation,
-                "status": 1,
+                "status": 2,
                 "payment_term": data.form.payment_term,
 
 
@@ -704,10 +761,9 @@ export default {
                 "table_price_id": data.form.table_price,
                 "value_NF": data.form.value_nf,
                 "volume": data.form.volume,
+                "sale_edit_id": this.sale_edit_id
 
             }
-
-            console.log('sale',  sale)
 
             axios.post('/api/sale', sale).then((response)=>{
                  
@@ -843,6 +899,8 @@ export default {
                 this.payment_terms = resp.data
             })
         },
+
+        
 
         getCarriers(){
             axios.get('/api/carriers').then((resp)=>{

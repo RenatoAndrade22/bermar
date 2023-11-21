@@ -28,7 +28,7 @@
                 </vs-col>
 
                 <vs-col vs-w="2" class="p-2">
-                    % de desconto
+                    % Desconto
                 </vs-col>
                 
                 <vs-col vs-w="2" class="p-2">
@@ -82,11 +82,15 @@
                 </vs-col>
                 <vs-col vs-w="6">
                     <div v-if="!confirm">
-                        <vs-button class="float-end mb-2" color="primary" @click="confirm = !confirm" type="filled">Cadastrar</vs-button>
+                        <vs-button class="float-end mb-2" color="primary" @click="confirm = !confirm" type="filled">
+                            Salvar
+                        </vs-button>
+                        <vs-button style="margin-right: 15px;" class="float-end mb-2"  color="danger" @click="backStep" type="filled">Voltar</vs-button>
                     </div>
                     <div v-if="confirm">
                         <vs-button class="float-end mb-2"  color="danger" @click="confirm = !confirm" type="filled">Cancelar</vs-button>
                         <vs-button @click="record" style="margin-right: 15px;" class="float-end mb-2"  color="success" type="filled">Confirmar venda</vs-button>
+                        <vs-button style="margin-right: 15px;" class="float-end mb-2"  color="danger" @click="backStep" type="filled">Voltar</vs-button>
                     </div>
                 </vs-col> 
             </vs-row>
@@ -108,6 +112,12 @@ export default {
 
     props:{
         products:{
+            type: Array,
+            default(rawProps) {
+                return []
+            }
+        },
+        products_edit:{
             type: Array,
             default(rawProps) {
                 return []
@@ -141,13 +151,21 @@ export default {
             table_price: null,
             table_price_id: null,
             list_products: [],
+            edit: false,
+        }
+    },
+
+    created() {
+        if(this.products_edit.length > 0){
+            this.list_products = this.products_edit
+            this.edit = true
         }
     },
 
     methods:{
 
         selectName(product) {
-            
+
             let p = this.$c(this.table_prices).where('product_id', product.product_id).first()
             
             p.quantity = 0
@@ -218,6 +236,10 @@ export default {
             }).all()
 
             this.$emit('products_sale', {products: products})
+        },
+
+        backStep(){
+            this.$emit('back_step', this.list_products)
         }
 
     },

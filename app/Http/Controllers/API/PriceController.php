@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class PriceController extends Controller
 {
+
     public function allPricesByTable(Request $request)
     {
         $prices = Price::query()
@@ -15,11 +16,14 @@ class PriceController extends Controller
             ->get();
 
         $prices = collect($prices)->map(function($p){
+
             return [
+                'price_table_id' => $p['price_table_id'],
                 'name_product' => $p['name_product'],
                 'product_id' => $p['product_id'],
                 'price' => $p['price']
             ];
+            
         });
 
         return $prices;
@@ -37,4 +41,5 @@ class PriceController extends Controller
         return $prices;
 
     }
+
 }

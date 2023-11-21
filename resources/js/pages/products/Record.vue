@@ -157,6 +157,9 @@
                     </div>
                 </vs-col>
 
+                
+
+
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <hr class="divisor" />
                 </vs-col>
@@ -215,6 +218,19 @@
                     </div>
                 </vs-col>
 
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Cubagem</p>
+                        <vs-input
+                            v-if="money_active"
+                            placeholder="Cubagem"
+                            v-model="form.cubagem"
+                            v-money="money"
+                            masked
+                        />
+                    </div>
+                </vs-col>
+
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <hr class="divisor" />
                 </vs-col>
@@ -266,6 +282,24 @@
                         <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
                     </div>
                 </div>
+
+                <div class="manual">
+                    <hr />
+                    <h3>Upload do Certificado</h3>
+                    <div class="centerx">
+                        <div class="con-input-upload">
+                            <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addCertificate" />
+                            <span class="text-input"> Clique aqui </span>
+                            <span class="input-progress" style="width: 0%;"></span>
+                            <button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload">
+                                <i translate="no" class="material-icons notranslate"> cloud_upload </i>
+                            </button>
+                        </div>
+                        <iframe v-if="url_certificate" :src="url_certificate" height="200" width="200" />
+                        <iframe v-if="form.certificate && !url_certificate" :src="form.certificate" height="200" width="200" />
+                    </div>
+                </div>
+
             </template>
 
             <template v-if="edit">
@@ -294,6 +328,23 @@
                         <div class="con-input-upload"><input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addManual" ><span class="text-input"> Clique aqui </span><span class="input-progress" style="width: 0%;"></span><button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload"><i translate="no" class="material-icons notranslate"> cloud_upload </i></button></div>
                         <iframe v-if="url_manual" :src="url_manual" height="200" width="200" />
                         <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
+                    </div>
+                </div>
+
+                <div class="manual">
+                    <hr />
+                    <h3>Upload do Certificado</h3>
+                    <div class="centerx">
+                        <div class="con-input-upload">
+                            <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addCertificate" />
+                            <span class="text-input"> Clique aqui </span>
+                            <span class="input-progress" style="width: 0%;"></span>
+                            <button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload">
+                                <i translate="no" class="material-icons notranslate"> cloud_upload </i>
+                            </button>
+                        </div>
+                        <iframe v-if="url_certificate" :src="url_certificate" height="200" width="200" />
+                        <iframe v-if="form.certificate && !url_certificate" :src="form.certificate" height="200" width="200" />
                     </div>
                 </div>
                 
@@ -391,7 +442,8 @@ export default {
                 packing_weight: null,
                 packing_length: null,
                 packing_height: null,
-
+                cubagem: null,
+                certificate: null,
 
                 status: 1,
                 category_id: null,
@@ -418,6 +470,7 @@ export default {
                 height: null,
                 height_validation: false,
 
+
                 video: null,
                 video_validation: false,
 
@@ -441,10 +494,31 @@ export default {
                 masked: false /* doesn't work with directive */
             },
             url_manual: null,
+            url_certificate: null,
         }
     },
     directives: {money: VMoney},
     methods:{
+
+        addCertificate(e){
+            let file = e.target.files[0]
+            this.url_certificate = URL.createObjectURL(file)
+            let formData = new FormData()
+
+            formData.append('file', file)
+
+            //loading
+            this.$vs.loading({
+                container: '#product-record',
+                scale: 0.6
+            })
+
+            axios.post('/api/upload-certificate/'+this.form.id, formData).then((data)=>{
+                setTimeout(() => {
+                    this.$vs.loading.close("#product-record > .con-vs-loading");
+                }, 1)
+            })
+        },
 
         addManual(e){
             
@@ -519,6 +593,9 @@ export default {
 
             this.form.packing_height = this.form.packing_height.replace(".", "")
             this.form.packing_height = parseFloat(this.form.packing_height.toString().replace(",", "."))
+
+            this.form.cubagem = this.form.cubagem.replace(".", "")
+            this.form.cubagem = parseFloat(this.form.cubagem.toString().replace(",", "."))
 
             let i = true
 
@@ -631,6 +708,10 @@ export default {
                 this.form.images = data.data.product_images
                 this.form.site_appear = data.data.site_appear
 
+                if(data.data.certificate){
+                    this.form.certificate = data.data.certificate.url
+                }
+
                 this.form.power = data.data.power
                 this.form.voltage = data.data.voltage
 
@@ -638,7 +719,8 @@ export default {
                 this.form.packing_weight = data.data.packing_weight
                 this.form.packing_length = data.data.packing_length
                 this.form.packing_height = data.data.packing_height
-                
+                this.form.cubagem  = data.data.cubagem
+
                 this.money_active = true
 
                 setTimeout(() => {

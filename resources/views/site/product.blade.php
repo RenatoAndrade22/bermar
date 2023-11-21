@@ -45,7 +45,10 @@
                             <button type="button" style="margin: 25px 10px;" onclick="openManual('{{$product['manual']}}')" class="btn btn-danger">Manual</button>
                           @endif
 
-                            
+                          @if($product['certificate'])
+                            <button type="button" style="margin: 25px 10px;" onclick="openManual('{{ $product['certificate']['url'] }}')" class="btn btn-danger">Certificado</button>
+                          @endif
+
                           <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal-text">Ficha Técnica</button>
                         
                         @if ($product['video'])
@@ -113,7 +116,11 @@
                                        <h4 style=margin-bottom: 0;margin-top: 18px;>{{ $key }} </h4>
                                        @foreach ($link as $l)
                                         <div style="margin-bottom: 0; margin-bottom: 0;border-bottom: 2px solid #9999;padding: 10px 0px;">
-                                            <p style="margin-bottom: 0;">{{ $l['enterprise']['name'] }} | {{ $l['enterprise']['phone'] }} <br /> {{ $l['enterprise']['address'][0]['city']}} - {{ $l['enterprise']['address'][0]['state']}} </p>
+                                            <p style="margin-bottom: 0;">{{ $l['enterprise']['name'] }} | {{ $l['enterprise']['phone'] }} <br />
+                                        @if(count($l['enterprise']['address']) > 0)
+                                            {{ $l['enterprise']['address'][0]['city']}} - {{ $l['enterprise']['address'][0]['state']}} 
+                                        @endif
+                                        </p>
                                             <button style="margin: 8px 8px 8px 0px;background: forestgreen;" type="button" onclick="openManual('{{$l['link']}}')" class="btn submit">Loja Virtual</button>
                                         </div>
                                        @endforeach

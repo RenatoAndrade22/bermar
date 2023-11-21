@@ -53,7 +53,8 @@ class ProductSiteController extends Controller
 
 
         $links = collect($product['links'])->map(function($link){
-            $link['region'] = $this->region($link['enterprise']['address'][0]['state']);
+            $state = isset($link['enterprise']['address'][0]['state']) ? $link['enterprise']['address'][0]['state'] : null;
+            $link['region'] = $this->region($state);
             return $link;
         })->groupBy('region')->toArray();
         
