@@ -18,7 +18,7 @@ class Enterprises extends Migration
             $table->string('name');
             $table->unsignedBigInteger('enterprise_type_id');
             $table->string('email')->unique();
-            $table->string('cnpj')->unique();
+            $table->string('cnpj');
             $table->string('phone')->unique();
 
             $table->timestamps();

@@ -1903,21 +1903,41 @@ h3.sub-w3ls-headf {
     color: #666;
 }
 
+#links-pages ul{
+    float: left;
+    width: 100%;
+    padding: 0;
+    margin: 20px 0;
+}
 
+#links-pages li{
+    float: left;
+    margin-right: 12px;
+    cursor:pointer;
+    padding: 1px 8px;
+}
 
+#links-pages .active{
+    background: #efeeee;
+}
 
 #list-representatives{
-  
+    width: 100%;
+    float: left;
 }
 
 #list-representatives ul{
+    margin: 0 !important;
+    padding: 0 !important;
     width: 100%;
     float: left;
 }
 
 #list-representatives ul li{
-    width: 410px;
-    margin: 20px;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 215px;
+    margin-bottom: 15px !important;
     float: left;
     border: 1px solid #efeeee;
     border-radius: 15px;
@@ -1927,6 +1947,7 @@ h3.sub-w3ls-headf {
 }
 
 #list-representatives p{
+    padding: 0px 10px;
     text-align: center;
     font-size: 13px;
 }

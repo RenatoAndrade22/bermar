@@ -3,7 +3,7 @@
         <vs-navbar class="header_page">
             <div slot="title">
                 <vs-navbar-title>
-                    Empresas
+                    Empresas 
                 </vs-navbar-title>
             </div>
    
@@ -80,20 +80,31 @@
 
             <vs-row v-if="!active_upload" vs-w="12" style="width: 100% !important; display: block;" id="company_new">
 
-                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <div class="form_item">
-                        <p class="text-label">Categoria</p>
-                        <vs-select
-                            v-model="form.enterprise_type_id"
-                            :danger="form.enterprise_type_id_validate"
-                            danger-text="Campo obrigatório"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
-                        </vs-select>
+                        <p class="text-label">Categoriasss</p>
+                        <!--
+                            <vs-select
+                                v-model="form.enterprise_type_id"
+                                :danger="form.enterprise_type_id_validate"
+                                danger-text="Campo obrigatório"
+                            >
+                                <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in categories" />
+                            </vs-select>
+                        -->
+                        <div class="itens_check">
+                            <div v-for="item, index in categories" :key="index" style="float:left; margin-right:20px;">
+                              <input :value="item.id" v-model="form.enterprise_type_ids" class="form-check-input" type="checkbox" :id="'checkbox'+index">
+                              <label class="form-check-label" :for="'checkbox'+index">
+                                {{ item.name }}
+                              </label>
+                            </div>
+                          </div>
+                        
                     </div>
                 </vs-col>
-
-                <vs-col vs-type="flex" v-if="form.enterprise_type_id == 2" vs-justify="center" vs-align="center" vs-w="6" >
+                
+                <vs-col vs-type="flex" v-if="this.form.enterprise_type_ids.includes(2)" vs-justify="center" vs-align="center" vs-w="12" >
                     <div class="form_item">
                         <p class="text-label">Representante</p>
                         <vs-select
@@ -337,6 +348,8 @@ export default {
             active_upload: false,
             form: {
                 id: null,
+
+                enterprise_type_ids: [],
 
                 enterprise_type_id: null,
                 enterprise_type_id_validate: false,
@@ -630,18 +643,19 @@ export default {
         },
 
         record(){
+
             this.$vs.loading({
                 container: "#company_new",
                 scale: 0.45,
-            });
-
-               
+            })
 
             if(this.validate()){
-                
+
                 if(!this.edit_company){
+                    console.log('entrou aqqq');
                     axios.post('/api/enterprise', this.form).then((data)=>{
                         this.address.enterprise_id = data.data.id
+                        this.form.enterprise_type_ids = []
                         this.recordAddress()
                     })
                 }else{
@@ -706,8 +720,8 @@ export default {
             if(!this.form.name)                
                 i = false
                    
-            this.form.enterprise_type_id_validate = !this.form.enterprise_type_id ? true : false
-            if(!this.form.enterprise_type_id)                
+            this.form.enterprise_type_id_validate = this.form.enterprise_type_ids.length ? true : false
+            if(!this.form.enterprise_type_ids.length)                
                 i = false
 
             this.form.email_validate = !this.form.email ? true : false
@@ -722,12 +736,13 @@ export default {
             if(!this.form.phone)                
                 i = false
 
-            if(this.form.enterprise_type_id != 5){
+            if(!this.form.enterprise_type_ids.includes(5)){
+                console.log('é diferente de 5')
                 this.address.zipcode_validate = !this.address.zipcode ? true : false
                 if(!this.address.zipcode)                
                     i = false
             }
-            
+            console.log('i', i)
             this.address.city_validate = !this.address.city ? true : false
             if(!this.address.city)                
                 i = false
@@ -744,11 +759,12 @@ export default {
             if(!this.address.number)                
                 i = false
 
-            if(this.form.enterprise_type_id == 2){
+            if(this.form.enterprise_type_ids.includes(2)){
                 this.form.enterprise_representative_validate = !this.form.enterprise_representative ? true : false
                 if(!this.form.enterprise_representative)                
                     i = false
             }
+            console.log('i', i)
 
             return i
         },
@@ -763,9 +779,14 @@ export default {
         },
 
         editItem(id){
+
+            console.log('entrou')
+
             this.edit_company = true
 
             let company = this.$c(this.providers).where('id',id).first()
+
+            console.log('company', company)
 
             this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
@@ -775,6 +796,13 @@ export default {
             this.form.name = company.name
             this.form.phone = company.phone
             this.form.status = company.status
+
+            company.enterprise_rules.forEach(item => {
+
+                console.log('item', item)
+
+                this.form.enterprise_type_ids.push(item.enterprise_type_id) 
+            })
 
 
             this.address.id = company.address[0].id
@@ -788,8 +816,8 @@ export default {
             this.address.complement = company.address[0].complement
             this.address.enterprise_id = company.address[0].enterprise_id
             this.address.region = company.address[0].region
-
             this.popupActivo = true
+
         },
 
         deleteItem(id){

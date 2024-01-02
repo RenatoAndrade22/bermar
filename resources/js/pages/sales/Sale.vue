@@ -231,15 +231,15 @@
                     Status pagamento
                 </vs-th>
                    -->
-                <vs-th>
+                <vs-th> 
                     Produtos
                 </vs-th>
              
-                <vs-th v-if="[1, 2].includes(user.enterprise.enterprise_type_id)">
+                <vs-th v-if="this.validarRegrasUsuario([1, 2])">
                     Nota fiscal
                 </vs-th>
 
-                <vs-th v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
+                <vs-th v-if="this.validarRegrasUsuario([1, 2])">
                     Boletos
                 </vs-th>
 
@@ -285,8 +285,8 @@
                         </vs-button>
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoices" v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
-                        <div v-if="data[indextr].invoices.length === 0 && [1].includes(user.enterprise.enterprise_type_id)">
+                    <vs-td :data="data[indextr].invoices" v-if="this.validarRegrasUsuario([1, 2])">
+                        <div v-if="data[indextr].invoices.length === 0 && this.validarRegrasUsuario([1])">
                             <div @click="[upload_file = true, sale_order_id = data[indextr].id]">
                                 <UilCloudUpload size="19px" color="#e85d04" />
                                 <span>Enviar</span>
@@ -301,7 +301,7 @@
                         </div>
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoices" v-if="[1,2].includes(user.enterprise.enterprise_type_id)">
+                    <vs-td :data="data[indextr].invoices" v-if="this.validarRegrasUsuario([1, 2])">
                         <div>
                             <div @click="openModalBoletos(data[indextr].id, data[indextr].boletos)">
                                 <UilBill size="19px" color="#76c893" />
@@ -525,6 +525,13 @@ export default {
     },
 
     methods:{
+
+        validarRegrasUsuario($regras){
+            let rule = this.$c(this.userRules).filter((item)=>{
+                return $regras.includes(item.enterprise_type_id)
+            })
+            return rule.count()
+        },
 
         editSale(s){
            this.sale_edit_id = s.id
@@ -872,7 +879,7 @@ export default {
 
             let url
 
-            if(this.user.enterprise.enterprise_type_id == 1){
+            if(this.validarRegrasUsuario([1])){
                 url = 'all-sale-orders'
             }else{
                 url = 'sale-order'
@@ -919,6 +926,9 @@ export default {
     },
    
     computed:{
+        userRules() {
+            return this.$store.state.userRules;
+        },
         
 /*
         list_products() {

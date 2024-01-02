@@ -15,7 +15,8 @@ class Enterprise extends Model
     protected $table = 'enterprises';
 
     protected $with = [
-        'address'
+        'address',
+        'enterpriseRules'
     ];
 
     protected $fillable = [
@@ -35,6 +36,11 @@ class Enterprise extends Model
     public function enterpriseType(): BelongsTo
     {
         return $this->belongsTo(EnterpriseType::class);
+    }
+
+    public function enterpriseRules(): HasMany
+    {
+        return $this->hasMany(EnterpriseRule::class);
     }
 
 }

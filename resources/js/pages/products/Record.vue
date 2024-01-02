@@ -22,8 +22,6 @@
                         <p class="text-label">Preço</p>
                         <vs-input
                             v-if="money_active"
-                            :danger="form.price_validation"
-                            danger-text="Campo obrigatório"
                             placeholder="Preço"
                             v-model="form.price"
                             v-money="money"
@@ -601,10 +599,6 @@ export default {
 
             this.form.name_validation = !this.form.name ? true : false
             if(!this.form.name)
-                i = false
-
-            this.form.price_validation = !this.form.price ? true : false
-            if(!this.form.price)
                 i = false
 
             // this.form.width_validation = !this.form.width ? true : false

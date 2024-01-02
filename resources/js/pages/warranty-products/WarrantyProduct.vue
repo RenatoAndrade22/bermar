@@ -14,11 +14,11 @@
         placeholder="Buscar produto"
         v-model="search"
       />
-      <vs-button v-if="$user.enterprise.enterprise_type_id == 2" type="relief" @click="select_new = !select_new"
+      <vs-button v-if="validarRegrasUsuario([2])" type="relief" @click="select_new = !select_new"
         >Produtos</vs-button
       >
 
-      <vs-button v-if="$user.enterprise.enterprise_type_id == 1" type="relief" @click="popup_new = true"
+      <vs-button v-if="validarRegrasUsuario([1])" type="relief" @click="popup_new = true"
         >Cadastrar novo</vs-button
       >
     </vs-navbar>
@@ -225,6 +225,13 @@ export default {
   },
   methods: {
 
+    validarRegrasUsuario($regras){
+      let rule = this.$c(this.userRules).filter((item)=>{
+        return $regras.includes(item.enterprise_type_id)
+      })
+      return rule.count()
+    },
+
     record(){
         if(this.validation()){
             if(!this.edit_product){
@@ -289,6 +296,11 @@ export default {
     this.money_active = true
   },
   computed: {
+
+    userRules() {
+        return this.$store.state.userRules;
+    },
+
     list_products() {
       let products = this.products;
 

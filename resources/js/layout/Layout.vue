@@ -6,7 +6,7 @@
         <div class="content">
             <div class="header">
                 
-                <p><span @click.stop.prevent="getTeste()">{{$user.name}}</span> - <span class="logout" @click="logout">sair</span></p>
+                <p><span @click.stop.prevent="getTeste()">{{ userName }}</span> - <span class="logout" @click="logout">sair</span></p>
             </div>
             <div class="box">
                 <transition name="fade" mode="out-in">
@@ -37,13 +37,22 @@ export default {
             axios.post('/api/logout').then((item)=>{
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
-                this.$user.name = null
+
+                this.$store.commit('updateUserName', null);
+                this.$store.commit('updateUserRules', null);
+
                 this.$router.push({ name: "login" });
             })
         }
     },
     created(){
-    }
+    },
+
+    computed: {
+        userName() {
+            return this.$store.state.userName;
+        },
+    },
 }
 </script>
 

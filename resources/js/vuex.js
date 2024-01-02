@@ -1,12 +1,17 @@
-import Vue from "vue"
-import Vuex from 'vuex'
+// store.js
 
-Vue.use(Vuex)
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-const store = new Vuex.Store({
-    state:{
-        token: 'ESSE É O TOKEN'
-    }
-})
+Vue.use(Vuex);
 
-export { store }
+export default new Vuex.Store({
+  state: {
+    globalVariable: null,
+  },
+  mutations: {
+    updateGlobalVariable(state, value) {
+      state.globalVariable = value;
+    },
+  },
+});

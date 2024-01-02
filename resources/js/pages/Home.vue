@@ -1,7 +1,7 @@
 <template>
     <div id="home_dashboard">
         <b-row>
-            <template v-if="[3].includes(user_type)">
+            <template v-if="validarRegrasUsuario([3])">
                 <b-col>
                     <div class="card_column">
                         <h1>{{ total_sales }}</h1>
@@ -16,7 +16,7 @@
                 </b-col>
             </template>
 
-            <template v-if="[1].includes(user_type)">
+            <template v-if="validarRegrasUsuario([1])">
                 <div class="card_column">
                     <b-row class="text-center">
                         <b-col md="6">
@@ -67,6 +67,7 @@
 <script>
 import { BRow, BCol } from 'bootstrap-vue'
 import Chart from '../components/Chart'
+import Vuex from 'vuex';
 
 export default {
 
@@ -104,7 +105,7 @@ export default {
         getApiClients(){
             this.message_external_import = 'Importando clientes'
             axios.get('/api/clients-api-external').then((resp)=>{
-                this.getApiProducts()
+                //this.getApiProducts()
             })
         },
 
@@ -209,17 +210,23 @@ export default {
         this.getIntegrationProduct()
         this.getTotal()
         this.getCatalog()
-        if (localStorage.user) {
-            let user = JSON.parse(localStorage.user);
+    },
+
+    methods:{
+        validarRegrasUsuario($regras){
+            let rule = this.$c(this.userRules).filter((item)=>{
+                return $regras.includes(item.enterprise_type_id)
+            })
             
-            if(user.enterprise){
-                this.user_type = user.enterprise.enterprise_type_id
-            }else{
-                // user_type = 0, é para o usuario final, aquele usuario que não está ligado a nenhuma empresa.   
-                this.user_type = 0
-            }
+            return rule.count()
         }
-    }
+    },
+
+    computed: {
+        userRules() {
+            return this.$store.state.userRules;
+        },
+    },
 
 }
 </script>

@@ -20,10 +20,10 @@
       >
       -->
 
-      <vs-button v-if="$user.enterprise.enterprise_type_id == 1" @click="$router.push({ name: 'products_new' })"
+      <vs-button v-if="validarRegrasUsuario(1)" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
       >
-      <vs-button v-if="$user.enterprise.enterprise_type_id != 1" @click="saveLinks"
+      <vs-button v-if="!validarRegrasUsuario(1)" @click="saveLinks"
         >Salvar links</vs-button
       >
     </vs-navbar>
@@ -38,7 +38,7 @@
           <vs-td :data="data[indextr].name">
             {{ data[indextr].name }}
             <vs-input
-              v-if="$user.enterprise.enterprise_type_id != 1"
+              v-if="!validarRegrasUsuario(1)"
               class="search"
               placeholder="Link"
               v-model="data[indextr].link"
@@ -46,7 +46,7 @@
           </vs-td>
           
           
-          <template v-if="$user.enterprise.enterprise_type_id == 1">
+          <template v-if="validarRegrasUsuario(1)">
             <vs-td :data="data[indextr].id" style="width: 195px"> 
               <div
                 @click="editItem(data[indextr].id)"
@@ -179,6 +179,8 @@ export default {
       edit_product: false,
       product_selected: null,
       delete_product: null,
+      productsPerPage: 10,
+      currentPage: 1,
       optionsStatus:[
         {
           text:'Ativo',
@@ -196,6 +198,10 @@ export default {
     };
   },
   methods: {
+
+    validarRegrasUsuario($regra){
+      return this.$c(this.userRules).where('enterprise_type_id', $regra).count()
+    },
 
     saveLinks(){
       
@@ -256,9 +262,10 @@ export default {
     },
 
     getProductsBermar() {
+      console.log('aq3')
       axios.get("/api/products-bermar").then((data) => {
 
-          if (this.$user.enterprise.enterprise_type_id == 1) {
+          if (this.validarRegrasUsuario(1)) {
             this.products_bermar = this.$c(data.data).map((data)=>{
               data.stock = null
               return data
@@ -280,10 +287,10 @@ export default {
     },
 
     editItem(id) {
-      if (this.$user.enterprise.enterprise_type_id == 1) {
+      if (this.validarRegrasUsuario(1)) {
         this.$router.push({ name: "product_edit", params: { id: id } });
       }
-      if (this.$user.enterprise.enterprise_type_id == 2) {
+      if (this.validarRegrasUsuario(2)) {
         this.edit_product = true
         this.product_selected = this.$c(this.products).where('id', id).first()
       }
@@ -333,15 +340,18 @@ export default {
   },
   created() {
 
-    if (this.$user.enterprise.enterprise_type_id != 1 && this.$user.enterprise.enterprise_type_id != 2) {
+    if (!this.validarRegrasUsuario(1) && !this.validarRegrasUsuario(1)) {
       this.getProducts();
     }
 
-    if (this.$user.enterprise.enterprise_type_id == 2) {
+    if (this.validarRegrasUsuario(2)) {
       this.getProductsLinks();
     }
     
-    if(this.$user.enterprise.enterprise_type_id == 1){
+    console.log('aq1')
+    
+    if(this.validarRegrasUsuario(1)){
+      console.log('aq2')
       this.getProductsBermar();
     }
   },
@@ -364,7 +374,9 @@ export default {
 
       return products;
     },
-
+    userRules(){
+      return this.$store.state.userRules;
+    }
   },
 };
 </script>

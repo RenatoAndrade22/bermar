@@ -14,6 +14,7 @@ use App\Models\PaymentTerm;
 use App\Models\TableSeller;
 use App\Models\ClientSeller;
 use App\Models\Carrier;
+use App\Models\EnterpriseRule;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -68,13 +69,16 @@ class ExternalApiController extends Controller
     }
 
     public function allClients() {
-
+ 
         $sellers = Enterprise::query()
-                    ->whereIn('enterprise_type_id', [1, 3])
-                    ->where('users.code_integration', '!=', null)
-                    ->join('users', 'users.enterprise_id', '=', 'enterprises.id')
                     ->select('users.code_integration', 'users.id')
+                    ->join('users', 'users.enterprise_id', '=', 'enterprises.id')
+                    ->join('enterprises_rules', 'enterprises_rules.enterprise_id', '=', 'enterprises.id')
+                    ->whereIn('enterprises_rules.enterprise_type_id', [1, 3])
+                    ->where('users.code_integration', '!=', null)
                     ->get();
+
+       // dd($sellers);
 
         ClientSeller::query()->delete();
         
@@ -87,14 +91,38 @@ class ExternalApiController extends Controller
                     $cnpj = str_replace(array('.', '-', '/'), '', $client['documento']['numero']);
 
                     if($cnpj != '33068813840'){ // cnpj bermar
+                       
+                        $enterprise = Enterprise::query()
+                                        ->where('code_integration', $client['id'])
+                                        ->where('cnpj', $cnpj)
+                                        ->Where('enterprise_type_id', 2)
+                                        ->firstOrNew();
 
-                        $enterprise = Enterprise::query()->where('code_integration', $client['id'])->orWhere('cnpj', $cnpj)->firstOrNew();
                         $enterprise->name = $client['nome'];
                         $enterprise->enterprise_type_id = 2;
                         $enterprise->cnpj = $cnpj;
                         $enterprise->status = 1;
                         $enterprise->code_integration = $client['id'];
                         $enterprise->save();
+
+                        if($client['tipoCliente2']['id'] == 8){ // deve ser gravado como assitencia e cliente.
+                            $enterprise_rule = EnterpriseRule::query()
+                                                ->where('enterprise_id', $enterprise->id)
+                                                ->where('enterprise_type_id', 4)
+                                                ->firstOrNew();
+                            $enterprise_rule->enterprise_id = $enterprise->id;
+                            $enterprise_rule->enterprise_type_id = 4;
+                            $enterprise_rule->save();
+                        }
+
+                        $enterprise_rule = EnterpriseRule::query()
+                                                ->where('enterprise_id', $enterprise->id)
+                                                ->where('enterprise_type_id', 2)
+                                                ->firstOrNew();
+                                                
+                        $enterprise_rule->enterprise_id = $enterprise->id;
+                        $enterprise_rule->enterprise_type_id = 2;
+                        $enterprise_rule->save();
 
                         $address = Address::query()->where('enterprise_id', $enterprise->id)->firstOrNew();
 
@@ -141,11 +169,13 @@ class ExternalApiController extends Controller
     {
 
         $sellers = Enterprise::query()
-                    ->whereIn('enterprise_type_id', [1, 3])
                     ->where('users.code_integration', '!=', null)
                     ->join('users', 'users.enterprise_id', '=', 'enterprises.id')
+                    ->join('enterprises_rules', 'enterprises_rules.enterprise_id', '=', 'enterprises.id')
+                    ->whereIn('enterprises_rules.enterprise_type_id', [1, 3])
                     ->select('users.code_integration', 'users.id')
                     ->get();
+        dd($sellers);
 
         TableSeller::query()->delete();
 

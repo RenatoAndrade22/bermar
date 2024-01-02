@@ -51,6 +51,7 @@
 <script>
 import {BRow, BCol, BForm, BFormGroup, BFormInput, BFormSelect, BFormCheckboxGroup, BFormCheckbox, BButton, BCard,} from 'bootstrap-vue'
 window.axios = require('axios');
+import Vuex from 'vuex';
 
 export default {
     components:{
@@ -74,13 +75,20 @@ export default {
           
             event.preventDefault()
             axios.post('/api/login', this.form).then((item) =>{
+
                 let token = JSON.stringify(item.data.token)
                 token = token.replaceAll('"', '')
-                console.log('item', item)
+
                 localStorage.setItem('user', JSON.stringify(item.data.user))
-                this.$user = item.data.user
+
+
+                this.$store.commit('updateUserRules', item.data.user.rules);
+                this.$store.commit('updateUserName', item.data.user.name);
+
                 localStorage.setItem('token', token)
-                window.location.href = '/painel'
+                this.$user = item.data.user
+                this.$router.push('/painel')
+               
             }).catch((error) => {
                 this.error = true
             })

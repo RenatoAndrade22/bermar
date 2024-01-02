@@ -9,7 +9,7 @@ use App\Models\Enterprise;
 
 class getEnterprisesController extends Controller
 {
-    public function getRepresentatives($type, $uf)
+    public function getRepresentatives($type, $uf, $text = null)
     {
 
         $type_id = 0;
@@ -26,10 +26,30 @@ class getEnterprisesController extends Controller
             $type_id = 4;
         }
 
-        return Enterprise::query()
-              ->join('addresses', 'enterprises.id', '=', 'addresses.enterprise_id')
-              ->where('enterprises.enterprise_type_id', '=', $type_id)
-              ->where('addresses.state', '=', $uf)
-              ->get();
+        
+        if(!$text){
+            $enterprises = Enterprise::query()
+                ->join('addresses', 'enterprises.id', '=', 'addresses.enterprise_id')
+                ->join('enterprises_rules', 'enterprises.id', '=', 'enterprises_rules.enterprise_id')
+                ->where('enterprises_rules.enterprise_type_id', $type_id)
+                ->where('addresses.state', '=', $uf)
+                ->orderBy('city')
+                ->paginate(9);
+        } else{
+
+            $enterprises = Enterprise::query()
+                ->join('addresses', 'enterprises.id', '=', 'addresses.enterprise_id')
+                ->join('enterprises_rules', 'enterprises.id', '=', 'enterprises_rules.enterprise_id')
+                ->where('enterprises_rules.enterprise_type_id', $type_id)
+                ->where('addresses.state', '=', $uf)
+                ->where(function ($query) use ($text) {
+                    $query->where('enterprises.name', 'LIKE', '%' . $text . '%')
+                        ->orWhere('addresses.city', 'LIKE', '%' . $text . '%');
+                })
+                ->orderBy('city')
+                ->paginate(9);
+        }
+            
+        return $enterprises;
     }
 }

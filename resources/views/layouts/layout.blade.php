@@ -173,7 +173,7 @@
 
    <!-- footer -->
 
-    <div class="cpy-right">
+    <div class="cpy-right" style="float: left; width:100%;display: inline;">
         <div class="container py-md-5">
             <div class="row">
                 <div class="col-lg-3 footer_wthree_gridf mt-lg-5">
@@ -230,7 +230,7 @@
             </div>
         </div>
     </div>
-    <div class="cpy-right text-center py-3">
+    <div class="cpy-right text-center py-3" style="float: left; width:100%;">
         <p style="color:#ffffff;">© 2022 BERMAR. Todos os direitos reservados| Desenvolvido por
             <a style="color:#ffffff;" href="https://consultoriacgs.com.br/"> CGS</a>
         </p>

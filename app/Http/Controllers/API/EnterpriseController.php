@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\EnterpriseRequest;
 use App\Models\Enterprise;
 use App\Models\Address;
+use App\Models\EnterpriseRule;
+use App\Models\EnterpriseRuse;
 use Illuminate\Support\Facades\Auth;
 
 class EnterpriseController extends Controller
@@ -52,14 +54,24 @@ class EnterpriseController extends Controller
     }
 
     public function store(EnterpriseRequest $request){
-        $enterprise = new Enterprise();
-        $enterprise->enterprise_id = $request->has('enterprise_representative') ? $request->get('enterprise_representative') : Auth::user()->enterprise_id;
-        $enterprise->fill($request->all());
 
+        $enterprise_type_ids = $request->get('enterprise_type_ids');
+
+        $enterprise = new Enterprise();
+        $enterprise->fill($request->all());
+        $enterprise->enterprise_id = $request->has('enterprise_representative') && $request->get('enterprise_representative') ? $request->get('enterprise_representative') : Auth::user()->enterprise_id;
+        $enterprise->enterprise_type_id = $enterprise_type_ids[0];
         $enterprise->cnpj =  preg_replace("/[^0-9]/", "", $request->get('cnpj'));
         $enterprise->phone = preg_replace("/[^0-9]/", "", $request->get('phone'));
 
         $enterprise->saveOrFail();
+
+        foreach($enterprise_type_ids as $types){
+            $enterprise_rules = new EnterpriseRule();
+            $enterprise_rules->enterprise_id = $enterprise->id;
+            $enterprise_rules->enterprise_type_id = $types;
+            $enterprise_rules->save();
+        }
 
         if($request->has('address'))
         {
@@ -84,6 +96,18 @@ class EnterpriseController extends Controller
         $enterprise->enterprise_id = $request->get('enterprise_representative');
         $enterprise->fill($request->all());
         $enterprise->saveOrFail();
+
+        EnterpriseRule::where('enterprise_id', $enterprise->id)->delete();
+        
+        $enterprise_type_ids = $request->get('enterprise_type_ids');
+
+        foreach($enterprise_type_ids as $types){
+            $enterprise_rules = new EnterpriseRule();
+            $enterprise_rules->enterprise_id = $enterprise->id;
+            $enterprise_rules->enterprise_type_id = $types;
+            $enterprise_rules->save();
+        }
+
         return $enterprise;
     }
 

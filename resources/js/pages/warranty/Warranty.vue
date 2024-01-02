@@ -27,7 +27,7 @@
                             <vs-col vs-w="6" vs-type="flex" vs-justify="center" vs-align="center">
                                 <vs-button type="relief" size="small" @click="$router.push({ name: 'warranty_chat', params: { id: w.id } })">Mensagens</vs-button>
                                 <template v-if="$user.enterprise">
-                                    <vs-button v-if="$user.enterprise.enterprise_type_id == 1" type="relief" color="success" class="m-2" size="small" @click="conclude(w.id)">Concluir</vs-button>
+                                    <vs-button v-if="validarRegrasUsuario(1)" type="relief" color="success" class="m-2" size="small" @click="conclude(w.id)">Concluir</vs-button>
                                 </template>
                             </vs-col>
                         </vs-row>
@@ -123,6 +123,13 @@ export default {
         }
     },
     methods:{
+
+        validarRegrasUsuario($regras){
+            let rule = this.$c(this.userRules).filter((item)=>{
+                return $regras.includes(item.enterprise_type_id)
+            })
+            return rule.count()
+        },
 
         conclude(id){
 
@@ -248,6 +255,12 @@ export default {
         this.getAssitences()
         this.getUsers()
     },
+
+    computed:{
+        userRules() {
+            return this.$store.state.userRules;
+        },
+    }
 }
 </script>
 
