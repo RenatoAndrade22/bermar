@@ -78,8 +78,6 @@ class ExternalApiController extends Controller
                     ->where('users.code_integration', '!=', null)
                     ->get();
 
-       // dd($sellers);
-
         ClientSeller::query()->delete();
         
         foreach($sellers as $seller){
@@ -87,6 +85,7 @@ class ExternalApiController extends Controller
             $data = $this->getDataAPI('cliente?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['cliente'] as $client){
+
                 if(isset($client['documento']['numero']) && $client['documento']['numero']){
                     $cnpj = str_replace(array('.', '-', '/'), '', $client['documento']['numero']);
 
@@ -94,8 +93,6 @@ class ExternalApiController extends Controller
                        
                         $enterprise = Enterprise::query()
                                         ->where('code_integration', $client['id'])
-                                        ->where('cnpj', $cnpj)
-                                        ->Where('enterprise_type_id', 2)
                                         ->firstOrNew();
 
                         $enterprise->name = $client['nome'];
@@ -106,23 +103,26 @@ class ExternalApiController extends Controller
                         $enterprise->save();
 
                         if($client['tipoCliente2']['id'] == 8){ // deve ser gravado como assitencia e cliente.
+
                             $enterprise_rule = EnterpriseRule::query()
                                                 ->where('enterprise_id', $enterprise->id)
                                                 ->where('enterprise_type_id', 4)
                                                 ->firstOrNew();
+
                             $enterprise_rule->enterprise_id = $enterprise->id;
                             $enterprise_rule->enterprise_type_id = 4;
                             $enterprise_rule->save();
+                            
                         }
 
-                        $enterprise_rule = EnterpriseRule::query()
+                        $enterprise_rule_re = EnterpriseRule::query()
                                                 ->where('enterprise_id', $enterprise->id)
                                                 ->where('enterprise_type_id', 2)
                                                 ->firstOrNew();
-                                                
-                        $enterprise_rule->enterprise_id = $enterprise->id;
-                        $enterprise_rule->enterprise_type_id = 2;
-                        $enterprise_rule->save();
+
+                        $enterprise_rule_re->enterprise_id = $enterprise->id;
+                        $enterprise_rule_re->enterprise_type_id = 2;
+                        $enterprise_rule_re->save();
 
                         $address = Address::query()->where('enterprise_id', $enterprise->id)->firstOrNew();
 
@@ -156,10 +156,8 @@ class ExternalApiController extends Controller
                         $client_seller->save();
 
                     }
-                    
                 }   
             }
-
         }
         
         return true;
@@ -175,7 +173,6 @@ class ExternalApiController extends Controller
                     ->whereIn('enterprises_rules.enterprise_type_id', [1, 3])
                     ->select('users.code_integration', 'users.id')
                     ->get();
-        dd($sellers);
 
         TableSeller::query()->delete();
 

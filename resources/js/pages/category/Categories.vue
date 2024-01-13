@@ -207,9 +207,10 @@ export default {
                             text:''
                         })
                     })
+                    this.getCategories()
                 }else{
                     axios.post('/api/category', this.form).then((item)=>{
-                    this.list_categories.push({id: item.data.id ,name: item.data.name,cetegory: item.data.cetegory,category_name: item.data.category_name, products: []})
+                    this.getCategories()
                     this.popup_new = false
                     this.form.name = null
                     this.form.category_id = null

@@ -7,7 +7,7 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
-                        <p class="text-label">Nome</p>
+                        <p class="text-label">* Nome</p>
                         <vs-input
                             :danger="form.name_validation"
                             danger-text="Campo obrigatório"
@@ -54,7 +54,7 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
-                        <p class="text-label">Família</p>
+                        <p class="text-label">* Família</p>
                         <vs-select
                             v-model="form.category_id"
                             :danger="form.category_validation"
@@ -251,8 +251,9 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12">
                     <div class="editor">
-                        <p class="text-label">Descrição</p>
+                        <p class="text-label">* Descrição</p>
                         <vue-editor v-model="form.description"></vue-editor>
+                        <div v-if="form.description_validation" class="con-text-validation span-text-validation-danger vs-input--text-validation-span v-enter-to" style="height: 22px;"><span class="span-text-validation"> Campo obrigatório </span></div>
                     </div>
                 </vs-col>
 
@@ -472,6 +473,8 @@ export default {
                 video: null,
                 video_validation: false,
 
+                site_appear: 0,
+                
                 images: []
             },
 
@@ -621,6 +624,12 @@ export default {
             if(!this.form.category_id)
                 i = false
 
+
+            this.form.description_validation = !this.form.description ? true : false
+
+            if(!this.form.description)
+                i = false
+
             // this.form.width_validation = !this.form.width ? true : false
             // if(!this.form.width)
             //     i = false
@@ -636,6 +645,8 @@ export default {
             // this.form.height_validation = !this.form.height ? true : false
             // if(!this.form.height)
             //     i = false
+
+            console.log('i', i)
 
             return i
         },

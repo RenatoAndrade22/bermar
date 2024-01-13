@@ -91,6 +91,23 @@ export default {
         }
     },
     methods:{
+
+        validarRegrasUsuario($regras){
+            let rule = this.$c(this.userRules).filter((item)=>{
+                return $regras.includes(item.enterprise_type_id)
+            })
+            
+            return rule.count()
+        },
+
+        getIntegrationProduct() {
+            axios.get('/api/integration_product').then((resp) => {
+                this.product_integration = resp.data
+            }).catch((error) => {
+                console.error("Erro na chamada da API:", error)
+            })
+        },
+
         getDataApi(){
 
             this.$vs.loading({
@@ -105,7 +122,7 @@ export default {
         getApiClients(){
             this.message_external_import = 'Importando clientes'
             axios.get('/api/clients-api-external').then((resp)=>{
-                //this.getApiProducts()
+                this.getApiProducts()
             })
         },
 
@@ -146,8 +163,6 @@ export default {
             })
         },
 
-        
-
         getTotal(){
             axios.get('/api/total-sales').then((resp)=>{
                 this.financial_total = resp.data.financial_total
@@ -183,12 +198,6 @@ export default {
             })
         },
 
-        getIntegrationProduct(){
-            axios.get('/api/integration_product').then((resp)=>{
-                this.product_integration = resp.data
-            })
-        },
-
         delelteIntegration(id){
             axios.delete('/api/integration_product/'+id).then((data)=>{
                 this.getIntegrationProduct()
@@ -203,24 +212,19 @@ export default {
                 })
             }
         },
+
+        
         
     },
 
     created(){
+        console.log("aqqq57")
         this.getIntegrationProduct()
+
         this.getTotal()
         this.getCatalog()
     },
 
-    methods:{
-        validarRegrasUsuario($regras){
-            let rule = this.$c(this.userRules).filter((item)=>{
-                return $regras.includes(item.enterprise_type_id)
-            })
-            
-            return rule.count()
-        }
-    },
 
     computed: {
         userRules() {

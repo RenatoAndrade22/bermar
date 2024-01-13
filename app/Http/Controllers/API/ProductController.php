@@ -152,7 +152,7 @@ class ProductController extends Controller
     }
 
     public function getProductsBermar(){
-        return Product::all();
+        return Product::query()->orderBy('id', 'desc')->get();
     }
 
     public function sanitizeString($str) {

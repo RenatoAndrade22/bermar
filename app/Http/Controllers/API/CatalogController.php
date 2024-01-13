@@ -17,7 +17,7 @@ class CatalogController extends Controller
         $name = $request->file('file')->getRealPath();
         $upload = UploadCloudController::upload($name);
 
-        $catalog = Catalog::query()->first();
+        $catalog = Catalog::firstOrNew();
 
         $catalog->public_id = $upload['public_id'];
         $catalog->url = $upload['secure_url'];
