@@ -182,43 +182,46 @@ class ExternalApiController extends Controller
             // usar o codigo de integração para buscar a tabela de venda de cada codigo integração.
             $data = $this->getDataAPI('tabelavenda?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
-            foreach($data['tabela_venda'] as $table){
+            if(isset($data['tabela_venda'])){
+                foreach($data['tabela_venda'] as $table){
             
-                $table_price = PriceTable::query()->where('code_integration', $table['id'])->firstOrNew();
-                $table_price->name = $table['descricao'];
-                $table_price->code_integration = $table['id'];
-                $table_price->save(); 
-                
-                $table_seller = TableSeller::query()
-                                    ->where('user_id', $seller->id)
-                                    ->where('price_table_id', $table_price->id)
-                                    ->firstOrNew();
-                
-                $table_seller->user_id = $seller->id;
-                $table_seller->price_table_id = $table_price->id;
-                $table_seller->save();
-
-                foreach($table['tabelaVendaProdutos'] as $product_external){
+                    $table_price = PriceTable::query()->where('code_integration', $table['id'])->firstOrNew();
+                    $table_price->name = $table['descricao'];
+                    $table_price->code_integration = $table['id'];
+                    $table_price->save(); 
                     
-                    $product = Product::query()->where('integration_code', $product_external['produto']['id'])->first();
-
-                    if(!$product){
-                        continue;
+                    $table_seller = TableSeller::query()
+                                        ->where('user_id', $seller->id)
+                                        ->where('price_table_id', $table_price->id)
+                                        ->firstOrNew();
+                    
+                    $table_seller->user_id = $seller->id;
+                    $table_seller->price_table_id = $table_price->id;
+                    $table_seller->save();
+    
+                    foreach($table['tabelaVendaProdutos'] as $product_external){
+                        
+                        $product = Product::query()->where('integration_code', $product_external['produto']['id'])->first();
+    
+                        if(!$product){
+                            continue;
+                        }
+                        
+                        // salva o preço
+                        $price = Price::query()
+                            ->where('product_id', $product->id)
+                            ->where('price_table_id', $table_price->id)
+                            ->firstOrNew();
+    
+                        $price->price          =  $product_external['preco'];
+                        $price->price_table_id =  $table_price->id;
+                        $price->product_id     =  $product->id;
+                        $price->save();
+    
                     }
-                    
-                    // salva o preço
-                    $price = Price::query()
-                        ->where('product_id', $product->id)
-                        ->where('price_table_id', $table_price->id)
-                        ->firstOrNew();
-
-                    $price->price          =  $product_external['preco'];
-                    $price->price_table_id =  $table_price->id;
-                    $price->product_id     =  $product->id;
-                    $price->save();
-
                 }
             }
+            
 
         }
 
