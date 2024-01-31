@@ -15,9 +15,9 @@ class UploadCloudController extends Controller
         $cloudinary = new Cloudinary(
             [
                 'cloud' => [
-                    'cloud_name' => 'dk7eeb3y6',
-                    'api_key'    => '968423785681561',
-                    'api_secret' => 'mLtuAD12CKYp2IyRVKlrr9ugfes',
+                    'cloud_name' => env('IMAGE_CLOUD_NAME'),
+                    'api_key'    => env('IMAGE_API_KEY'),
+                    'api_secret' => env('IMAGE_SECRET'),
                 ],
             ]
           );
