@@ -589,7 +589,6 @@ export default {
                             }).then((data)=>{
 
                             }).catch(error => {
-                                console.log(error.response.data.message || error.message)
                             });
                         }
 
@@ -652,7 +651,7 @@ export default {
             if(this.validate()){
 
                 if(!this.edit_company){
-                    console.log('entrou aqqq');
+
                     axios.post('/api/enterprise', this.form).then((data)=>{
                         this.address.enterprise_id = data.data.id
                         this.form.enterprise_type_ids = []
@@ -737,12 +736,11 @@ export default {
                 i = false
 
             if(!this.form.enterprise_type_ids.includes(5)){
-                console.log('é diferente de 5')
                 this.address.zipcode_validate = !this.address.zipcode ? true : false
                 if(!this.address.zipcode)                
                     i = false
             }
-            console.log('i', i)
+
             this.address.city_validate = !this.address.city ? true : false
             if(!this.address.city)                
                 i = false
@@ -764,7 +762,6 @@ export default {
                 if(!this.form.enterprise_representative)                
                     i = false
             }
-            console.log('i', i)
 
             return i
         },
@@ -780,13 +777,9 @@ export default {
 
         editItem(id){
 
-            console.log('entrou')
-
             this.edit_company = true
 
             let company = this.$c(this.providers).where('id',id).first()
-
-            console.log('company', company)
 
             this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
@@ -798,9 +791,6 @@ export default {
             this.form.status = company.status
 
             company.enterprise_rules.forEach(item => {
-
-                console.log('item', item)
-
                 this.form.enterprise_type_ids.push(item.enterprise_type_id) 
             })
 

@@ -499,11 +499,9 @@ export default {
         },
 
         handleSelected(tr) {
-            console.log('handle', tr)
         },
 
         doubleSelection(tr) {
-            console.log('double', tr)
         },
 
         getSaleOrders(){

@@ -322,9 +322,7 @@ export default {
             return validate
         },
         getCityForCEP(){
-            axios.get('https://viacep.com.br/ws/'+this.form_address.zipcode.replace("-", "")+'/json/').then((item) =>{
-                console.log('item', item)
-                
+            axios.get('https://viacep.com.br/ws/'+this.form_address.zipcode.replace("-", "")+'/json/').then((item) =>{                
                 this.form_address.city = item.data.localidade
                 this.form_address.street = item.data.logradouro
                 this.form_address.district = item.data.bairro

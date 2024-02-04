@@ -433,8 +433,6 @@ export default {
                     this.error = 'Erro, não é possível selecionar mais de uma tabela que tenha o mesmo produto. Os produtos abaixo tem preço nas tabelas selecionadas.'
                     this.duplicate_products = resp.data
                 }else{
-                    console.log('aq1')
-
                     this.error = null
                     this.duplicate_products = []
                     i = true

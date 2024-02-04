@@ -255,14 +255,12 @@ export default {
         },
 
         editar(index){
-            console.log('index', index)
             this.form_edit = collect(this.form).where('index', index)
             this.form_edit = this.form_edit.items
             this.$bvModal.show('modal-edit')
         },
 
         onFileChange(e){
-            console.log(e.target.files[0]);
             this.file = e.target.files[0];
         },
         formSubmit(e) {
@@ -279,7 +277,6 @@ export default {
             axios.post('/api/upload-pdf', formData, config)
                 .then(function (response) {
                     currentObj.form = response.data
-                    console.log('response', response)
                 })
                 .catch(function (error) {
                 });

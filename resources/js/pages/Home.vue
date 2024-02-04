@@ -218,7 +218,7 @@ export default {
     },
 
     created(){
-        console.log("aqqq57")
+
         this.getIntegrationProduct()
 
         this.getTotal()

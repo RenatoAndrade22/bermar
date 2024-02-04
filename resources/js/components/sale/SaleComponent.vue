@@ -121,7 +121,6 @@ export default {
     created() {
 
         if(this.sale_edit.tables != undefined){
-            console.log('edit', this.sale_edit)
             this.form = this.sale_edit 
         }
 

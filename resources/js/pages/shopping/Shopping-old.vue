@@ -131,7 +131,6 @@ export default {
         downloadInvoice(sale_order_id){
             axios.get('/api/download-invoice/'+sale_order_id).then((resp)=>{
                 this.$vs.notify({color: "success", title: "Arquivo baixado!", text: ""})
-                console.log('oii', resp.data)
                 window.open('/invoices/'+resp.data.name, '_blank')
             })
         },

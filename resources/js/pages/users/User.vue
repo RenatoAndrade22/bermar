@@ -90,6 +90,7 @@
                             <vs-select-item key="1000" value="user_site" text="Usuário do site" />
                             <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in companies" />
                         </vs-select>
+                        <span v-if="form.enterprise_id_validate"><div class="con-text-validation span-text-validation-danger vs-input--text-validation-span v-enter-to" style="height: 22px;"><span class="span-text-validation"> Campo obrigatório </span></div></span>
                     </div>
                 </vs-col>
 
@@ -243,7 +244,8 @@ export default {
 
                 status: true,
 
-                enterprise_id: null
+                enterprise_id: null,
+                enterprise_id_validate: false
             },
             address:{
 
@@ -386,6 +388,13 @@ export default {
             if(!this.form.name)                
                 i = false
 
+
+            this.form.enterprise_id_validate = !this.form.enterprise_id ? true : false
+            if(!this.form.enterprise_id)                
+                i = false
+
+            
+
             this.form.email_validate = !this.form.email ? true : false
             if(!this.form.email)                
                 i = false
@@ -446,8 +455,6 @@ export default {
 
             let company = this.$c(this.providers).where('id',id).first()
 
-            console.log('company', company)
-
             this.form.id = company.id
             this.form.cpf = company.cpf
             this.form.email = company.email
@@ -463,7 +470,6 @@ export default {
         },
 
         deleteItem(id){
-            console.log('name', id)
 
             this.delete_providers = this.$c(this.providers).where('id', id)
             this.$vs.dialog({

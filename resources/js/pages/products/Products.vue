@@ -262,7 +262,6 @@ export default {
     },
 
     getProductsBermar() {
-      console.log('aq3')
       axios.get("/api/products-bermar").then((data) => {
 
           if (this.validarRegrasUsuario(1)) {
@@ -347,11 +346,8 @@ export default {
     if (this.validarRegrasUsuario(2)) {
       this.getProductsLinks();
     }
-    
-    console.log('aq1')
-    
+        
     if(this.validarRegrasUsuario(1)){
-      console.log('aq2')
       this.getProductsBermar();
     }
   },
@@ -370,7 +366,6 @@ export default {
       }else{
         products = products.items != undefined ? products.items : products
       }
-      console.log('pr2', products)
 
       return products;
     },

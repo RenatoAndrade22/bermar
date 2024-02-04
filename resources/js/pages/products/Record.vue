@@ -646,7 +646,6 @@ export default {
             // if(!this.form.height)
             //     i = false
 
-            console.log('i', i)
 
             return i
         },

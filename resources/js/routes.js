@@ -166,7 +166,6 @@ export default {
 
                     beforeEnter:(to, from, next) => {
                         axios.get('/api/athenticated').then((user) => {
-                            console.log('userr', user)
                             next()
                         }).catch((error)=>{
                             return next({ name: 'login'})

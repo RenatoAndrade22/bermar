@@ -738,7 +738,7 @@ export default {
                 scale: 0.6
             })
 
-            console.log('data.form',  data.form)
+
             // payload
             let sale = {
 

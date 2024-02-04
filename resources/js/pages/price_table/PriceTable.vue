@@ -288,7 +288,6 @@ export default {
 
         validation(){
             let i = true
-            console.log('validation', this.form.name)
 
             if (!this.form.name) {
                 i = false
