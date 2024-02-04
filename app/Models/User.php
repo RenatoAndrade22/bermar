@@ -64,7 +64,10 @@ class User extends Authenticatable
 
     public function getRulesAttribute()
     {
-        return EnterpriseRule::select('enterprise_type_id')->where('enterprise_id', $this->enterprise->id)->get();
+        if($this->enterprise){
+            return EnterpriseRule::select('enterprise_type_id')->where('enterprise_id', $this->enterprise->id)->get();
+        }
+        return null;
     }
 
 
