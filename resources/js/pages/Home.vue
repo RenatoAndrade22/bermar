@@ -115,7 +115,7 @@ export default {
                 scale: 0.6
             })
 
-            this.getApiClients()
+            this.getApiProducts()
  
         },
 
@@ -129,7 +129,7 @@ export default {
         getApiProducts(){
             this.message_external_import = 'Importando produtos'
             axios.get('/api/products-api-external').then((resp)=>{
-                this.getApiTablePrice()
+                //this.getApiTablePrice()
             })
         },
 

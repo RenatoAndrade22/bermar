@@ -454,11 +454,11 @@ export default {
             this.edit_company = true
 
             let company = this.$c(this.providers).where('id',id).first()
-
+console.log('company', company)
             this.form.id = company.id
             this.form.cpf = company.cpf
             this.form.email = company.email
-            this.form.enterprise_id = company.enterprise_id
+            this.form.enterprise_id = company.enterprise_id ? company.enterprise_id : 'user_site'
             this.form.name = company.name
             this.form.phone = company.phone
             this.form.status = company.status
