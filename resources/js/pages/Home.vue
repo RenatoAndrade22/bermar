@@ -115,7 +115,7 @@ export default {
                 scale: 0.6
             })
 
-            this.getApiProducts()
+            this.getApiClients()
  
         },
 
@@ -123,13 +123,32 @@ export default {
             this.message_external_import = 'Importando clientes'
             axios.get('/api/clients-api-external').then((resp)=>{
                 this.getApiProducts()
+            }).catch((error) => {
+
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar clientes.',
+                    text: '' 
+                });
             })
         },
 
+        
         getApiProducts(){
             this.message_external_import = 'Importando produtos'
             axios.get('/api/products-api-external').then((resp)=>{
-                //this.getApiTablePrice()
+                this.getApiTablePrice()
+            }).catch((error) => {
+                
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar produtos.',
+                    text: '' 
+                });
             })
         },
 
@@ -138,6 +157,15 @@ export default {
             axios.get('/api/table-price-api-external').then((resp)=>{
                 this.message_external_import = null;
                 this.getApiPaymentMethod()
+            }).catch((error) => {
+                
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar tabela de preços.',
+                    text: '' 
+                });
             })
         },
 
@@ -145,6 +173,15 @@ export default {
             this.message_external_import = 'Importando metodos de pagamento'
             axios.get('/api/payment-method-api-external').then((resp)=>{
                 this.getApiPaymentTerms()
+            }).catch((error) => {
+                
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar metodos de pagamento.',
+                    text: '' 
+                });
             })
         },
 
@@ -152,6 +189,15 @@ export default {
             this.message_external_import = 'Importando tipos de pagamento'
             axios.get('/api/payment-terms-api-external').then((resp)=>{
                 this.getApiCarriers()
+            }).catch((error) => {
+                
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar termos de pagamento.',
+                    text: '' 
+                });
             })
         },
 
@@ -160,6 +206,15 @@ export default {
             axios.get('/api/carriers-api-external').then((resp)=>{
                 this.message_external_import = null
                 this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+            }).catch((error) => {
+                
+                this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+
+                this.$vs.notify({
+                    color: 'danger',
+                    title: 'Erro ao importar transportadoras.',
+                    text: '' 
+                });
             })
         },
 
