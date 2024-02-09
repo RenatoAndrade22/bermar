@@ -46,7 +46,7 @@ class EnterpriseController extends Controller
     }
 
     public function index(){
-        return Enterprise::query()->with('address', 'enterpriseType')->orderBy('id','desc')->take(30)->get();
+        return Enterprise::query()->with('address', 'enterpriseType')->get();
     }
 
     public function getEnterpriseType($type){
