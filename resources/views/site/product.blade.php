@@ -49,24 +49,26 @@
                             <button type="button" style="margin: 25px 10px;" onclick="openManual('{{ $product['certificate']['url'] }}')" class="btn btn-danger">Certificado</button>
                           @endif
 
-                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal-text">Ficha Técnica</button>
+                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="abrir-ficha-tecnica">Ficha Técnica</button>
                         
                         @if ($product['video'])
-                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal">Assista o vídeo do produto</button>
+                          <button type="button" style="margin: 25px 10px;" class="btn btn-danger" id="open-modal-video">Assista o vídeo do produto</button>
                         @endif
-                            <div class="modal-background" id="modal-background">
+                            
+                            <div class="modal-background" id="modal-video">
                                 <div class="modal">
                                     <div>
-                                        <button id="close-modal" type="button" class="btn btn-light mb-3">Fechar</button>
+                                        <button id="close-video" type="button" class="btn btn-light mb-3">Fechar</button>
                                     </div>
                                     <iframe width="700" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </div>
                             </div>
 
-                            <div class="modal-background-text" id="modal-background-text">
+                            <div id="modal-ficha-tecnica">
+                            
                                 <div class="modal-text">
                                     <div>
-                                        <button id="close-modal-text" type="button" class="btn btn-light mb-3">Fechar</button>
+                                        <button id="close-ficha-tecnica" type="button" class="btn btn-light mb-3">Fechar</button>
                                     </div>
                                     <div class="text">
                                         <p>{!! nl2br($product['datasheet']) !!}</p>
@@ -182,40 +184,38 @@
         function openManual(url){
             window.open(url, '_blank').focus()
         }
-
-        const openModalButton = document.getElementById("open-modal");
-        const closeModalButton = document.getElementById("close-modal");
-        const modalBackground = document.getElementById("modal-background");
-
-        openModalButton.addEventListener("click", function() {
-            modalBackground.style.display = "block";
-        });
-
-        closeModalButton.addEventListener("click", function() {
-            modalBackground.style.display = "none";
-        });
-
-
-
-
-
-
-
-        const openModalButtonText = document.getElementById("open-modal-text");
-        const closeModalButtonText = document.getElementById("close-modal-text");
-        const modalBackgroundText = document.getElementById("modal-background-text");
-
-        openModalButtonText.addEventListener("click", function() {
-            modalBackgroundText.style.display = "block";
-        });
-
-        closeModalButtonText.addEventListener("click", function() {
-            modalBackgroundText.style.display = "none";
-        });
-
         
+        // ABRIR FICHA TECNICA
+        const abrirFicha = document.getElementById("abrir-ficha-tecnica");
+        const fecharFicha = document.getElementById("close-ficha-tecnica");
+        const fichaTecnica = document.getElementById("modal-ficha-tecnica");
+
+        abrirFicha.addEventListener("click", function() {
+            fichaTecnica.style.display = "block";
+        });
+
+        fecharFicha.addEventListener("click", function() {
+            fichaTecnica.style.display = "none";
+        });
+
+
+        const abrirVideo = document.getElementById("open-modal-video");
+        const fecharVideo = document.getElementById("close-video");
+        const video = document.getElementById("modal-video");
+        
+        abrirVideo.addEventListener("click", function() {
+            video.style.display = "block";
+        });
+
+        fecharVideo.addEventListener("click", function() {
+            video.style.display = "none";
+        });
+
     </script>
     <style>
+        #modal-ficha-tecnica{
+            display: none;
+        }
         .product{
             margin-top: -24px;
         }
@@ -226,6 +226,7 @@
         .links{
             display: none;
         }
+
         .modal-background {
             display: none;
             position: fixed;
@@ -234,7 +235,7 @@
             height: 100%;
             width: 100%;
             z-index: 1;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
         }
 
         .modal {
@@ -257,7 +258,18 @@
             margin-bottom: 20px;
         }
 
-        .modal-background-text {
+        #modal-background-text {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 1;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-background-video {
             display: none;
             position: fixed;
             top: 0;
@@ -290,6 +302,9 @@
             overflow: auto;
             padding: 35px;
             height: 350px;
+            -webkit-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
+            -moz-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
+            box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
         }
 
 

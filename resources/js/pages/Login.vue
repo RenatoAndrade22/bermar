@@ -13,6 +13,7 @@
                         class="input input1"
                     >
                         <b-form-input
+                            id="form-login-email"
                             v-model="form.email"
                             placeholder="Email"
                             required
@@ -21,6 +22,7 @@
 
                     <b-form-group id="input-group-2">
                         <b-form-input
+                            id="form-login-password"
                             type="password"
                             v-model="form.password"
                             placeholder="Senha"
@@ -39,7 +41,7 @@
                     </b-form-checkbox>
                     -->
                     <p class="error" v-if="error">Usuário e/ou senha inválido(s).</p>
-                    <b-button type="submit" class="button" variant="primary">Acessar</b-button>
+                    <b-button type="submit" class="button" variant="primary" id="form-login-btn">Acessar</b-button>
                     <p class="cadastro" @click="$router.push({name: 'cadastro'})">Cadastre-se</p>
                     
                 </b-form>

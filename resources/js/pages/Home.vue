@@ -31,7 +31,7 @@
                         </b-col>
                         <b-col md="6">
                             <h1>Atualizar banco de dados</h1>
-                            <vs-button size="small" @click="getDataApi">
+                            <vs-button size="small" @click="getDataApi" id="get-data-api">
                                 Buscar dados na API
                             </vs-button>
                             <h3 class="mt-3" v-if="message_external_import">{{ message_external_import }}</h3>
@@ -211,6 +211,7 @@ export default {
                 this.$vs.loading.close("#home_dashboard > .con-vs-loading")
 
                 this.$vs.notify({
+                    id:'importado-com-sucesso',
                     color: 'danger',
                     title: 'Erro ao importar transportadoras.',
                     text: '' 

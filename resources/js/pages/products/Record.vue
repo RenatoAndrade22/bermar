@@ -68,22 +68,20 @@
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
                         <p class="text-label">Tensão do motor</p>
-                        <vs-select
+                        <vs-input
+                            placeholder="Tensão do motor"
                             v-model="form.voltage"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in voltage" />
-                        </vs-select>
+                        />
                     </div>
                 </vs-col>
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                     <div class="form_item">
                         <p class="text-label">Potencia do motor</p>
-                        <vs-select
+                        <vs-input
+                            placeholder="Potencia do motor"
                             v-model="form.power"
-                        >
-                            <vs-select-item :key="index" :value="item.id" :text="item.name" v-for="item,index in power" />
-                        </vs-select>
+                        />
                     </div>
                 </vs-col>
 
@@ -435,8 +433,8 @@ export default {
                 name: null,
                 name_validation: false,
                 manual: null,
-                power: '1000',
-                voltage: '110',
+                power: null,
+                voltage: null,
                 packing_width: null,
                 packing_weight: null,
                 packing_length: null,
