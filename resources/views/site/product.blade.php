@@ -58,17 +58,17 @@
                             <div class="modal-background" id="modal-video">
                                 <div class="modal">
                                     <div>
-                                        <button id="close-video" type="button" class="btn btn-light mb-3">Fechar</button>
+                                        <button id="close-video" type="button" class="btn btn-danger mb-3">Fechar</button>
                                     </div>
                                     <iframe width="700" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </div>
                             </div>
 
-                            <div id="modal-ficha-tecnica">
+                            <div class="modal-text" id="modal-ficha-tecnica">
                             
-                                <div class="modal-text">
+                                <div>
                                     <div>
-                                        <button id="close-ficha-tecnica" type="button" class="btn btn-light mb-3">Fechar</button>
+                                        <button id="close-ficha-tecnica" type="button" class="btn btn-danger mb-3">Fechar</button>
                                     </div>
                                     <div class="text">
                                         <p>{!! nl2br($product['datasheet']) !!}</p>
@@ -283,7 +283,6 @@
         .modal-text {
             text-align: center;
             top: 52%;
-            display: block !important;
             position: fixed;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -296,11 +295,12 @@
             margin-top: 0;
         }
 
-        .modal-text .text {
+        #modal-ficha-tecnica{
             margin-bottom: 20px;
             background: #fff;
             overflow: auto;
             padding: 35px;
+            width: 450px;
             height: 350px;
             -webkit-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
             -moz-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);

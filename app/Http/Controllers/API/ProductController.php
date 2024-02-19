@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Certificate;
 use App\Models\ProductImage;
 use App\Models\Price;
+use DOMDocument;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,9 +46,8 @@ class ProductController extends Controller
     {
         $video = $request->get('video');
 
-        if(strpos($video,"watch?v=")){
-            $video = explode("watch?v=",$video);
-            $video = 'https://www.youtube.com/embed/'.$video[1];
+        if(!strpos($video,"embed")){
+            $video = $this->UrlEmbed($video);
         }
 
         $product = new Product();
@@ -117,9 +118,8 @@ class ProductController extends Controller
     {
         $video = $request->get('video');
 
-        if(strpos($video,"watch?v=")){
-            $video = explode("watch?v=",$video);
-            $video = 'https://www.youtube.com/embed/'.$video[1];
+        if(!strpos($video,"embed")){
+            $video = $this->UrlEmbed($video);
         }
 
         $product = Product::find($id);
@@ -134,6 +134,38 @@ class ProductController extends Controller
 
         return $product;
 
+    }
+
+    public function UrlEmbed($url){
+
+        $client = new Client();
+            
+        $response = $client->get('https://www.youtube.com/oembed?url='.$url.'&format=json');
+
+        $body = $response->getBody();
+
+        $embed = null;
+
+        if($body){
+            $body = json_decode($body, true);
+
+            $dom = new DOMDocument();
+    
+            if(isset($body['html']) && $body['html']){
+
+                @$dom->loadHTML($body['html']);
+    
+                $iframes = $dom->getElementsByTagName('iframe');
+        
+                if ($iframes->length > 0) {
+                    $embed = $iframes->item(0)->getAttribute('src');
+                } 
+            }
+           
+        }
+       
+
+        return $embed;
     }
 
     /**
