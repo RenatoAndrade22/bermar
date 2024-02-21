@@ -205,7 +205,7 @@
                     </vs-col>
                 </template>
 
-                <template v-if="this.address.city_id || form.enterprise_type_id == 5">
+                <template v-if="this.active_form_address || form.enterprise_type_id == 5">
 
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                         <div class="form_item">
@@ -346,6 +346,7 @@ export default {
             providers:[],
             popupActivo:false,
             active_upload: false,
+            active_form_address: false,
             form: {
                 id: null,
 
@@ -628,12 +629,14 @@ export default {
             if(this.address.zipcode){
                 this.address.zipcode_validate = false
 
+                this.active_form_address = true;
                 axios.get('/api/get-city/'+this.address.zipcode.replace('-', '')).then((data)=>{
-                    this.address.city_id = data.data.CityId
-                    this.address.city    = data.data.CityDescription
-                    this.address.state   = data.data.UnitFederation.Description
-                    this.address.street  = data.data.Street
-                    this.address.district   = data.data.District
+                    this.address.city_id = data.data.ibge
+                    this.address.city    = data.data.localidade
+                    this.address.state   = data.data.uf
+                    this.address.street  = data.data.logradouro
+                    this.address.district   = data.data.bairro
+                    this.address.complement   = data.data.complemento
                 })
 
             }else{

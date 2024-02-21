@@ -22,21 +22,17 @@ class DeliveryController extends Controller
     public function getCity($zipcode){
 
         try{
-            $response = $this->client->request('GET', 'https://01wapi.rte.com.br/api/v1/busca-por-cep?zipCode='.$zipcode, [
+            $response = $this->client->request('GET', 'https://viacep.com.br/ws/'.$zipcode.'/json/', [
                 'headers' => [
                   'Accept' => 'application/json',
-                  'Authorization' => 'Bearer '.$this->token,
                 ],
             ]);
+            
             return $response->getBody();
         }
         catch(\GuzzleHttp\Exception\RequestException $e)
         {
-            $response = $e->getResponse();
-            if($response->getStatusCode() == 401){
-                $this->getToken();
-                return $this->getCity($zipcode);
-            }
+            return [];
         }
     }
 
