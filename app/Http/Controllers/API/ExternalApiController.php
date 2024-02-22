@@ -71,7 +71,7 @@ class ExternalApiController extends Controller
     public function allClients() {
  
         $sellers = Enterprise::query()
-                    ->select('users.code_integration', 'users.id')
+                    ->select('users.code_integration', 'users.id', 'enterprises.id as enterprise_id')
                     ->join('users', 'users.enterprise_id', '=', 'enterprises.id')
                     ->join('enterprises_rules', 'enterprises_rules.enterprise_id', '=', 'enterprises.id')
                     ->whereIn('enterprises_rules.enterprise_type_id', [1, 3])
@@ -81,7 +81,7 @@ class ExternalApiController extends Controller
         ClientSeller::query()->delete();
         
         foreach($sellers as $seller){
-
+      
             $data = $this->getDataAPI('cliente?bascod='.env('EXTERNAL_API_BASCOD').'&empresa='.env('EXTERNAL_API_EMPRESA').'&filial='.env('EXTERNAL_API_FILIAL').'&vendedor='.$seller['code_integration']);
 
             foreach($data['cliente'] as $client){
@@ -96,10 +96,13 @@ class ExternalApiController extends Controller
                                         ->firstOrNew();
 
                         $enterprise->name = $client['nome'];
+                        $enterprise->email = isset($client['email']) ? $client['email'] : null;
+                        $enterprise->phone = isset($client['endereco']['contato']['telefone']) ? preg_replace("/[^0-9]/", "", $client['endereco']['contato']['telefone']) : null;
                         $enterprise->enterprise_type_id = 2;
                         $enterprise->cnpj = $cnpj;
                         $enterprise->status = 1;
                         $enterprise->code_integration = $client['id'];
+                        $enterprise->enterprise_id = $seller['enterprise_id'];
                         $enterprise->save();
 
                         if($client['tipoCliente2']['id'] == 8){ // deve ser gravado como assitencia e cliente.

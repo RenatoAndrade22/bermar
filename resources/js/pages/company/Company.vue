@@ -25,9 +25,6 @@
                     CNPJ
                 </vs-th>
                 <vs-th>
-                    Email
-                </vs-th>
-                <vs-th>
                     Telefone
                 </vs-th>
                 <vs-th>
@@ -46,10 +43,6 @@
 
                     <vs-td :data="data[indextr].cnpj">
                         {{data[indextr].cnpj}}
-                    </vs-td>
-
-                    <vs-td :data="data[indextr].email">
-                        {{data[indextr].email}}
                     </vs-td>
 
                     <vs-td :data="data[indextr].phone">
@@ -773,7 +766,7 @@ export default {
             axios.get('/api/enterprise').then((data)=>{
                 this.providers = data.data
                 this.representatives = this.$c(data.data).filter((item)=>{
-                    return item.enterprise_type_id == 3
+                    return item.enterprise_type_id == 3 || item.enterprise_type_id == 1
                 }).all()
             })
         },
@@ -783,7 +776,6 @@ export default {
             this.edit_company = true
 
             let company = this.$c(this.providers).where('id',id).first()
-
             this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
             this.form.cnpj = company.cnpj
