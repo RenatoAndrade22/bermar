@@ -25,6 +25,7 @@ class Enterprise extends Model
         'email',
         'cnpj',
         'phone',
+        'cell',
         'status',
     ];
 

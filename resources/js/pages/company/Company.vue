@@ -75,7 +75,7 @@
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <div class="form_item">
-                        <p class="text-label">Categoriasss</p>
+                        <p class="text-label">Categoria</p>
                         <!--
                             <vs-select
                                 v-model="form.enterprise_type_id"
@@ -167,6 +167,17 @@
                             danger-text="Campo obrigatório"
                             placeholder="Telefone"
                             v-model="form.phone"
+                        />
+                    </div>
+                </vs-col>
+
+                <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+                    <div class="form_item">
+                        <p class="text-label">Celular</p>
+                        <vs-input
+                            v-mask="'(##) #####-####'"
+                            placeholder="Celular"
+                            v-model="form.cell"
                         />
                     </div>
                 </vs-col>
@@ -362,6 +373,8 @@ export default {
 
                 phone: null,
                 phone_validate: false,
+
+                cell: null,
 
                 status: true,
             },
@@ -783,6 +796,7 @@ export default {
             this.form.enterprise_type_id = company.enterprise_type_id
             this.form.name = company.name
             this.form.phone = company.phone
+            this.form.cell = company.cell
             this.form.status = company.status
 
             company.enterprise_rules.forEach(item => {
