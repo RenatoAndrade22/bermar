@@ -67,7 +67,7 @@ class ProductController extends Controller
         $product->description = $product_external['nome'];
         $product->price = $product_external['preco'];
         $product->integration_code = $product_external['id'];
-        $product->site_appear = false;
+        $product->site_appear = $product->site_appear ? $product->site_appear : false;
         $product->save();
 
         return $product;
