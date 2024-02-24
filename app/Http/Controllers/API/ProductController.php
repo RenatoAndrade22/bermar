@@ -46,7 +46,7 @@ class ProductController extends Controller
     {
         $video = $request->get('video');
 
-        if(!strpos($video,"embed")){
+        if($video && !strpos($video,"embed")){
             $video = $this->UrlEmbed($video);
         }
 
@@ -118,7 +118,7 @@ class ProductController extends Controller
     {
         $video = $request->get('video');
 
-        if(!strpos($video,"embed")){
+        if($video && !strpos($video,"embed")){
             $video = $this->UrlEmbed($video);
         }
 
