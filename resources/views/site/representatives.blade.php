@@ -141,7 +141,7 @@
                     for (let i = 0; i < resp.data.length; i++) {
 
                         var complement = resp.data[i].complement ? resp.data[i].complement+', ' : '';
-                        var name = resp.data[i].name ? resp.data[i].name+', ' : '';
+                        var name = resp.data[i].name ? resp.data[i].name : '';
                         var street = resp.data[i].street ? resp.data[i].street+', ' : '';
                         var number = resp.data[i].number ? resp.data[i].number+', ' : '';
                         var district = resp.data[i].district ? resp.data[i].district+', ' : '';
