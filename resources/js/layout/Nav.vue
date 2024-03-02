@@ -25,7 +25,7 @@
             -->
             
 
-            <router-link to="/painel/produtos" v-if="nav.produtos">
+            <router-link to="/painel/produtos" v-if="nav.produtos" id="nav-produtos">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilCube size="20px" class="icon_route" />
                 Produtos

@@ -22,12 +22,12 @@
                         <b-col md="6">
                             <h1>Catalogo</h1>
     
-                            <p style="cursor:pointer;" @click="chooseFiles">Atualizar catalogo</p>
-                            
-                            <input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="onFileChange" hidden>
+                            <p style="cursor:pointer;" @click="chooseFiles" id="atualizar-catalogo">Atualizar catalogo</p>
+                        
+                            <input id="fileUploadCatalogo" name="catalog" type="file" accept=".pdf" v-on:change="onFileChange" hidden>
                             <iframe :src="url_pdf" height="200" width="200" />
     
-                            <p style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="active_send">Enviar</p>
+                            <p id="enviar-catalogo" style="cursor: pointer;font-size: 15px !important;font-weight: bold !important;margin-top: 10px;" @click="sendCatalog" v-if="active_send">Enviar</p>
                         </b-col>
                         <b-col md="6">
                             <h1>Atualizar banco de dados</h1>
@@ -206,12 +206,16 @@ export default {
             axios.get('/api/carriers-api-external').then((resp)=>{
                 this.message_external_import = null
                 this.$vs.loading.close("#home_dashboard > .con-vs-loading")
+                this.$vs.notify({
+                    color: 'success',
+                    title: 'Atualização realizada com sucesso.',
+                    text: '' 
+                });
             }).catch((error) => {
                 
                 this.$vs.loading.close("#home_dashboard > .con-vs-loading")
 
                 this.$vs.notify({
-                    id:'importado-com-sucesso',
                     color: 'danger',
                     title: 'Erro ao importar transportadoras.',
                     text: '' 
@@ -244,6 +248,11 @@ export default {
 
             axios.post('/api/update-catalog/1', formData).then((data)=>{
                 this.active_send = false
+                this.$vs.notify({
+                    color: 'success',
+                    title: 'Catalogo atualizado.',
+                    text: '' 
+                });
             })
 
         },

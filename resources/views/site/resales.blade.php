@@ -110,6 +110,16 @@
             var url = "/api/get-companies-state/revendas/"+uf+"/"+texto_busca+'?page='+paginacao;
         }
 
+        function formatarTelefone(numero) {
+            // Remover caracteres não numéricos
+            const numeroLimpo = numero.replace(/\D/g, '');
+
+            // Aplicar a formatação desejada
+            const numeroFormatado = numeroLimpo.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3');
+
+            return numeroFormatado;
+        }
+
         $.ajax({
             url: url,
             cache: false,
@@ -137,7 +147,11 @@
                         var district = resp.data[i].district ? resp.data[i].district+', ' : '';
                         var city = resp.data[i].city ? resp.data[i].city : '';                        
                         var state = resp.data[i].state ? '-'+resp.data[i].state : '';
-                        var phone = resp.data[i].phone ? resp.data[i].phone+', ' : '';
+                        var phone = resp.data[i].phone ? resp.data[i].phone : '';
+
+                        if(phone){
+                            phone = formatarTelefone(phone);
+                        }
                         
                         html = 
                             html+'<div class="col-md-4"><li><h5>'+name+'</h5><p>Endereço<br>'+street+number+district+complement+city+state+' <br>'+phone+'</p></li></div>';

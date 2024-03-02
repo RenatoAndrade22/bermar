@@ -20,7 +20,7 @@
       >
       -->
 
-      <vs-button v-if="validarRegrasUsuario(1)" @click="$router.push({ name: 'products_new' })"
+      <vs-button id="cadastrar-produto" v-if="validarRegrasUsuario(1)" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
       >
       <vs-button v-if="!validarRegrasUsuario(1)" @click="saveLinks"
