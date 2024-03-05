@@ -58,23 +58,18 @@
                             <div class="modal-background" id="modal-video">
                                 <div class="modal">
                                     <div>
-                                        <button id="close-video" type="button" class="btn btn-danger mb-3">Fechar</button>
+                                        <button id="close-video" type="button" class="btn btn-danger mb-3">X</button>
                                     </div>
-                                    <iframe width="700" height="400" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    <iframe class="video" src="{{ $product['video'] }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                                 </div>
                             </div>
 
-                            <div class="modal-text" id="modal-ficha-tecnica">
                             
-                                <div>
-                                    <div>
-                                        <button id="close-ficha-tecnica" type="button" class="btn btn-danger mb-3">Fechar</button>
-                                    </div>
-                                    <div class="text">
-                                        <p>{!! nl2br($product['datasheet']) !!}</p>
-                                        
-                                    </div>
-
+                            <button id="close-ficha-tecnica" type="button" class="btn btn-danger mb-3">X</button>
+                                 
+                            <div class="modal-text" id="modal-ficha-tecnica">
+                                <div class="text">
+                                    <p>{!! nl2br($product['datasheet']) !!}</p> 
                                 </div>
                             </div>
 
@@ -187,15 +182,18 @@
         
         // ABRIR FICHA TECNICA
         const abrirFicha = document.getElementById("abrir-ficha-tecnica");
-        const fecharFicha = document.getElementById("close-ficha-tecnica");
+        const btnfecharFicha = document.getElementById("close-ficha-tecnica");
         const fichaTecnica = document.getElementById("modal-ficha-tecnica");
+
 
         abrirFicha.addEventListener("click", function() {
             fichaTecnica.style.display = "block";
+            btnfecharFicha.style.display = "block";
         });
 
-        fecharFicha.addEventListener("click", function() {
+        btnfecharFicha.addEventListener("click", function() {
             fichaTecnica.style.display = "none";
+            btnfecharFicha.style.display = "none";
         });
 
 
@@ -214,11 +212,17 @@
     </script>
     <style>
         
+        .video{
+            width: 700px; 
+            height: 400px;
+        }
 
         #close-ficha-tecnica{
-            position: absolute;
+            display: none;
+            position: fixed;
             top: 17px;
             right: 25px;
+            z-index: 9999;
         }
 
         #modal-ficha-tecnica{
@@ -331,6 +335,14 @@
                 height: 300px;
             }
         }
+
+        @media (max-width: 750px) {
+            .video{
+                width: 300px; 
+                height: 250pCx;
+            }
+        }
+        
 
 
     </style>
