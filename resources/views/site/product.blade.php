@@ -20,7 +20,7 @@
                               <div class="row">
                                 <div class="col-md-12 product">
                                   <div class="row">
-                                    <div class="col-md-7">
+                                    <div class="col-md-12">
                                       <div class="product-image">
 
                                         @if(count($product['productImages']) > 0)
@@ -213,9 +213,27 @@
 
     </script>
     <style>
+        
+
+        #close-ficha-tecnica{
+            position: absolute;
+            top: 17px;
+            right: 25px;
+        }
+
         #modal-ficha-tecnica{
             display: none;
         }
+
+        #modal-ficha-tecnica p{
+            margin-bottom: 0 !important;
+            font-size: 13px;
+        }
+        #modal-ficha-tecnica h4, #modal-ficha-tecnica h3, #modal-ficha-tecnica h2, #modal-ficha-tecnica h1{
+            font-size: 20px;
+            margin-bottom: 0 !important;
+        }
+
         .product{
             margin-top: -24px;
         }
@@ -286,7 +304,7 @@
             position: fixed;
             left: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px;
+        
             border-radius: 5px;
             z-index: 2;
         }
@@ -300,11 +318,18 @@
             background: #fff;
             overflow: auto;
             padding: 35px;
-            width: 450px;
-            height: 350px;
+            width: 80%;
+            height: 94vh;
             -webkit-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
             -moz-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
             box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
+        }
+
+        @media (max-width: 1199px) {
+            .product-image {
+                width: 100%;
+                height: 300px;
+            }
         }
 
 
