@@ -87,6 +87,7 @@ class ExternalApiController extends Controller
             foreach($data['cliente'] as $client){
 
                 if(isset($client['documento']['numero']) && $client['documento']['numero']){
+
                     $cnpj = str_replace(array('.', '-', '/'), '', $client['documento']['numero']);
 
                     if($cnpj != '33068813840'){ // cnpj bermar
@@ -116,6 +117,11 @@ class ExternalApiController extends Controller
                             $enterprise_rule->enterprise_type_id = 4;
                             $enterprise_rule->save();
                             
+                        }else{
+                            EnterpriseRule::query()
+                                                ->where('enterprise_id', $enterprise->id)
+                                                ->where('enterprise_type_id', 4)
+                                                ->delete();
                         }
 
                         $enterprise_rule_re = EnterpriseRule::query()

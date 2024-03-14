@@ -24,7 +24,7 @@
                                       <div class="product-image">
 
                                         @if(count($product['productImages']) > 0)
-                                            <div class="image" style="background-image: url({{ asset($product['productImages'][0]['url']) }})"></div>
+                                            <div class="image" style="background-size: cover;background-image: url({{ asset($product['productImages'][0]['url']) }})"></div>
                                         @endif
 
                                       </div>
@@ -221,8 +221,8 @@
             display: none;
             position: fixed;
             top: 17px;
-            right: 25px;
-            z-index: 9999;
+            left: 81%;
+            z-index: 999;
         }
 
         #modal-ficha-tecnica{
@@ -322,7 +322,7 @@
             background: #fff;
             overflow: auto;
             padding: 35px;
-            width: 80%;
+            width: 60%;
             height: 94vh;
             -webkit-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
             -moz-box-shadow: 0px 0px 17px -6px rgba(0,0,0,0.75);
