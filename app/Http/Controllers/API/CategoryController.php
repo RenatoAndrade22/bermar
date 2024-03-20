@@ -23,7 +23,7 @@ class CategoryController extends Controller
     }
 
     public function subCategories(){
-        return Category::query()->where('category_id', '!=', null)->orderBy('name')->with('products')->get();
+        return Category::query()->where('category_id', '!=', null)->get();
     }
 
     /**
