@@ -16,7 +16,6 @@ class Category extends Model
         'category_id'
     ];
 
-    protected $appends = ['category_name'];
 
     public function products() :HasMany
     {
@@ -33,9 +32,5 @@ class Category extends Model
         return $this->hasMany(Category::class, 'category_id');
     }
 
-    public function getCategoryNameAttribute()
-    {
-        return isset($this->cetegory->name) ? $this->cetegory->name : null;
-    }
 
 }
