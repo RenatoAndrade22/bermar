@@ -35,7 +35,7 @@ class Category extends Model
 
     public function getCategoryNameAttribute()
     {
-        return isset($this->category->name) ? $this->category->name : null;
+        return 'nome categoria';
     }
 
 }
