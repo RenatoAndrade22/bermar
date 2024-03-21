@@ -16,7 +16,6 @@ class Category extends Model
         'category_id'
     ];
 
-    protected $appends = ['category_name'];
 
     public function products() :HasMany
     {
