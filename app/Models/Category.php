@@ -23,19 +23,9 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function category() :BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'category_id');
-    }
-
     public function categories() :HasMany
     {
         return $this->hasMany(Category::class, 'category_id');
-    }
-
-    public function getCategoryNameAttribute()
-    {
-        return 'nome categoria';
     }
 
 }
