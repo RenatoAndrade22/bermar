@@ -16,13 +16,14 @@ class Category extends Model
         'category_id'
     ];
 
+    protected $appends = ['category_name'];
 
     public function products() :HasMany
     {
         return $this->hasMany(Product::class);
     }
 
-    public function cetegory() :BelongsTo
+    public function category() :BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
@@ -32,5 +33,9 @@ class Category extends Model
         return $this->hasMany(Category::class, 'category_id');
     }
 
+    public function getCategoryNameAttribute()
+    {
+        return isset($this->category->name) ? $this->category->name : null;
+    }
 
 }
