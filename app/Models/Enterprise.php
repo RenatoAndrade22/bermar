@@ -34,6 +34,11 @@ class Enterprise extends Model
         return $this->hasMany(Address::class, 'enterprise_id');
     }
 
+    public function representative_states(): HasMany
+    {
+        return $this->hasMany(RepresentativeState::class, 'enterprise_id');
+    }
+
     public function enterpriseType(): BelongsTo
     {
         return $this->belongsTo(EnterpriseType::class);

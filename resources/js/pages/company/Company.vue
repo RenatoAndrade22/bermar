@@ -97,7 +97,7 @@
                     </div>
                 </vs-col>
                 
-                <vs-col vs-type="flex" v-if="this.form.enterprise_type_ids.includes(2)" vs-justify="center" vs-align="center" vs-w="12" >
+                <vs-col vs-type="flex" v-if="form.enterprise_type_ids.includes(2)" vs-justify="center" vs-align="center" vs-w="12" >
                     <div class="form_item">
                         <p class="text-label">Representante</p>
                         <vs-select
@@ -111,6 +111,7 @@
                 </vs-col>
 
                 <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
+
                     <div class="form_item">
                         <p class="text-label">Status</p>
                         <vs-select
@@ -179,6 +180,14 @@
                             placeholder="Celular"
                             v-model="form.cell"
                         />
+                    </div>
+                </vs-col>
+
+                <vs-col  v-if="form.enterprise_type_ids.includes(3)" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                    <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.6/dist/vue-multiselect.min.css">
+                    <div class="form_item">
+                        <p class="text-label">Estados que representa</p>
+                        <multiselect v-model="form.value_states" :options="options_states" :multiple="true"></multiselect>
                     </div>
                 </vs-col>
 
@@ -332,16 +341,47 @@ import Form from '../../components/Form'
 import {mask} from "vue-the-mask";
 import {Money} from "v-money";
 import Investment from "../Investment";
+import Multiselect from 'vue-multiselect'
 
 export default {
     name: "Company",
     components:{
-        BRow, BCol, BTable, BButton, BFormInput, BFormGroup, UilEye, UilEdit, UilTrashAlt, Form
+        BRow, BCol, BTable, BButton, BFormInput, BFormGroup, UilEye, UilEdit, UilTrashAlt, Form, Multiselect 
     },
     directives: {mask},
 
     data(){
         return{
+            
+            options_states: [
+                "AC", // Acre
+                "AL", // Alagoas
+                "AP", // Amapá
+                "AM", // Amazonas
+                "BA", // Bahia
+                "CE", // Ceará
+                "DF", // Distrito Federal
+                "ES", // Espírito Santo
+                "GO", // Goiás
+                "MA", // Maranhão
+                "MT", // Mato Grosso
+                "MS", // Mato Grosso do Sul
+                "MG", // Minas Gerais
+                "PA", // Pará
+                "PB", // Paraíba
+                "PR", // Paraná
+                "PE", // Pernambuco
+                "PI", // Piauí
+                "RJ", // Rio de Janeiro
+                "RN", // Rio Grande do Norte
+                "RS", // Rio Grande do Sul
+                "RO", // Rondônia
+                "RR", // Roraima
+                "SC", // Santa Catarina
+                "SP", // São Paulo
+                "SE", // Sergipe
+                "TO", // Tocantins
+            ],
             search_cnpj: null,
             file_upload: true,
             search: null,
@@ -353,7 +393,7 @@ export default {
             active_form_address: false,
             form: {
                 id: null,
-
+                value_states: [],
                 enterprise_type_ids: [],
 
                 enterprise_type_id: null,
@@ -789,6 +829,9 @@ export default {
             this.edit_company = true
 
             let company = this.$c(this.providers).where('id',id).first()
+
+            console.log('company', company);
+
             this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
             this.form.cnpj = company.cnpj
@@ -798,6 +841,9 @@ export default {
             this.form.phone = company.phone
             this.form.cell = company.cell
             this.form.status = company.status
+            this.form.value_states = company.representative_states.map((item)=>{
+                return item.state
+            })
 
             company.enterprise_rules.forEach(item => {
                 this.form.enterprise_type_ids.push(item.enterprise_type_id) 

@@ -9,6 +9,7 @@ use App\Http\Requests\EnterpriseRequest;
 use App\Models\Enterprise;
 use App\Models\Address;
 use App\Models\EnterpriseRule;
+use App\Models\RepresentativeState;
 use App\Models\EnterpriseRuse;
 use Illuminate\Support\Facades\Auth;
 
@@ -46,7 +47,7 @@ class EnterpriseController extends Controller
     }
 
     public function index(){
-        return Enterprise::query()->with('address', 'enterpriseType')->get();
+        return Enterprise::query()->with('address', 'enterpriseType', 'representative_states')->get();
     }
 
     public function getEnterpriseType($type){
@@ -88,6 +89,24 @@ class EnterpriseController extends Controller
             $address->saveOrFail();
         }
 
+        if($request->has('value_states') && count($request->get('value_states')) > 0 ){
+           
+            foreach($request->get('value_states') as $item){
+
+                $RepresentativeState = RepresentativeState::query()
+                                        ->where('enterprise_id', $enterprise->id)
+                                        ->where('state', $item)
+                                        ->firstOrNew();
+
+                $RepresentativeState->enterprise_id = $enterprise->id;
+                $RepresentativeState->state = $item;
+
+                $RepresentativeState->save();
+                
+            }
+
+        }
+
         return $enterprise;
     }
 
@@ -106,6 +125,26 @@ class EnterpriseController extends Controller
             $enterprise_rules->enterprise_id = $enterprise->id;
             $enterprise_rules->enterprise_type_id = $types;
             $enterprise_rules->save();
+        }
+
+        RepresentativeState::query()->where('enterprise_id', $enterprise->id)->delete();
+
+        if($request->has('value_states') && count($request->get('value_states')) > 0 ){
+           
+            foreach($request->get('value_states') as $item){
+
+                $RepresentativeState = RepresentativeState::query()
+                                        ->where('enterprise_id', $enterprise->id)
+                                        ->where('state', $item)
+                                        ->firstOrNew();
+
+                $RepresentativeState->enterprise_id = $enterprise->id;
+                $RepresentativeState->state = $item;
+
+                $RepresentativeState->save();
+                
+            }
+
         }
 
         return $enterprise;
