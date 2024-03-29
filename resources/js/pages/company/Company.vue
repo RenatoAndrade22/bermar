@@ -849,18 +849,20 @@ export default {
                 this.form.enterprise_type_ids.push(item.enterprise_type_id) 
             })
 
+            if (company.address.length > 0) {
+                this.address.id = company.address[0].id
+                this.address.zipcode = company.address[0].zipcode
+                this.address.city = company.address[0].city
+                this.address.city_id = company.address[0].city_id
+                this.address.state = company.address[0].state
+                this.address.street = company.address[0].street
+                this.address.number = company.address[0].number
+                this.address.district = company.address[0].district
+                this.address.complement = company.address[0].complement
+                this.address.enterprise_id = company.address[0].enterprise_id
+                this.address.region = company.address[0].region
+            }
 
-            this.address.id = company.address[0].id
-            this.address.zipcode = company.address[0].zipcode
-            this.address.city = company.address[0].city
-            this.address.city_id = company.address[0].city_id
-            this.address.state = company.address[0].state
-            this.address.street = company.address[0].street
-            this.address.number = company.address[0].number
-            this.address.district = company.address[0].district
-            this.address.complement = company.address[0].complement
-            this.address.enterprise_id = company.address[0].enterprise_id
-            this.address.region = company.address[0].region
             this.popupActivo = true
 
         },
