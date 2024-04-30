@@ -27,6 +27,7 @@ class Enterprise extends Model
         'phone',
         'cell',
         'status',
+        'description'
     ];
 
     public function address(): HasMany

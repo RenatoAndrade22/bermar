@@ -64,9 +64,9 @@
                 </vs-tr>
             </template>
         </vs-table>
-        <vs-popup class="holamundo" title="Cadastrar Empresa" :active.sync="popupActivo">
+        <vs-popup class="holamundo" :title="edit_company ? 'Editar empresa' : 'Cadastrar empresa'" :active.sync="popupActivo">
 
-            <vs-button style="margin-top: -15px;float: right;" @click="active_upload = !active_upload" type="line">
+            <vs-button v-if="!edit_company" style="margin-top: -15px;float: right;" @click="active_upload = !active_upload" type="line">
                 <span v-if="!active_upload">Cadastrar por excel</span>
                 <span v-if="active_upload">Voltar</span>
             </vs-button>
@@ -183,11 +183,18 @@
                     </div>
                 </vs-col>
 
-                <vs-col  v-if="form.enterprise_type_ids.includes(3)" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
+                <vs-col  v-if="form.enterprise_type_ids.includes(3)" class="mt-2" vs-type="flex" vs-justify="center" vs-align="center" vs-w="12" >
                     <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.6/dist/vue-multiselect.min.css">
                     <div class="form_item">
                         <p class="text-label">Estados que representa</p>
                         <multiselect v-model="form.value_states" :options="options_states" :multiple="true"></multiselect>
+                    </div>
+                </vs-col>
+
+                <vs-col  v-if="form.enterprise_type_ids.includes(3)" class="mt-2" vs-type="flex" vs-justify="center" vs-align="top" vs-w="12" style="height: 140px;">
+                    <div class="form_item" >
+                        <p class="text-label">Descrição</p>
+                        <vs-textarea v-model="form.description" style="height: 110px;" />
                     </div>
                 </vs-col>
 
@@ -218,7 +225,7 @@
                     </vs-col>
                 </template>
 
-                <template v-if="this.active_form_address || form.enterprise_type_id == 5">
+                <template v-if="this.active_form_address || form.enterprise_type_id == 5 || edit_company">
 
                     <vs-col vs-type="flex" vs-justify="center" vs-align="center" vs-w="6" >
                         <div class="form_item">
@@ -830,8 +837,6 @@ export default {
 
             let company = this.$c(this.providers).where('id',id).first()
 
-            console.log('company', company);
-
             this.form.enterprise_representative = company.enterprise_id
             this.form.id = company.id
             this.form.cnpj = company.cnpj
@@ -841,6 +846,7 @@ export default {
             this.form.phone = company.phone
             this.form.cell = company.cell
             this.form.status = company.status
+            this.form.description = company.description
             this.form.value_states = company.representative_states.map((item)=>{
                 return item.state
             })

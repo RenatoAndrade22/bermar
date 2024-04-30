@@ -148,13 +148,14 @@
                         var city = resp.data[i].city ? resp.data[i].city : '';                        
                         var state = resp.data[i].state ? '-'+resp.data[i].state : '';
                         var phone = resp.data[i].phone ? resp.data[i].phone : '';
+                        var description = resp.data[i].description ? resp.data[i].description : '';
 
                         if(phone){
                             phone = formatarTelefone(phone);
                         }
                         
                         html = 
-                            html+'<div class="col-md-4"><li><h5>'+name+'</h5><p>Endereço<br>'+street+number+district+complement+city+state+' <br>'+phone+'</p></li></div>';
+                            html+'<div class="col-md-4"><li><h5>'+name+'</h5><p><b>'+description+'</b><br>Endereço<br>'+street+number+district+complement+city+state+' <br>'+phone+'</p></li></div>';
                     }
                     
                     html = html+'</ul></div>';
