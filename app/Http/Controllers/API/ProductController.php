@@ -198,7 +198,7 @@ class ProductController extends Controller
         $str = preg_replace('/_+/', '_', $str);
         return strtolower($str);
     }
-
+ 
     public function uploadManual(Request $request, $id){
 
         $name = $request->file('file')->getRealPath();

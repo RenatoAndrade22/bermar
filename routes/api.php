@@ -49,7 +49,7 @@ Route::resources([
     'resellers' => ResellerController::class,
 ]);
 
-Route::post('/upload/{id}', [ProductImageController::class, 'store']);
+Route::post('/upload/{id}', [ProductImageController::class, 'store']); 
 Route::post('/upload-manual/{id}', [ProductController::class, 'uploadManual']);
 Route::post('/upload-certificate/{id}', [ProductController::class, 'uploadCertificate']);
 Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
