@@ -15,8 +15,12 @@ class ProductSiteController extends Controller
         $categories = new CategoryController();
 
         $category = Category::query()->with('products')->where('slug', $slug)->first();
-        dd($category);
-        $products = Product::query()->where('category_id', $category->id)->where('site_appear', 1)->get();
+
+        $products = Product::query()
+            ->whereNotNull('category_id')
+            ->where('category_id', $category->id)
+            ->where('site_appear', 1)
+            ->get();
  
         return view('site.category', ['category_name' => $category->name,'products' => $products, 'categories' => $categories->categoriesSite()]);
     }
