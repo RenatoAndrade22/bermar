@@ -51,7 +51,11 @@ Route::resources([
 
 Route::post('/upload/{id}', [ProductImageController::class, 'store']); 
 Route::post('/upload-manual/{id}', [ProductController::class, 'uploadManual']);
+Route::delete('/delete-manual/{id}', [ProductController::class, 'destroyManual']);
+
 Route::post('/upload-certificate/{id}', [ProductController::class, 'uploadCertificate']);
+Route::delete('/delete-certificate/{id}', [ProductController::class, 'destroyCertificate']);
+
 Route::post('/delete-image-product/{id?}', [ProductImageController::class, 'destroy']);
 
 Route::post('/upload-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'store']);

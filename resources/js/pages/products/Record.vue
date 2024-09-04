@@ -323,8 +323,13 @@
                     <h3>Upload do Manual</h3>
                     <div class="centerx">
                         <div class="con-input-upload"><input id="fileUploadCatalogo" type="file" accept=".pdf" v-on:change="addManual" ><span class="text-input"> Clique aqui </span><span class="input-progress" style="width: 0%;"></span><button disabled="disabled" type="button" title="Upload" class="btn-upload-all vs-upload--button-upload"><i translate="no" class="material-icons notranslate"> cloud_upload </i></button></div>
-                        <iframe v-if="url_manual" :src="url_manual" height="200" width="200" />
-                        <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
+                        
+                        <div class="pdf-content">
+                            <span v-if="url_manual || form.manual" @click="deleteManual">X</span>
+                            <iframe v-if="url_manual" :src="url_manual" height="200" width="200" />
+                            <iframe v-if="form.manual && !url_manual" :src="form.manual" height="200" width="200" />
+                        </div>
+                        
                     </div>
                 </div>
 
@@ -340,8 +345,13 @@
                                 <i translate="no" class="material-icons notranslate"> cloud_upload </i>
                             </button>
                         </div>
-                        <iframe v-if="url_certificate" :src="url_certificate" height="200" width="200" />
-                        <iframe v-if="form.certificate && !url_certificate" :src="form.certificate" height="200" width="200" />
+
+                        <div class="pdf-content">
+                            <span v-if="url_certificate || form.certificate" @click="deleteCertificate">X</span>
+                            <iframe v-if="url_certificate" :src="url_certificate" height="200" width="200" />
+                            <iframe v-if="form.certificate && !url_certificate" :src="form.certificate" height="200" width="200" />
+                        </div>
+                        
                     </div>
                 </div>
                 
@@ -498,6 +508,52 @@ export default {
     },
     directives: {money: VMoney},
     methods:{
+
+        deleteCertificate(){
+
+            //loading
+            this.$vs.loading({
+                container: '#product-record',
+                scale: 0.6
+            })
+
+
+            axios.delete('/api/delete-certificate/'+this.form.id).then((data)=>{
+
+                this.url_certificate = null
+
+                this.form.certificate = null 
+
+                setTimeout(() => {
+                    this.$vs.loading.close("#product-record > .con-vs-loading");
+                }, 1)
+
+            })
+
+        },
+
+        deleteManual(){
+
+            //loading
+            this.$vs.loading({
+                container: '#product-record',
+                scale: 0.6
+            })
+
+
+            axios.delete('/api/delete-manual/'+this.form.id).then((data)=>{
+
+                this.url_manual = null
+
+                this.form.manual = null 
+
+                setTimeout(() => {
+                    this.$vs.loading.close("#product-record > .con-vs-loading");
+                }, 1)
+                
+            })
+
+        },
 
         addCertificate(e){
             let file = e.target.files[0]
@@ -752,6 +808,27 @@ export default {
 </script>
 
 <style scoped>
+
+    .pdf-content{
+        float: left;
+        position: relative;
+    }
+
+    .pdf-content span{
+        z-index: 9999;
+        position: absolute;
+        right: 0;
+        background: #ffffff;
+        font-size: 12px;
+        padding: 5px 7px;
+        color: red;
+        cursor: pointer;
+    }
+
+    .pdf-content span:hover{
+        background: red;
+        color: #ffffff;
+    }
 
     .manual{
         width: 100%;

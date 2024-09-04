@@ -17,7 +17,7 @@ class ProductImageController extends Controller
         $image_name = $request->file('image')->getRealPath();
        
         $upload = UploadCloudController::upload($image_name);
-
+ 
         $product = new ProductImage();
         $product->name = $name;
         $product->product_id = $id;
@@ -31,7 +31,10 @@ class ProductImageController extends Controller
     public function destroy(Request $request, $id = null){
 
       if($id){
-        $image = ProductImage::query()->where('id', $id)->delete();
+        $image = ProductImage::find($id);
+        UploadCloudController::delete($image->public_id);
+        ProductImage::query()->where('id', $id)->delete();
+
       }else{
         $image_name = $request->get('image');
         $product_id = $request->get('product');

@@ -205,7 +205,13 @@ class ProductController extends Controller
         $upload = UploadCloudController::upload($name);
 
         $product = Product::find($id);
+
+        if($product->manual_public_id){
+            UploadCloudController::delete($product->manual_public_id);
+        }
+
         $product->manual = $upload['secure_url'];
+        $product->manual_public_id = $upload['public_id'];
         $product->saveOrFail();
 
         return $product;
@@ -223,6 +229,33 @@ class ProductController extends Controller
         $certificate->saveOrFail();
 
         return $certificate;
+    }
+
+    public function destroyCertificate($id) {
+
+        $certificate = Certificate::query()->where('product_id', $id)->first();
+
+        if(isset($certificate->public_id) && $certificate->public_id){
+            UploadCloudController::delete($certificate->public_id);
+        }
+
+        Certificate::query()->where('product_id', $id)->delete();
+
+        return true;
+    }
+
+    public function destroyManual($id) {
+
+        $product = Product::find($id);
+
+        if($product->manual_public_id){
+            UploadCloudController::delete($product->manual_public_id);
+        }
+
+        $product->manual = null;
+        $product->save();
+
+        return true;
     }
 
 }
