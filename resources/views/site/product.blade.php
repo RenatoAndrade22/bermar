@@ -24,7 +24,7 @@
                                       <div class="product-image">
 
                                         @if(count($product['productImages']) > 0)
-                                            <div class="image" style="background-size: cover;background-image: url({{ asset($product['productImages'][0]['url']) }})"></div>
+                                            <div class="image" style="background-size: contain;background-image: url({{ asset($product['productImages'][0]['url']) }})"></div>
                                         @endif
 
                                       </div>
