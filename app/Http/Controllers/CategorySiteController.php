@@ -26,7 +26,7 @@ class CategorySiteController extends Controller
 
     public function pageCategory(){
 
-        $categories = Category::query()->where('category_id', null)->orderBy('name')->with('categories')->get();
+        $categories = Category::query()->orderBy('name')->get();
 
         $products = Product::query()->where('status', 1)->where('site_appear', 1)->get();
 
@@ -46,6 +46,7 @@ class CategorySiteController extends Controller
     public function searchProducts($slug)
     {
         $categories = Category::query()->orderBy('name')->get();
+        
         $products = Product::query()
             ->where('status', 1)
             ->where('name', 'LIKE', '%'.$slug.'%')
