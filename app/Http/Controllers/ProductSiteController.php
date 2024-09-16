@@ -12,7 +12,7 @@ class ProductSiteController extends Controller
 
     public function index($slug){
 
-        $categories = new CategoryController();
+        $categories = Category::query()->orderBy('name')->get();
 
         $category = Category::query()
                         ->with('products')
@@ -25,7 +25,7 @@ class ProductSiteController extends Controller
                         ->where('site_appear', 1)
                         ->get();
  
-        return view('site.category', ['category_name' => $category->name,'products' => $products, 'categories' => $categories->categoriesSite()]);
+        return view('site.category', ['category_name' => $category->name,'products' => $products, 'categories' => $categories]);
     }
 
     public function show($slug){
