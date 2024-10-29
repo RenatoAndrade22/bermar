@@ -21,6 +21,22 @@ class UserController extends Controller
             ->get();
     }
 
+    public function storeSale($id, RecordUser $request)
+    {
+        $user = new User();
+        $user->fill($request->all());
+        $user->enterprise_id = base64_decode($id);
+        $user->status = 2;
+        $user->seller = true;
+
+        if($request->has('password') && $request->get('password')){
+            $user->password = Hash::make($request->get('password'));
+        }
+
+        $user->saveOrFail();
+        return $user;
+    }
+
     public function store(RecordUser $request)
     {
         $user = new User();

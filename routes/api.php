@@ -25,6 +25,10 @@ use \App\Http\Controllers\API\CatalogController;
 use \App\Http\Controllers\API\PaymentTermsController;
 use \App\Http\Controllers\API\ExternalApiController;
 use \App\Http\Controllers\API\CarrierController;
+use App\Http\Controllers\API\CompanyRepreController;
+use App\Http\Controllers\API\ExternalComissionController;
+use App\Http\Controllers\API\ExternalSaleReportController;
+use \App\Http\Controllers\API\externalSalesController;
 use \App\Http\Controllers\API\PriceController;
 /*
 |--------------------------------------------------------------------------
@@ -41,9 +45,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:sanctum')->get('/athenticated', function (Request $request) {
-    return $request->user();
-});
 
 Route::resources([
     'resellers' => ResellerController::class,
@@ -66,6 +67,7 @@ Route::delete('/boleto-delete/{id}', [\App\Http\Controllers\API\BoletoController
 Route::get('/download-invoice/{id}', [\App\Http\Controllers\API\InvoiceController::class, 'downloadInvoice']);
 
 Route::post('register/user', [\App\Http\Controllers\API\UserController::class, 'store']);
+Route::post('register/seller/{id}', [\App\Http\Controllers\API\UserController::class, 'storeSale']);
 Route::post('register/enterprise', [\App\Http\Controllers\API\EnterpriseController::class, 'store']);
 Route::post('register/address', [\App\Http\Controllers\API\AddressController::class, 'store']);
 
@@ -82,9 +84,11 @@ Route::post('logout', [\App\Http\Controllers\LoginController::class, 'logout']);
 Route::post('validate-tables', [PriceController::class, 'validateTables']);
 
 
-// PAINEL
-Route::middleware(['auth:sanctum'])->group(function () {
+// AUTENTICANDO 
+Route::middleware(['auth:sanctum', 'user.check'])->group(function () {
+
     Route::resources([
+        'comission' => ExternalComissionController::class,
         'category' => CategoryController::class,
         'product' => ProductController::class,
         'enterprise-products' => EnterpriseProductController::class,
@@ -105,9 +109,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'sale' => SaleOrderController::class,
         'payment-terms' => PaymentTermsController::class,
         'carriers' => CarrierController::class,
-        'integration_product' => IntegrationProductController::class
+        'integration_product' => IntegrationProductController::class,
+        'representante-empresas' => CompanyRepreController::class
     ]);
     
+    Route::get('external-sales-report', [ExternalSaleReportController::class, 'getReport']);
     Route::get('my-shopping', [SaleOrderController::class, 'myShopping']);
 
     Route::get('sale-all-info/{id}', [SaleOrderController::class, 'saleAllInfo']);
@@ -135,16 +141,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('prices-by-table', [PriceController::class, 'allPricesByTable']);
 
     Route::get('search-enterprise-name/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpj']);
+
+    Route::get('search-product-name/{name}', [ProductController::class, 'getByName']);
     
     Route::get('enterprise-search/{name_cnpj}', [EnterpriseController::class, 'getByNameCnpjMoreInfo']);
 
     Route::get('sub-categories', [CategoryController::class, 'subCategories']);
 
-    
+    Route::post('external-sale', [externalSalesController::class, 'store']);
+    Route::get('external-sales', [externalSalesController::class, 'index']);
 });
 
-//test
-Route::get('test', [EnterpriseController::class, 'test']);
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('athenticated', [\App\Http\Controllers\LoginController::class, 'athenticated']);
+});
 
 
 // DELIVERY

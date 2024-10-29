@@ -7,28 +7,28 @@
             <div class="form">
                 <h3>Bermar</h3>
                 <p>Seja bem vindo, entre com sua conta.</p>
-                <b-form @submit="onSubmit" v-if="show">
+                <b-form @submit="onSubmit">
                     <b-form-group
                         label-for="input-1"
                         class="input input1"
                     >
-                        <b-form-input
+                        <vs-input
                             id="form-login-email"
-                            v-model="form.email"
+                            v-model="form_login.email"
                             placeholder="Email"
                             required
-                        ></b-form-input>
+                        /> 
                     </b-form-group>
 
                     <b-form-group id="input-group-2">
-                        <b-form-input
+                        <vs-input
                             id="form-login-password"
                             type="password"
-                            v-model="form.password"
+                            v-model="form_login.password"
                             placeholder="Senha"
                             required
                             class="input input2"
-                        ></b-form-input>
+                        />
                     </b-form-group>
                     <!--
                     <b-form-checkbox
@@ -51,44 +51,35 @@
 </template>
 
 <script>
-import {BRow, BCol, BForm, BFormGroup, BFormInput, BFormSelect, BFormCheckboxGroup, BFormCheckbox, BButton, BCard,} from 'bootstrap-vue'
-window.axios = require('axios');
-import Vuex from 'vuex';
 
 export default {
     components:{
-        BRow, BCol, BForm, BFormGroup, BFormInput, BFormSelect, BFormCheckboxGroup, BFormCheckbox, BButton, BCard,
     },
     data() {
         return {
             error: false,
-            form: {
+            form_login: {
                 email: '',
                 password: '',
-            },
-            foods: [{ text: 'Select One', value: null }, 'Carrots', 'Beans', 'Tomatoes', 'Corn'],
-            show: true
+            }
         }
     },
-    created:{
-    },
+
     methods: {
         onSubmit(event) {
           
             event.preventDefault()
-            axios.post('/api/login', this.form).then((item) =>{
+            axios.post('/api/login', this.form_login).then((item) =>{
 
                 let token = JSON.stringify(item.data.token)
                 token = token.replaceAll('"', '')
 
-                localStorage.setItem('user', JSON.stringify(item.data.user))
-
-
-                this.$store.commit('updateUserRules', item.data.user.rules);
+                this.$store.commit('updateEnterpriseType', item.data.user.enterprise_type);
                 this.$store.commit('updateUserName', item.data.user.name);
+                this.$store.commit('updatePages', item.data.user.pages);
 
                 localStorage.setItem('token', token)
-                this.$user = item.data.user
+
                 this.$router.push('/painel')
                
             }).catch((error) => {

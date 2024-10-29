@@ -35,11 +35,13 @@ export default {
     methods:{
         logout(){
             axios.post('/api/logout').then((item)=>{
+
                 localStorage.removeItem('user')
                 localStorage.removeItem('token')
 
                 this.$store.commit('updateUserName', null);
-                this.$store.commit('updateUserRules', null);
+                this.$store.commit('updatePages', null);
+                this.$store.commit('updateEnterpriseType', null);
 
                 this.$router.push({ name: "login" });
             })

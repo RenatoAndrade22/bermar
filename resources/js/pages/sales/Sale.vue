@@ -235,11 +235,11 @@
                     Produtos
                 </vs-th>
              
-                <vs-th v-if="this.validarRegrasUsuario([1, 2])">
+                <vs-th v-if="validarRegrasUsuario(1) || validarRegrasUsuario(2)">
                     Nota fiscal
                 </vs-th>
 
-                <vs-th v-if="this.validarRegrasUsuario([1, 2])">
+                <vs-th v-if="validarRegrasUsuario(1) || validarRegrasUsuario(2)">
                     Boletos
                 </vs-th>
 
@@ -285,8 +285,8 @@
                         </vs-button>
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoices" v-if="this.validarRegrasUsuario([1, 2])">
-                        <div v-if="data[indextr].invoices.length === 0 && this.validarRegrasUsuario([1])">
+                    <vs-td :data="data[indextr].invoices" v-if="validarRegrasUsuario(1) || validarRegrasUsuario(2)">
+                        <div v-if="data[indextr].invoices.length === 0 && validarRegrasUsuario(1)">
                             <div @click="[upload_file = true, sale_order_id = data[indextr].id]">
                                 <UilCloudUpload size="19px" color="#e85d04" />
                                 <span>Enviar</span>
@@ -301,7 +301,7 @@
                         </div>
                     </vs-td>
 
-                    <vs-td :data="data[indextr].invoices" v-if="this.validarRegrasUsuario([1, 2])">
+                    <vs-td :data="data[indextr].invoices" v-if="validarRegrasUsuario(1) || validarRegrasUsuario(2)">
                         <div>
                             <div @click="openModalBoletos(data[indextr].id, data[indextr].boletos)">
                                 <UilBill size="19px" color="#76c893" />
@@ -526,11 +526,8 @@ export default {
 
     methods:{
 
-        validarRegrasUsuario($regras){
-            let rule = this.$c(this.userRules).filter((item)=>{
-                return $regras.includes(item.enterprise_type_id)
-            })
-            return rule.count()
+        validarRegrasUsuario(regra){
+            return this.enterpriseType.includes(regra);
         },
 
         editSale(s){
@@ -538,7 +535,6 @@ export default {
             axios.get('/api/sale-all-info/'+s.id).then((resp)=>{
                 this.sale_edit = resp.data
                 this.popup_new = true
-
             })
         },
 
@@ -591,9 +587,11 @@ export default {
         },
 
         statusOpen(status, sale_order_id){
-            this.update_status_id = sale_order_id
-            this.update_status_value = status
-            this.update_status = true
+            if (this.validarRegrasUsuario(1)) {
+                this.update_status_id = sale_order_id
+                this.update_status_value = status
+                this.update_status = true
+            }
         },
 
         updateStatus(){
@@ -742,9 +740,6 @@ export default {
             // payload
             let sale = {
 
-                // VENDEDOR
-                "user_id": this.$user.id,
-
                 //COMPRADOR
                 "enterprise_id": data.form.company,
 
@@ -879,7 +874,7 @@ export default {
 
             let url
 
-            if(this.validarRegrasUsuario([1])){
+            if(this.validarRegrasUsuario(1)){
                 url = 'all-sale-orders'
             }else{
                 url = 'sale-order'
@@ -929,45 +924,11 @@ export default {
         userRules() {
             return this.$store.state.userRules;
         },
-        
-/*
-        list_products() {
 
-            let products = this.$c(this.products)
-
-            if(this.form.company){
-
-                //empresa selecionada
-                let company = this.$c(this.companies).where('id', this.form.company)
-
-               
-
-                // tabela referente ao Estado da empresa
-                let table_price = this.$c(this.table_prices).where('name', company.items[0]['address']['state'])
-                table_price = table_price.items[0].prices
-
-                products = this.$c(this.products).map((p)=>{
-                    let price = this.$c(table_price).where('product_id', p.id)
-                    if(price.items.length > 0){
-                        p.price = price.items[0].price 
-                    }else{
-                        p.price = null
-                    }
-                    return p
-                })
-            }
-
-            if (this.form.search) {
-                products = this.$c(products).filter((product) => {
-                    return product.name.toLowerCase().search(this.form.search) >= 0;
-                });
-                products = products.items
-            }
-
-            return products
-
+        enterpriseType(){
+            return this.$store.state.enterpriseType;
         },
-*/
+        
         list_sales(){
             let sales = this.$c(this.sales)
 

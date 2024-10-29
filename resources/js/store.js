@@ -8,16 +8,20 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    userRules: null,
-    userName: null
+    enterpriseType: null,
+    userName: null,
+    pages: []
   },
   mutations: {
-    updateUserRules(state, value) {
-      state.userRules = value;
+    updateEnterpriseType(state, value) {
+      state.enterpriseType = value;
     },
     updateUserName(state, value){
         state.userName = value;
-    }
+    },
+    updatePages(state, value){
+      state.pages = value;
+  }
   },
 
   plugins: [createPersistedState()],

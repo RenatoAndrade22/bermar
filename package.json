@@ -44,6 +44,7 @@
         "vue-the-mask": "^0.11.1",
         "vue-toast-notification": "^0.6.2",
         "vue-xlsx": "^0.2.1",
+        "vue2-datepicker": "^3.11.1",
         "vue2-editor": "^2.10.3",
         "vuesax": "^3.12.2",
         "vuex": "^3.6.2",

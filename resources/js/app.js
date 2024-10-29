@@ -26,11 +26,10 @@ Vue.use(Vuex);
 
 if (localStorage.token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
-    let user = JSON.parse(localStorage.user)
-    Vue.prototype.$user = user
 } else {
     axios.defaults.headers.common['Authorization'] = null;
 }
+
 axios.defaults.maxContentLength = Infinity;
 axios.defaults.maxBodyLength = Infinity;
 
@@ -63,9 +62,35 @@ Vue.prototype.$rules_user = []
 
 Vue.use(VueRouter)
 
-app = new Vue({
+import VueSimpleSuggest from 'vue-simple-suggest';
+import 'vue-simple-suggest/dist/styles.css'; // Importa os estilos do componente
+
+Vue.component('vue-simple-suggest', VueSimpleSuggest);
+
+const router = new VueRouter(routes);
+
+router.beforeEach((to, from, next) => {
+
+    if (to.meta.auth) {
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`
+        axios.get('/api/athenticated').then((item) => {
+            store.commit('updateUserName', item.data.user.name)
+            store.commit('updatePages', item.data.user.pages)
+            store.commit('updateEnterpriseType', item.data.user.enterprise_type)
+            next()
+        }).catch((error)=>{ 
+            return next({ name: 'login'})
+        })
+    } else {
+        next()
+    }
+    
+});
+
+new Vue({
     el: '#app',
-    router: new VueRouter(routes),
+    router: router,
     render: h => h(LayoutFrontend),
     store
-}).$mount('#app');
+});

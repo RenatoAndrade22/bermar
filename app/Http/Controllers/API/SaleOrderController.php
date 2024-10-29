@@ -209,7 +209,7 @@ class SaleOrderController extends Controller
         $sale = SaleOrder::query()->where('id', $request->get('sale_edit_id'))->firstOrNew();
         $sale->fill($request->all());
         $sale->delivery_date = $deliveryDate;
-        $sale->user_id = $request->get('user_id');
+        $sale->user_id = Auth::user()->id;
         $sale->status = $request->get('status');
         $sale->status_payment = 1;
         $sale->status_delivery = 1;

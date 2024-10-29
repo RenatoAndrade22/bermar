@@ -15,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return Category::query()->with('products')->get();
+        return Category::query()->with(['products', 'categories'])->get();
     }
 
     public function categoriesSite(){

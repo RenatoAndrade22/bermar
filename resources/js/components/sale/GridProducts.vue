@@ -130,10 +130,7 @@ export default {
             }
         },
         company:{
-            type: Object,
-            default(rawProps) {
-                return {}
-            }
+            default: null,
         },
         table_prices:{
             type: Array,

@@ -25,14 +25,12 @@ class ProductController extends Controller
         return Product::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function getByName($name)
     {
-        //
+
+        $enterprises = Product::query()->where('name', 'LIKE', '%'.$name.'%')->get();
+
+        return $enterprises;
     }
 
     /**

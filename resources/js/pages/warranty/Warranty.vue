@@ -124,11 +124,8 @@ export default {
     },
     methods:{
 
-        validarRegrasUsuario($regras){
-            let rule = this.$c(this.userRules).filter((item)=>{
-                return $regras.includes(item.enterprise_type_id)
-            })
-            return rule.count()
+        validarRegrasUsuario(regra){
+            return this.enterpriseType.includes(regra);
         },
 
         conclude(id){
@@ -259,6 +256,10 @@ export default {
     computed:{
         userRules() {
             return this.$store.state.userRules;
+        },
+
+        enterpriseType(){
+            return this.$store.state.enterpriseType;
         },
     }
 }

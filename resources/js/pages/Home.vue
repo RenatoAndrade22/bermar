@@ -1,7 +1,7 @@
 <template>
     <div id="home_dashboard">
         <b-row>
-            <template v-if="validarRegrasUsuario([3])">
+            <template v-if="validarRegrasUsuario(3)">
                 <b-col>
                     <div class="card_column">
                         <h1>{{ total_sales }}</h1>
@@ -16,7 +16,7 @@
                 </b-col>
             </template>
 
-            <template v-if="validarRegrasUsuario([1])">
+            <template v-if="validarRegrasUsuario(1)">
                 <div class="card_column">
                     <b-row class="text-center">
                         <b-col md="6">
@@ -92,12 +92,8 @@ export default {
     },
     methods:{
 
-        validarRegrasUsuario($regras){
-            let rule = this.$c(this.userRules).filter((item)=>{
-                return $regras.includes(item.enterprise_type_id)
-            })
-            
-            return rule.count()
+        validarRegrasUsuario(regra){
+            return this.enterpriseType.includes(regra);
         },
 
         getIntegrationProduct() {
@@ -292,9 +288,9 @@ export default {
 
 
     computed: {
-        userRules() {
-            return this.$store.state.userRules;
-        },
+        enterpriseType(){
+            return this.$store.state.enterpriseType;
+        }
     },
 
 }

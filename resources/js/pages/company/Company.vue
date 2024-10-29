@@ -54,10 +54,20 @@
                     </vs-td>
 
                     <vs-td :data="data[indextr].id" style="width: 195px">
-                        <div @click="editItem(data[indextr].id)" class="icons" style="float:left; margin: 0 5px;">
-                            <vs-tooltip text="Editar">
-                                <UilEdit size="19px" class="icon_view" />
-                            </vs-tooltip>
+                        <div  class="icons" style="float:left; margin: 0 5px;">
+
+                            <div @click="editItem(data[indextr].id)">
+                                <vs-tooltip text="Editar">
+                                    <UilEdit size="19px" class="icon_view" />
+                                </vs-tooltip>
+                            </div>
+                            
+                            <div @click="copyUrl(data[indextr].id)" v-if="data[indextr].enterprise_type.name == 'Revenda'">
+                                <vs-tooltip text="Copiar link para cadastro de vendedores.">
+                                    <UilCopy size="19px" class="icon_view" />
+                                </vs-tooltip>
+                            </div>
+                            
                         </div>
                     </vs-td>
                     
@@ -343,7 +353,7 @@
 <script>
 import readXlsxFile from 'read-excel-file'
 import { BRow, BCol, BTable, BButton, BFormInput, BFormGroup } from 'bootstrap-vue'
-import { UilEye, UilEdit, UilTrashAlt } from '@iconscout/vue-unicons'
+import { UilEye, UilEdit, UilTrashAlt, UilCopy } from '@iconscout/vue-unicons'
 import Form from '../../components/Form'
 import {mask} from "vue-the-mask";
 import {Money} from "v-money";
@@ -353,7 +363,7 @@ import Multiselect from 'vue-multiselect'
 export default {
     name: "Company",
     components:{
-        BRow, BCol, BTable, BButton, BFormInput, BFormGroup, UilEye, UilEdit, UilTrashAlt, Form, Multiselect 
+        BRow, BCol, BTable, BButton, BFormInput, BFormGroup, UilEye, UilEdit, UilTrashAlt, Form, Multiselect, UilCopy
     },
     directives: {mask},
 
@@ -502,6 +512,11 @@ export default {
         }
     },
     methods:{
+
+        copyUrl(id){
+            let url = window.location.origin+'/cadastro/vendedores/?'+btoa(id); 
+            navigator.clipboard.writeText(url);
+        },
 
         searchEnterprise(){
             axios.get('/api/enterprise-search/'+this.search).then((data)=>{
@@ -933,6 +948,9 @@ export default {
     }
     .icons{
         float: left;
+        flex-flow: row;
+        display: flex;
+        gap: 6px;
     }
     .icon_view{
         cursor: pointer;

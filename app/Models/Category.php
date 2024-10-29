@@ -22,9 +22,9 @@ class Category extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function categories() :HasMany
+    public function categories() :belongsTo
     {
-        return $this->hasMany(Category::class, 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
 }

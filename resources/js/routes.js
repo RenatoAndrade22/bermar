@@ -3,6 +3,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RegisterSales from "./pages/RegisterSales.vue";
 import Dashboard from "./pages/Dashboard";
 import Investments from "./pages/Investments";
 import LayoutFrontend from "./pages/LayoutFrontend.vue";
@@ -13,8 +14,12 @@ import ProductView from "./pages/products/View";
 import ProductRecord from "./pages/products/Record";
 
 import Company from "./pages/company/Company";
+import CompanyRepre from "./pages/CompanyRepre/CompanyRepre";
+import Comissions from "./pages/Comissions/Comissions";
 
 import Sales from "./pages/sales/Sale";
+import SalesExternal from "./pages/salesExternal/SalesExternal.vue";
+import SalesExternalReport from "./pages/salesExternalReport/Report.vue";
 
 import Warranty from "./pages/warranty/Warranty"
 
@@ -50,11 +55,25 @@ export default {
                     path: 'login',
                     name: 'login',
                     component: Login,
+                    meta:{
+                        auth: false
+                    }
                 },
                 {
                     path:'/cadastro',
                     name: 'cadastro',
-                    component: Register
+                    component: Register,
+                    meta:{
+                        auth: false
+                    }
+                },
+                {
+                    path:'/cadastro/vendedores/:id',
+                    name: 'cadastro-vendedores',
+                    component: RegisterSales,
+                    meta:{
+                        auth: false
+                    }
                 },
 
             ],
@@ -67,123 +86,193 @@ export default {
                 {
                     path:'/painel',
                     component: Home,
-                    name: 'home'
+                    name: 'home',
+                    meta:{
+                        auth: true
+                    }
                 },
 
                 {
                     path:'/painel/produtos',
                     name: 'products',
-                    component: Products
+                    component: Products,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/produtos/novo',
                     name: 'products_new',
-                    component: ProductRecord
+                    component: ProductRecord,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/produtos/editar/:id',
                     name: 'product_edit',
-                    component: ProductRecord
+                    component: ProductRecord,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/produtos/editar/status/:id',
                     name: 'product_edit_status',
-                    component: ProductRecord
+                    component: ProductRecord,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/produto/:id',
                     name: 'product_view',
-                    component: ProductView
+                    component: ProductView,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/familias',
                     name: 'categories',
-                    component: Categories
+                    component: Categories,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/empresas',
                     name: 'companies',
-                    component: Company
+                    component: Company,
+                    meta:{
+                        auth: true
+                    }
+                },
+                {
+                    path:'/painel/tabelas-comissoes',
+                    name: 'Comissions',
+                    component: Comissions,
+                    meta:{
+                        auth: true
+                    }
+                },
+                {
+                    path:'/painel/representante-empresas',
+                    name: 'companiesRepre',
+                    component: CompanyRepre,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/usuarios',
                     name: 'users',
-                    component: User
+                    component: User,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/vendas',
                     name: 'sales',
-                    component: Sales
+                    component: Sales,
+                    meta:{
+                        auth: true
+                    }
+                },
+                {
+                    path:'/painel/vendas-externas',
+                    name: 'sales-external',
+                    component: SalesExternal,
+                    meta:{
+                        auth: true
+                    }
+                },
+                {
+                    path:'/painel/vendas-externas-relatorios',
+                    name: 'sales-external',
+                    component: SalesExternalReport,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/tabela-de-precos',
                     name: 'PriceTable',
-                    component: PriceTable
+                    component: PriceTable,
+                    meta:{
+                        auth: true
+                    }
                 },
 
                 {
                     path:'/painel/tabela-de-precos/nova',
                     name: 'PriceTableNew',
-                    component: PriceTableNew
+                    component: PriceTableNew,
+                    meta:{
+                        auth: true
+                    }
                 },
 
                 {
                     path:'/painel/motodo-de-pagamento',
                     name: 'MetodoPagamento',
-                    component: MethodPayment
+                    component: MethodPayment,
+                    meta:{
+                        auth: true
+                    }
                 },
 
                 {
                     path:'/painel/motodo-de-pagamento/nova',
                     name: 'NovoMetodoPagamento',
-                    component: MethodPaymentNew
+                    component: MethodPaymentNew,
+                    meta:{
+                        auth: true
+                    }
                 },
                 
                 {
                     path:'/painel/minhas-compras',
                     name: 'shopping',
-                    component: Shopping
+                    component: Shopping,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/garantias',
                     name: 'warranty',
-                    component: Warranty
+                    component: Warranty,
+                    meta:{
+                        auth: true
+                    }
                 },
                 {
                     path:'/painel/garantia/:id',
                     name: 'warranty_chat',
-                    component: Chat
+                    component: Chat,
+                    meta:{
+                        auth: true
+                    }
                 },     
                 {
                     path:'/painel/produtos/garantias',
                     name: 'Warranty_product',
-                    component: WarrantyProduct
+                    component: WarrantyProduct,
+                    meta:{
+                        auth: true
+                    }
                 },           
                 {
                     path:'/dashboard',
                     component: Dashboard,
                     name: 'dashboard',
-
-                    beforeEnter:(to, from, next) => {
-                        axios.get('/api/athenticated').then((user) => {
-                            next()
-                        }).catch((error)=>{
-                            return next({ name: 'login'})
-                        })
+                    meta:{
+                        auth: true
                     }
                 },
             ],
         },
     ]
 }
-
-
-
-
-
-
-
-
-
-
-

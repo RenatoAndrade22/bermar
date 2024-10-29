@@ -23,11 +23,11 @@
                 <vs-tr :key="indextr" v-for="(tr, indextr) in data">
                     <vs-td :data="data[indextr].name">
                         {{ data[indextr].name }}
-                    </vs-td>
+                    </vs-td> 
 
-                    <vs-td :data="data[indextr].category_name">
-                        <div v-if="data[indextr].category_name">
-                            {{ data[indextr].category_name }}
+                    <vs-td :data="data[indextr].categories">
+                        <div v-if="data[indextr].categories">
+                            {{ data[indextr].categories.name }}
                         </div>
                         
                     </vs-td>

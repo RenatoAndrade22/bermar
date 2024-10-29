@@ -14,11 +14,6 @@
         placeholder="Buscar produto"
         v-model="search"
       />
-      <!--
-        <vs-button v-if="$user.enterprise.enterprise_type_id == 2" @click="select_new = !select_new"
-        >Produtos</vs-button
-      >
-      -->
 
       <vs-button id="cadastrar-produto" v-if="validarRegrasUsuario(1)" @click="$router.push({ name: 'products_new' })"
         >Cadastrar novo</vs-button
@@ -199,8 +194,8 @@ export default {
   },
   methods: {
 
-    validarRegrasUsuario($regra){
-      return this.$c(this.userRules).where('enterprise_type_id', $regra).count()
+    validarRegrasUsuario(regra){
+      return this.enterpriseType.includes(regra);
     },
 
     saveLinks(){
@@ -369,11 +364,11 @@ export default {
 
       return products;
     },
-    userRules(){
-      return this.$store.state.userRules;
+    enterpriseType(){
+      return this.$store.state.enterpriseType;
     }
   },
-};
+}; 
 </script>
 
 <style>

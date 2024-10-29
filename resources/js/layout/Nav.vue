@@ -5,7 +5,7 @@
         </div>
         <div class="menu">
             
-            <router-link to="/painel" v-if="nav.painel" >
+            <router-link to="/painel" v-if="pages.includes('painel')">
                 <UilAngleRight color="#626262" size="12px" class="icon_angle" />
                 <UilEstate size="20px" class="icon_route" />
                 Painel
@@ -25,60 +25,85 @@
             -->
             
 
-            <router-link to="/painel/produtos" v-if="nav.produtos" id="nav-produtos">
+            <router-link to="/painel/produtos" v-if="pages.includes('produtos')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilCube size="20px" class="icon_route" />
                 Produtos
             </router-link>
 
-            <router-link to="/painel/familias" v-if="nav.familia">
+            <router-link to="/painel/familias" v-if="pages.includes('familias')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilCube size="20px" class="icon_route" />
                 Família
             </router-link>
-
-            <router-link to="/painel/vendas" v-if="nav.vendas">
+            <!--
+            <router-link to="/painel/vendas" v-if="pages.includes('vendas')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilTagAlt size="20px" class="icon_route" />
                 Minhas Vendas
             </router-link>
+            -->
+            
 
-            <router-link to="/painel/vendas" v-if="nav.vendas_admin">
+            <router-link to="/painel/vendas" v-if="pages.includes('vendas')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilTagAlt size="20px" class="icon_route" />
                 Vendas
             </router-link>
 
-            <router-link to="/painel/empresas" v-if="nav.empresas">
+            <router-link to="/painel/tabelas-comissoes" v-if="pages.includes('tabelas-comissoes')">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Comissões
+            </router-link>
+
+            <router-link to="/painel/vendas-externas-relatorios" v-if="pages.includes('vendas-externas-relatorios')">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Vendas externas
+            </router-link>
+
+            <router-link to="/painel/empresas" v-if="pages.includes('empresas')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShop size="20px" class="icon_route" />
                 Empresas
             </router-link>
 
-            <router-link to="/painel/usuarios" v-if="nav.usuarios">
+            <router-link to="/painel/usuarios" v-if="pages.includes('usuarios')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilUsersAlt size="20px" class="icon_route" />
                 Usuários
             </router-link>
 
-            <router-link to="/painel/minhas-compras" v-if="nav.minhas_compras">
+            <router-link to="/painel/minhas-compras" v-if="pages.includes('minhas-compras')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Minhas compras
             </router-link>
 
-            <router-link to="/painel/garantias" v-if="nav.pedidos_garantia">
+            <router-link to="/painel/garantias" v-if="pages.includes('garantias')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Pedidos de garantia
             </router-link>
 
-            <router-link to="/painel/produtos/garantias" v-if="nav.produtos_garantia">
+            <router-link to="/painel/produtos/garantias" v-if="pages.includes('produtos/garantias')">
                 <UilAngleRight size="12px" class="icon_angle" />
                 <UilShoppingBag size="20px" class="icon_route" />
                 Produtos de garantia
             </router-link>
 
+            <router-link to="/painel/vendas-externas" v-if="pages.includes('vendas-externas')">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Vendas externas
+            </router-link>
+
+            <router-link to="/painel/representante-empresas" v-if="pages.includes('representante-empresas')">
+                <UilAngleRight size="12px" class="icon_angle" />
+                <UilShoppingBag size="20px" class="icon_route" />
+                Empresas
+            </router-link>
         </div>
     </div>
 </template>
@@ -86,78 +111,20 @@
 <script>
 
 import { UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag } from '@iconscout/vue-unicons'
-import Vuex from 'vuex';
 
 export default {
     name: "Nav",
     components:{ UilEstate, UilAngleRight, UilUsersAlt, UilFileContractDollar, UilCube, UilShop, UilTagAlt, UilShoppingBag  },
     
-    data(){
-        return{
-            nav: {
-                produtos_garantia_rules: [1],
-                produtos_garantia: false,
-
-                pedidos_garantia_rules: [0,1,4],
-                pedidos_garantia: false,
-
-                minhas_compras_rules: [2],
-                minhas_compras: false,
-
-                usuarios_rules: [1],
-                usuarios: false,
-
-                empresas_rules: [1],
-                empresas: false,
-                
-                vendas_rules: [3],
-                vendas: false,
-
-                vendas_admin_rules: [1],
-                vendas_admin: false,
-                
-                familia_rules: [1],
-                familia: false,
-
-                produtos_rules: [1, 2],
-                produtos: false,
-                
-                painel_rules: [0, 1, 3, 4],
-                painel: false,
-            },
-
-            user_type: null
-        }
-    },
-    
-    created() {
-    
-
-            this.nav.painel            = this.validarRegrasUsuario(this.nav.painel_rules)
-            this.nav.produtos          = this.validarRegrasUsuario(this.nav.produtos_rules)
-            this.nav.familia           = this.validarRegrasUsuario(this.nav.familia_rules)
-            this.nav.vendas_admin      = this.validarRegrasUsuario(this.nav.vendas_admin_rules)
-            this.nav.vendas            = this.validarRegrasUsuario(this.nav.vendas_rules)
-            this.nav.empresas          = this.validarRegrasUsuario(this.nav.empresas_rules)
-            this.nav.usuarios          = this.validarRegrasUsuario(this.nav.usuarios_rules)
-            this.nav.minhas_compras    = this.validarRegrasUsuario(this.nav.minhas_compras_rules)
-            this.nav.pedidos_garantia  = this.validarRegrasUsuario(this.nav.pedidos_garantia_rules)
-            this.nav.produtos_garantia = this.validarRegrasUsuario(this.nav.produtos_garantia_rules)
- 
+  data(){
+    return{}
   },
-
-  methods: {
-    validarRegrasUsuario($regras){
-        let rule = this.$c(this.userRules).filter((item)=>{
-            return $regras.includes(item.enterprise_type_id)
-        })
-        return rule.count()
-    },
-  },
+    
+  methods: {},
 
   computed: {
-    userRules() {
-        return this.$store.state.userRules;
+    pages() {
+        return this.$store.state.pages;
     },
   },
 }

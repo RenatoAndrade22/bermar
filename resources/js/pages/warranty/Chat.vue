@@ -35,7 +35,7 @@
        
             <vs-button type="relief" size="small" class="float-left" @click="budget = !budget">Orçamento</vs-button>
           
-            <vs-button v-if="validarRegrasUsuario([1])" type="relief" size="small" class="float-left" @click="assistance_active = !assistance_active">Assistencia Tecnica</vs-button>
+            <vs-button v-if="validarRegrasUsuario(1)" type="relief" size="small" class="float-left" @click="assistance_active = !assistance_active">Assistencia Tecnica</vs-button>
             
             <div @click="chooseFiles" style="width: 30px;float: right;margin-left: 15px;">
                 <UilPaperclip size="18px" />
@@ -48,10 +48,10 @@
        
                     
                     <div v-if="!add_product">
-                        <vs-button v-if="!validarRegrasUsuario([1])" @click="add_product = !add_product" type="relief" size="small" class="mb-2">Adicionar produto ao orçamento</vs-button>
+                        <vs-button v-if="!validarRegrasUsuario(1)" @click="add_product = !add_product" type="relief" size="small" class="mb-2">Adicionar produto ao orçamento</vs-button>
 
                         <ul>
-                            <li v-for="(p, i) in products_warranty">{{ p.name }} - R$: {{ p.price }} <span v-if="!validarRegrasUsuario([1])" @click="removeProduct(p.id)">x</span></li>
+                            <li v-for="(p, i) in products_warranty">{{ p.name }} - R$: {{ p.price }} <span v-if="!validarRegrasUsuario(1)" @click="removeProduct(p.id)">x</span></li>
                         </ul>
 
                         <h6 class="text-center m-4">Total: {{ total_warranty }}</h6>
@@ -61,7 +61,7 @@
                             v-model="description"
                         />
 
-                        <vs-button v-if="!validarRegrasUsuario([1])" type="relief" size="small" @click="recordBudget">Cadastrar orçamento</vs-button>
+                        <vs-button v-if="!validarRegrasUsuario(1)" type="relief" size="small" @click="recordBudget">Cadastrar orçamento</vs-button>
 
                         </div>
 
@@ -144,11 +144,8 @@ export default {
     },
     methods:{
 
-        validarRegrasUsuario($regras){
-            let rule = this.$c(this.userRules).filter((item)=>{
-                return $regras.includes(item.enterprise_type_id)
-            })
-            return rule.count()
+        validarRegrasUsuario(regra){
+            return this.enterpriseType.includes(regra);
         },
 
         removeProduct(id){
@@ -321,6 +318,10 @@ export default {
 
     },
     computed:{
+
+        enterpriseType(){
+            return this.$store.state.enterpriseType;
+        },
 
         userRules() {
             return this.$store.state.userRules;

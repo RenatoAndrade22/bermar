@@ -12,12 +12,14 @@ use App\Models\EnterpriseRule;
 use App\Models\RepresentativeState;
 use App\Models\EnterpriseRuse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class EnterpriseController extends Controller
 {
 
     public function getByNameCnpj($name_cnpj)
     {
+        
         $name_cnpj = str_replace(array('.', '-', '/'), '', $name_cnpj);
 
         $enterprises = Enterprise::query()
@@ -65,14 +67,17 @@ class EnterpriseController extends Controller
         $enterprise->cnpj =  preg_replace("/[^0-9]/", "", $request->get('cnpj'));
         $enterprise->phone = preg_replace("/[^0-9]/", "", $request->get('phone'));
 
-        $enterprise->saveOrFail();
-
+        $enterprise->save();
+        
         foreach($enterprise_type_ids as $types){
 
             $enterprise_rules = EnterpriseRule::query()
-                                    ->where('enterprise_id', $enterprise->id)
-                                    ->where('enterprise_type_id', $types)
-                                    ->firstOrNew();
+                        ->where('enterprise_id', $enterprise->id)
+                        ->where('enterprise_type_id', $types)
+                        ->firstOrNew([
+                            'enterprise_id' => $enterprise->id,
+                            'enterprise_type_id' => $types
+                        ]);
 
             $enterprise_rules->save();
         }
