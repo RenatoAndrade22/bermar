@@ -69,7 +69,19 @@
           
         </vs-tr>
       </template>
+
+      
+
+
     </vs-table>
+
+    <Pagination 
+      :current_page="pagination.current_page" 
+      :last_page="pagination.last_page" 
+      :total="pagination.total" 
+      @paginationClick="paginationClick"
+    />
+
     <vs-popup title="Editar produto" :active.sync="edit_product">
       <h4>Atualizar produto.</h4>
       <template v-if="product_selected">
@@ -153,7 +165,7 @@ import { UilEye, UilEdit, UilTrashAlt } from "@iconscout/vue-unicons";
 import { TheMask } from "vue-the-mask";
 import { Money } from "v-money";
 import Investment from "../Investment";
-
+import Pagination from '../../components/Pagination'
 export default {
   name: "Products",
   components: {
@@ -166,6 +178,7 @@ export default {
     UilEye,
     UilEdit,
     UilTrashAlt,
+    Pagination
   },
   data() {
     return {
@@ -190,9 +203,18 @@ export default {
       ],
       products_bermar: [
       ],
+      pagination:{
+        current_page: 0,
+        last_page: 0,
+        total: 0,
+      }
     };
   },
   methods: {
+
+    paginationClick(page){
+      this.getProductsBermar(page)
+    },
 
     validarRegrasUsuario(regra){
       return this.enterpriseType.includes(regra);
@@ -256,21 +278,26 @@ export default {
       });
     },
 
-    getProductsBermar() {
-      axios.get("/api/products-bermar").then((data) => {
+    getProductsBermar(page = 1) {
+      axios.get("/api/products-bermar?page="+page).then((data) => {
 
           if (this.validarRegrasUsuario(1)) {
-            this.products_bermar = this.$c(data.data).map((data)=>{
+
+            this.products_bermar = this.$c(data.data.results).map((data)=>{
               data.stock = null
               return data
             })
           }else{
-            this.products_bermar = this.$c(data.data).map((data)=>{
+            this.products_bermar = this.$c(data.data.results).map((data)=>{
               data.stock = null
               return data
             })
             this.products_bermar = this.products_bermar.items
           }
+
+          this.pagination.current_page = data.data.current_page
+          this.pagination.last_page = data.data.last_page
+          this.pagination.total = data.data.total_items
           
       });
 

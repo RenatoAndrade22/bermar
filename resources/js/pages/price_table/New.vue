@@ -110,7 +110,7 @@ export default {
     methods:{
         getProductsBermar() {
             axios.get("/api/products-bermar").then((data) => {
-                this.products = data.data
+                this.products = data.data.results
                 this.money_active = true
             });
         },

@@ -181,8 +181,26 @@ class ProductController extends Controller
         return true;
     }
 
-    public function getProductsBermar(){
-        return Product::query()->orderBy('id', 'desc')->get();
+    public function getProductsBermar(Request $request){
+
+        $perPage = 10; // Defina o número de itens por página
+        $page = $request->input('page', 1); // Recebe o número da página, padrão 1
+        $offset = ($page - 1) * $perPage;
+
+        $products = Product::query()
+                ->offset($offset)
+                ->limit($perPage)
+                ->orderBy('id', 'desc')
+                ->get();
+        
+        $total = Product::all()->count();
+        
+        return response()->json([
+            'results' => $products,
+            'current_page' => (int) $page,
+            'last_page' => (int) ceil($total / $perPage),
+            'total' => $total,
+        ]);
     }
 
     public function sanitizeString($str) {

@@ -254,21 +254,28 @@ export default {
         },
 
         selectName(product) {
+            console.log('aq1')
+
             this.search = null
 
             const alreadyExists = this.list_products.find(item => item.id === product.id)
             
             if (!alreadyExists) {
+
                 let p = this.$c(this.products).where('id', product.id).first()
-                
-                let newProduct = {}
+                this.money_active = false
 
-                newProduct.comission = 0
-                newProduct.double = false
-                newProduct.name = p.name
-                newProduct.product_id = p.id
+                this.list_products.push(
+                    {
+                        double: false,
+                        name: p.name,
+                        product_id: p.id,
+                        comission: 0
+                    }
+                )
 
-                this.list_products.unshift(newProduct)
+                this.money_active = true
+
             }
         }
 

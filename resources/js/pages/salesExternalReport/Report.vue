@@ -1,16 +1,22 @@
 <template>
-    <div id="page_sales">
+    <div id="page_comissions">
 
         <div class="header_table">
-            <div class="search_filter">
+            <div>
+                <p>Filtrar vendedor</p>
+                <div>
+                    <vs-input v-model="name_search" placeholder="Nome do vendedor" />
+                </div>
+            </div>
+            <div>
                 <p>Filtrar vendas</p>
                 <div class="filter_inputs">
                     <date-picker v-model="dates" :lang="locale" format='DD/MM/YYYY'  range></date-picker>
-                    <vs-button @click="searchDate" type="flat" size="small" style="margin-left: 10px;">
-                        Buscar
-                    </vs-button>
                 </div>
             </div>
+            <vs-button @click="search" type="relief">
+                Buscar
+            </vs-button>
         </div>
             
         <vs-table
@@ -20,70 +26,64 @@
         >
             <template slot="thead">
                 <vs-th>
-                    ID
+                    #
                 </vs-th>
                 <vs-th>
-                    Produto
+                    Vendedor
                 </vs-th>
                 <vs-th>
-                    Data
+                    Empresa
                 </vs-th>
                 <vs-th>
-                    Valor
+                    Representante
                 </vs-th>
                 <vs-th>
-                    Série do produto
-                </vs-th>
-                <vs-th>
-                    Numero NFE
-                </vs-th>
-                <vs-th>
-                    NFE
-                </vs-th>
-                <vs-th>
-                    Status
+                    Total comissão
                 </vs-th>
             </template>
-            <template slot-scope="{data}">
-                <vs-tr :key="indextr" v-for="(tr, indextr) in data" >
-                    <vs-td :data="data[indextr].id">
-                        {{data[indextr].id}}
+            <template slot-scope="{data}"> 
+                <vs-tr :key="indextr" v-for="(tr, indextr) in data" class="table-line">
+                    <vs-td :data="data[indextr]">
+                        <div @click="openComissions(data[indextr])">
+                            {{ (indextr + 1)}}
+                        </div>
                     </vs-td>
-                    <vs-td :data="data[indextr].product_name">
-                        {{data[indextr].product_name}}
+
+                    <vs-td :data="data[indextr].sellet_name">
+                        <div @click="openComissions(data[indextr])">
+                            {{data[indextr].sellet_name}}
+                        </div>
                     </vs-td>
-                    <vs-td :data="data[indextr].date_sale">
-                        {{formatDateToBR(data[indextr].date_sale)}}
+
+                    <vs-td :data="data[indextr].enterprise_resale_name">
+                        <div @click="openComissions(data[indextr])">
+                            {{data[indextr].enterprise_resale_name}}
+                        </div>
                     </vs-td>
-                    <vs-td :data="data[indextr].value">
-                        {{data[indextr].value}}
+
+                    <vs-td :data="data[indextr].enterprise_resale_name">
+                        <div @click="openComissions(data[indextr])">
+                            {{data[indextr].enterprise_repre_name}}
+                        </div>
                     </vs-td>
-                    <vs-td :data="data[indextr].product_serial">
-                        {{data[indextr].product_serial}}
-                    </vs-td>
-                    <vs-td :data="data[indextr].nfe_number">
-                        {{data[indextr].nfe_number}}
-                    </vs-td>
-                    <vs-td :data="data[indextr].nfe_url">
-                        <p style="float: left;"><a :href="data[indextr].nfe_url" target="_blank">Donwload</a></p>
-                    </vs-td>
-                    <vs-td :data="data[indextr].approved">
-                        <p style="float: left;">
-                            <span v-if="data[indextr].approved">Aprovada</span>
-                            <span v-if="!data[indextr].approved">Pendente</span>
-                        </p>
+
+                    <vs-td :data="data[indextr].total_comissions">
+                        <div @click="openComissions(data[indextr])">
+                            {{ valueFormat(data[indextr].total_comissions) }}
+                        </div>
                     </vs-td>
 
                 </vs-tr>
             </template>
         </vs-table>
-        <vs-popup title="Cadastrar nova venda" :active.sync="popup_new">
+        <vs-popup title="Comissões" :active.sync="popup_new" fullscreen>
              
-            <Form 
+            <Modal 
                 v-if="popup_new"
-                @newSale="newSale"
+                :seller="seller_selected"
             />
         </vs-popup>
+
     </div>
 </template>
 
@@ -92,7 +92,7 @@
 import { UilCloudUpload, UilCloudDownload, UilTimes, UilBill, ButtonLoadding } from '@iconscout/vue-unicons'
 import { UploadMedia, UpdateMedia } from 'vue-media-upload'
 import axios from "axios"
-import Form from '../../components/saleExternal/Form'
+import Modal from './Modal.vue'
 import ButtonComponent from '../../components/ButtonLoadding'
 import {mask} from "vue-the-mask";
 import VueHtml2pdf from 'vue-html2pdf'
@@ -104,7 +104,7 @@ export default {
     name: "Sales",
     components:{
         UilCloudUpload, UilCloudDownload, UilTimes, UploadMedia, UpdateMedia, UilBill,
-        Form, ButtonComponent, VueHtml2pdf, DatePicker 
+        Modal, ButtonComponent, VueHtml2pdf, DatePicker 
     },
     directives: {mask},
     data(){
@@ -113,6 +113,8 @@ export default {
             popup_new: false, 
             sale_edit_id: null,
             dates: null,
+            name_search: null,
+            seller_selected: null,
             locale: {
                 monthBeforeYear: true,
                 format: 'DD/MM/YYYY',
@@ -131,7 +133,12 @@ export default {
 
     methods:{
 
-        searchDate() {
+        openComissions(seller) {
+            this.popup_new = true
+            this.seller_selected = seller
+        },
+
+        search() {
 
             if (this.dates && this.dates[0] && this.dates[1]) {
 
@@ -142,9 +149,9 @@ export default {
                 const formattedStartDate = new Date(startDate).toISOString().split('T')[0];
                 const formattedEndDate = new Date(endDate).toISOString().split('T')[0];
 
-                this.getExternalSales({start_date: formattedStartDate, end_date: formattedEndDate})
+                this.getExternalSales({start_date: formattedStartDate, end_date: formattedEndDate, name: this.name_search})
             } else {
-                this.getExternalSales()
+                this.getExternalSales({name: this.name_search})
             }
 
         },
@@ -165,6 +172,13 @@ export default {
             const month = (newDate.getMonth() + 1).toString().padStart(2, '0');
             const year = newDate.getFullYear();
             return `${day}/${month}/${year}`;
+        },
+
+        valueFormat(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
         }
     },
 
@@ -180,156 +194,17 @@ export default {
     }
 }
 </script>
-<style scoped>
 
-    .boletos{
-        width: 100%;
-        float: left;
-    }
-
-    .actions{
-        width: 100%;
-        float: left;
-    }
-
-    .delete{
-        cursor: pointer;
-        color: red;
-        float: right;
-        margin-right: 16px;
-    }
-
-    .boleto{
-        width: 200px;
-        float: left;
-        margin-right: 10px;
-    }
-    .sale_products{
-        margin: 0;
-        padding: 0;
-    }
-    .sale_products p{
-        font-weight: 600 !important;
-        margin: 0;
-        color: #333 !important;
-    }
-    .sale_products span{
-        color: rgb(238, 27, 33);
-    }
-    .sale_products li{
-        list-style: none;
-        border-bottom: 1px solid #efeeee;
-        padding: 15px;
-    }
-    .error{
-        color:red
-    }
-    .name{
-        width: 90%;
-        float: left;
-    }
-    .number_items{
-        width: 10%;
-        float: left;
-    }
-    .form_item{
-        width: 100% !important;
-    }
-</style>
 <style>
-    #list-products{
-        margin: 10px 0;
-    }
-    #list-products th{
-        padding: 0px !important;
-        padding-right: 10px !important;
-    }
-    #list-products td{
-        padding: 0px !important;
-        padding-right: 10px !important;
-        border-bottom: 1px solid #777;
-    }
-    .pdf_sale{
-        width: 100%;
-        padding: 50px;
-        z-index: 99999;
-        margin: 0 auto;
-        background: #fff;
-    }
-    .pdf_sale p{
-        color: #000 !important;
-        margin: 0;
-        font-weight: 600 !important;
-        font-size: 12px !important;
-    }
-    .pdf_sale p span{
-        color: #000 !important;
-        font-weight: 300;
-    }
-    .product_pdf{
-        border: 1px solid #efeeee;
-        padding: 20px;
-    }
-    .icons{
-        float: left;
-    }
-    .icon_view{
+    #page_comissions .tr-values {
         cursor: pointer;
+        background: #fff !important;
     }
-    .input-span-placeholder{
-        margin-top: 4px;
-        margin-left: 6px;
+    #page_comissions .tr-values:hover {
+        background: #efeeee !important;
     }
-    .vs-dialog-accept-button{
-        background: #FF4757;
-        padding: 7px 10px;
-        color: #ffffff;
-        border-radius: 8px;
-        margin: 10px;
-        cursor: pointer;
-    }
-    .vs-dialog-cancel-button{
-        margin: 10px;
-        cursor: pointer;
-    }
-    .vs-dialog-text{
-        padding: 25px 20px;
-    }
-    .clear_select{
-        cursor: pointer;
-        margin: 21px 0px 0px 4px;
-    }
-
-    .header_table {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .search_filter {
-        display: flex;
-        flex-direction: column; /* Organiza os elementos em coluna */
-    }
-    .search_filter p {
-        margin: 0;
+    #page_comissions .header_table p{
         font-weight: bold !important;
-    }
-    
-    .filter_inputs {
-        display: flex;
-        align-items: center; /* Alinha o date-picker e o botão "Buscar" lateralmente */
-    }
-</style>
-<style scoped>
-
-    .header_page{
-        padding: 20px 10px;
-    }
-    .header_page h3{
-        font-size: 20px;
-        font-weight: 600;
-    }
-    .search{
-        margin-right: 20px;
+        margin-bottom: 0 !important;
     }
 </style>

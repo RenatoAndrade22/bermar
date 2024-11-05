@@ -458,7 +458,7 @@ export default {
         getProductsBermar() {
             
             axios.get("/api/products-bermar").then((data) => { 
-                this.products = this.$c(data.data).map((item)=>{
+                this.products = this.$c(data.data.results).map((item)=>{
                     item.discount = 0
                     item.price = 0
                     item.quantity = 0
