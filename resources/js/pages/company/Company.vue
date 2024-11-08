@@ -515,7 +515,20 @@ export default {
 
         copyUrl(id){
             let url = window.location.origin+'/cadastro/vendedores/?'+btoa(id); 
-            navigator.clipboard.writeText(url);
+
+            // Cria um elemento temporário de input
+            const input = document.createElement('input');
+            input.value = url;
+            document.body.appendChild(input);
+
+            // Seleciona o conteúdo do input e copia para a área de transferência
+            input.select();
+            input.setSelectionRange(0, 99999); // Para dispositivos móveis
+
+            document.execCommand('copy');
+
+            // Remove o elemento temporário
+            document.body.removeChild(input);
         },
 
         searchEnterprise(){
