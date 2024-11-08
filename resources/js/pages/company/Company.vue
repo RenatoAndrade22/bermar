@@ -515,7 +515,6 @@ export default {
 
         copyUrl(id){
             let url = window.location.origin+'/cadastro/vendedores/?'+btoa(id); 
-
             // Cria um elemento temporário de input
             const input = document.createElement('input');
             input.value = url;
